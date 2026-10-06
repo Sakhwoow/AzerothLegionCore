@@ -1864,6 +1864,12 @@ void World::SetInitialWorldSettings()
     if (VMAP::VMapManager2* vmmgr2 = dynamic_cast<VMAP::VMapManager2*>(VMAP::VMapFactory::createOrGetVMapManager()))
         vmmgr2->InitializeThreadUnsafe(mapData);
 
+    // Must run before LoadPlayerBotBaseInfo(), which sizes the startup account pool from
+    // m_BotAccountAmount (SupplementAccount() creates m_BotAccountAmount * 2 accounts). The
+    // SetMax() call later in LoadConfigSettings only re-reads the online cap at runtime; the
+    // account pool itself is only ever grown here, at startup.
+    sPlayerBotMgr->SetBotAccountAmount(sConfigMgr->GetIntDefault("AiPlayerbot.RandomBotMaxCount", 180));
+
     TC_LOG_INFO("server.loading", "Loading Player bot base store...");
     sPlayerBotMgr->LoadPlayerBotBaseInfo();
     sPlayerBotTalkMgr->InitializeTalkText();

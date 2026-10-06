@@ -357,6 +357,9 @@ public:
     std::string GetNameANDClassesText(ObjectGuid& guid);
     bool CanReadyArenaByArenaTeamID(uint32 arenaTeamId);
     void SetMax(int max) { m_MaxOnlineBot = max; }
+    // SupplementAccount() creates m_BotAccountAmount * 2 bot accounts at startup, so the pool
+    // has to be sized to at least cover the online cap. Keeps the original 90*2=180 ratio.
+    void SetBotAccountAmount(uint32 onlineCap) { m_BotAccountAmount = (onlineCap + 1) / 2; }
     int32 m_MaxOnlineBot;
     int32 m_BotOnlineCount;
 

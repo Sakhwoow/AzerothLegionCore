@@ -4324,7 +4324,9 @@ CustomSpecialFearDistance = 0.000000
 #   AiPlayerbot.RandomBotMaxCount
 #        Description: Maximum number of PlayerBot accounts PlayerBotMgr keeps logged in
 #                     at once. PlayerBotMgr::Update() tops this up automatically every
-#                     30s via AllPlayerBotRandomLogin().
+#                     30s via AllPlayerBotRandomLogin(). Also sizes the bot account/
+#                     character pool created once at server startup, so raising this
+#                     requires a worldserver restart to take effect, not just a reload.
 #        Default:     180
 #
 
