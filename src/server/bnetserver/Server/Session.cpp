@@ -145,6 +145,8 @@ void Battlenet::Session::SendResponse(uint32 token, pb::Message const* response)
     header.set_token(token);
     header.set_service_id(0xFE);
     header.set_size(response->ByteSize());
+    printf("[BNET-DBG] send response token=%u payload=%d type=%s\n", token, response->ByteSize(), response->GetDescriptor()->full_name().c_str());
+    fflush(stdout);
 
     uint16 headerSize = header.ByteSize();
     EndianConvertReverse(headerSize);
@@ -167,6 +169,8 @@ void Battlenet::Session::SendResponse(uint32 token, uint32 status)
     header.set_token(token);
     header.set_status(status);
     header.set_service_id(0xFE);
+    printf("[BNET-DBG] send status token=%u status=%u\n", token, status);
+    fflush(stdout);
 
     uint16 headerSize = header.ByteSize();
     EndianConvertReverse(headerSize);
@@ -228,6 +232,11 @@ uint32 Battlenet::Session::HandleLogon(authentication::v1::LogonRequest const* l
     _os = logonRequest->platform();
     _build = logonRequest->application_version();
 
+    printf("[BNET-DBG] LogonRequest program=%s platform=%s locale=%s app_version=%u cached_creds=%d\n",
+        logonRequest->program().c_str(), logonRequest->platform().c_str(), logonRequest->locale().c_str(),
+        logonRequest->application_version(), logonRequest->has_cached_web_credentials() ? 1 : 0);
+    fflush(stdout);
+
     if (logonRequest->has_cached_web_credentials())
         return VerifyWebCredentials(logonRequest->cached_web_credentials(), continuation);
 
@@ -236,6 +245,8 @@ uint32 Battlenet::Session::HandleLogon(authentication::v1::LogonRequest const* l
     challenge::v1::ChallengeExternalRequest externalChallenge;
     externalChallenge.set_payload_type("web_auth_url");
     externalChallenge.set_payload(Trinity::StringFormat("https://%s:%u/bnetserver/login/", endpoint.address().to_string().c_str(), endpoint.port()));
+    printf("[BNET-DBG] sending external challenge type=%s payload=%s\n", externalChallenge.payload_type().c_str(), externalChallenge.payload().c_str());
+    fflush(stdout);
     Service<challenge::v1::ChallengeListener>(this).OnExternalChallenge(&externalChallenge);
     return ERROR_OK;
 }
@@ -738,6 +749,10 @@ bool Battlenet::Session::ReadDataHandler()
 {
     Header header;
     ASSERT(header.ParseFromArray(_headerBuffer.GetReadPointer(), _headerBuffer.GetActiveSize()));
+
+    printf("[BNET-DBG] recv service_id=%u service_hash=0x%08X method=%u token=%u size=%u payload=%zu\n",
+        header.service_id(), header.service_hash(), header.method_id(), header.token(), header.size(), _packetBuffer.GetActiveSize());
+    fflush(stdout);
 
     if (header.service_id() != 0xFE)
     {
