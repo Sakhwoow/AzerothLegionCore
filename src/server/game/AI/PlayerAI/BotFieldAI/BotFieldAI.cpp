@@ -897,6 +897,10 @@ void BotFieldAI::ProcessCombat(Unit* pTarget)
 		{
 			if (me->IsWithinMeleeRange(pTarget))
 			{
+				// Mounted units cannot melee; without this a bot that mounted up while idle
+				// reaches its target and silently does nothing, looking like it is stuck.
+				if (me->IsMounted())
+					Dismount();
 				me->SetInFront(pTarget);
 				me->SetFacingToObject(pTarget);
 				//if (!DoFaceToTarget(pTarget))
