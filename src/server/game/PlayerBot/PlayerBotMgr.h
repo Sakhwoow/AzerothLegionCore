@@ -399,6 +399,7 @@ private:
     uint32 m_BotAccountAmount;
     uint32 m_LastBotAccountIndex;
     uint32 m_LFGSearchTick;
+    uint32 m_RandomLoginCheckTime;
     uint32 m_ArenaSearchTick;
     std::map<uint32, PlayerBotBaseInfo*> m_idPlayerBotBase;
     std::map<uint32, PlayerBotBaseInfo*> m_idAccountBotBase;

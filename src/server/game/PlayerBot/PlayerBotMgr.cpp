@@ -121,6 +121,7 @@ PlayerBotMgr::PlayerBotMgr() :
     m_MaxOnlineBot(180),
     m_BotOnlineCount(0),
     m_LFGSearchTick(0),
+    m_RandomLoginCheckTime(0),
     m_ArenaSearchTick(0)
 {
     m_BGTypes.push_back(BattlegroundTypeId::BATTLEGROUND_WS);
@@ -3337,6 +3338,16 @@ void PlayerBotMgr::Update()
 {
 
     OnlinePlayerBotByGUIDQueue();
+
+    // Keep the online bot count near m_MaxOnlineBot automatically (like mod-playerbots'
+    // random bot cycle), so bots come online on their own instead of only via pbotacc.
+    uint32 nowTime = getMSTime();
+    if (nowTime >= m_RandomLoginCheckTime)
+    {
+        m_RandomLoginCheckTime = nowTime + 30000;
+        if (m_BotOnlineCount < m_MaxOnlineBot)
+            AllPlayerBotRandomLogin();
+    }
 
     //if (!ExistUnBGPlayerBot())
     QueryBattlegroundRequirement();
