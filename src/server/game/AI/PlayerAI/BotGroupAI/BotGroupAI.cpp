@@ -656,7 +656,7 @@ void BotGroupAI::ProcessBotCommand(Player* srcPlayer, std::string cmd)
 	}
 	else if (cmd == "flee")
 		ProcessFleeCommand();
-	else if (cmd == "stop")
+	else if (cmd == "stop" || cmd == "stay")
 		ProcessStopCommand();
 	else if (cmd == "setting")
 		ProcessSetting();
