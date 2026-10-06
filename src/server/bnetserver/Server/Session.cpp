@@ -86,6 +86,8 @@ void Battlenet::Session::AsyncHandshake()
 void Battlenet::Session::Start()
 {
     std::string ip_address = GetRemoteIpAddress().to_string();
+    printf("[BNET-DBG] session start from %s\n", ip_address.c_str());
+    fflush(stdout);
     TC_LOG_TRACE("session", "%s Accepted connection", GetClientInfo().c_str());
 
     // Verify that this IP is not in the ip_banned table
@@ -662,6 +664,8 @@ uint32 Battlenet::Session::HandleGetAllValuesForAttribute(game_utilities::v1::Ge
 
 void Battlenet::Session::HandshakeHandler(boost::system::error_code const& error)
 {
+    printf("[BNET-DBG] tls handshake result: %s\n", error ? error.message().c_str() : "ok");
+    fflush(stdout);
     if (error)
     {
         TC_LOG_ERROR("session", "%s SSL Handshake failed %s", GetClientInfo().c_str(), error.message().c_str());
@@ -709,6 +713,8 @@ void Battlenet::Session::ReadHandler()
         return;
 
     MessageBuffer& packet = GetReadBuffer();
+    printf("[BNET-DBG] read %zu bytes\n", packet.GetActiveSize());
+    fflush(stdout);
     while (packet.GetActiveSize() > 0)
     {
         if (!PartialProcessPacket<&Battlenet::Session::ReadHeaderLengthHandler, &Battlenet::Session::_headerLengthBuffer>(this, packet))
