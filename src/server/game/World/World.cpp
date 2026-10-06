@@ -2494,6 +2494,10 @@ void World::SetInitialWorldSettings()
         //Json::Value jsonAutoBuildArena = sConfigMgr->GetIntDefault("auto_buildarena", 1);
         //ArenaTeamMgr::g_AutoBuildArenaTeam = (sConfigMgr->GetIntDefault("auto_buildarena", 1) != 0) ? true : false;
 
+        // Same key AzerethCore/mod-playerbots uses, so it reads like a familiar setting:
+        // caps how many PlayerBot accounts PlayerBotMgr keeps logged in at once.
+        sPlayerBotMgr->SetMax(sConfigMgr->GetIntDefault("AiPlayerbot.RandomBotMaxCount", 180));
+
         Json::Value jsonDownBotArena = sConfigMgr->GetIntDefault("downbotarena", 1);
         BotUtility::DownBotArenaTeam = (sConfigMgr->GetIntDefault("downbotarena", 1) != 0) ? true : false;
 

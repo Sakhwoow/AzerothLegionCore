@@ -4319,6 +4319,18 @@ Challenge.Enabled = 1
 CustomSpecialFearDistance = 0.000000
 
 #
+# Max Online Bots
+#
+#   AiPlayerbot.RandomBotMaxCount
+#        Description: Maximum number of PlayerBot accounts PlayerBotMgr keeps logged in
+#                     at once. PlayerBotMgr::Update() tops this up automatically every
+#                     30s via AllPlayerBotRandomLogin().
+#        Default:     180
+#
+
+AiPlayerbot.RandomBotMaxCount = 180
+
+#
 # WoWTool Port
 #
 #   WOWToolListenPort
