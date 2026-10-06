@@ -84,14 +84,24 @@ namespace PlayerNameMapHolder
 typedef std::unordered_map<std::string, Player*> MapType;
 static MapType PlayerNameMap;
 
+// Key must match the normalization applied in Find(): names with capitals inside
+// (e.g. bot names like "GaElarhan") were stored raw and never matched a lookup.
+static std::string NameKey(Player* p)
+{
+    std::string name = p->GetName();
+    if (!normalizePlayerName(name))
+        return p->GetName();
+    return name;
+}
+
 void Insert(Player* p)
 {
-    PlayerNameMap[p->GetName()] = p;
+    PlayerNameMap[NameKey(p)] = p;
 }
 
 void Remove(Player* p)
 {
-    PlayerNameMap.erase(p->GetName());
+    PlayerNameMap.erase(NameKey(p));
 }
 
 Player* Find(std::string const& name)
