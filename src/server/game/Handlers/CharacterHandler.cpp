@@ -837,6 +837,12 @@ void WorldSession::HandlePlayerLoginOpcode(WorldPackets::Character::PlayerLogin&
         return;
     }
 
+    if (IsBotSession() && !sPlayerBotMgr->IsCharacterOfBotAccount(GetAccountId(), playerLogin.Guid.GetCounter()))
+    {
+        TC_LOG_ERROR("network", "Bot account (%u) tried to login character %s which does not belong to it, skipped.", GetAccountId(), playerLogin.Guid.ToString().c_str());
+        return;
+    }
+
     m_playerLoading = playerLogin.Guid;
 
     TC_LOG_DEBUG("network", "Character %s logging in", playerLogin.Guid.ToString().c_str());

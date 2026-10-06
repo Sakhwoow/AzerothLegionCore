@@ -53,39 +53,39 @@ std::string PlayerBotCharBaseInfo::GetNameANDClassesText()
         clsEntry += 1;
         break;
     case 2:
-        //clsName = "  Ê¥ÆïÊ¿ : ";
+        //clsName = "  Ê¥ï¿½ï¿½Ê¿ : ";
         clsEntry += 2;
         break;
     case 3:
-        //clsName = "  ÁÔ  ÈË : ";
+        //clsName = "  ï¿½ï¿½  ï¿½ï¿½ : ";
         clsEntry += 3;
         break;
     case 4:
-        //clsName = "  µÁ  Ôô : ";
+        //clsName = "  ï¿½ï¿½  ï¿½ï¿½ : ";
         clsEntry += 4;
         break;
     case 5:
-        //clsName = "  ÄÁ  Ê¦ : ";
+        //clsName = "  ï¿½ï¿½  Ê¦ : ";
         clsEntry += 5;
         break;
     case 6:
-        //clsName = "  ËÀ  Æï : ";
+        //clsName = "  ï¿½ï¿½  ï¿½ï¿½ : ";
         clsEntry += 6;
         break;
     case 7:
-        //clsName = "  Èø  Âú : ";
+        //clsName = "  ï¿½ï¿½  ï¿½ï¿½ : ";
         clsEntry += 7;
         break;
     case 8:
-        //clsName = "  ·¨  Ê¦ : ";
+        //clsName = "  ï¿½ï¿½  Ê¦ : ";
         clsEntry += 8;
         break;
     case 9:
-        //clsName = "  Êõ  Ê¿ : ";
+        //clsName = "  ï¿½ï¿½  Ê¿ : ";
         clsEntry += 9;
         break;
     case 11:
-        //clsName = "  µÂÂ³ÒÁ : ";
+        //clsName = "  ï¿½ï¿½Â³ï¿½ï¿½ : ";
         clsEntry += 10;
         break;
     }
@@ -393,6 +393,14 @@ PlayerBotBaseInfo* PlayerBotMgr::GetAccountBotAccountInfo(uint32 guid)
     return it->second;
 }
 
+bool PlayerBotMgr::IsCharacterOfBotAccount(uint32 accountId, uint64 charGuid)
+{
+    PlayerBotBaseInfo* pInfo = GetPlayerBotAccountInfo(accountId);
+    if (!pInfo)
+        pInfo = GetAccountBotAccountInfo(accountId);
+    return pInfo && pInfo->characters.find(charGuid) != pInfo->characters.end();
+}
+
 bool PlayerBotMgr::ExistClassByRace(uint8 race, uint8 prof)
 {
     switch (prof)
@@ -690,7 +698,7 @@ WorldPacket PlayerBotMgr::BuildCreatePlayerData(bool group, uint8 prof)
     uint8 race = RandomRace(group, prof);
     uint8 gender = irand(0, 1);
 
-    // Safe defaults, damit Player::Create nicht wegen ungültiger Appearance ablehnt
+    // Safe defaults, damit Player::Create nicht wegen ungï¿½ltiger Appearance ablehnt
     uint8 skinColor = 0;
     uint8 faceID = 0;
     uint8 hairID = 0;
@@ -1294,7 +1302,7 @@ void PlayerBotMgr::LoginFriendBotByPlayer(Player* pPlayer)
     //	}
     //#else
     //	std::string allonlineText;
-    //	consoleToUtf8(std::string("|cffff8800ÌåÑé°æÎÞ·¨ÕÙ»½ºÃÓÑ»úÆ÷ÈËÉÏÏß¡£|r"), allonlineText);
+    //	consoleToUtf8(std::string("|cffff8800ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ·ï¿½ï¿½Ù»ï¿½ï¿½ï¿½ï¿½Ñ»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß¡ï¿½|r"), allonlineText);
     //	sWorld->SendGlobalText(allonlineText.c_str(), NULL);
     //#endif
 }
@@ -1356,11 +1364,11 @@ void PlayerBotMgr::AllPlayerBotRandomLogin(const char* name)
 
             if (name[0] != '\0')
             {
-                for (auto i = 0; i < pInfo->characters.size(); ++i)
+                for (auto itChar = pInfo->characters.begin(); itChar != pInfo->characters.end(); ++itChar)
                 {
-                    if (strcmp(name, pInfo->characters[i].name.c_str()) == 0)
+                    if (strcmp(name, itChar->second.name.c_str()) == 0)
                     {
-                        PlayerBotCharBaseInfo& charInfo = pInfo->characters[i];
+                        PlayerBotCharBaseInfo& charInfo = itChar->second;
                         WorldPacket _worldPacket(CMSG_PLAYER_LOGIN);
                         WorldPackets::Character::PlayerLogin cmd(std::move(_worldPacket));
                         cmd.Guid = ObjectGuid::Create<HighGuid::Player>(charInfo.guid);
@@ -2066,7 +2074,7 @@ void PlayerBotMgr::AddNewPlayerBot(bool faction, Classes prof, uint32 count)
     if (count > 0)
     {
         std::string allonlineText;
-        consoleToUtf8(std::string("|cffff8800ËùÓÐ»úÆ÷ÈËÕËºÅÒÑ¾­È«²¿ÔÚÏß£¬ÎÞ·¨ÉÏÏßÐÂ»úÆ÷ÈË¡£|r"), allonlineText);
+        consoleToUtf8(std::string("|cffff8800ï¿½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëºï¿½ï¿½Ñ¾ï¿½È«ï¿½ï¿½ï¿½ï¿½ï¿½ß£ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â»ï¿½ï¿½ï¿½ï¿½Ë¡ï¿½|r"), allonlineText);
         sWorld->SendGlobalText(allonlineText.c_str(), NULL);
     }
 }
@@ -2114,7 +2122,7 @@ void PlayerBotMgr::AddNewAccountBot(bool faction, Classes prof)
     }
     std::string allonlineText;
 #ifdef INCOMPLETE_BOT
-    consoleToUtf8(std::string("|cffff8800ÌåÑé°æÎÞ·¨ÕÙ»½ÉÏÏß×Ô½¨ÕËºÅ½ÇÉ«|r"), allonlineText);
+    consoleToUtf8(std::string("|cffff8800ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ·ï¿½ï¿½Ù»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô½ï¿½ï¿½ËºÅ½ï¿½É«|r"), allonlineText);
     sWorld->SendGlobalText(allonlineText.c_str(), NULL);
     return;
 #endif
@@ -2179,7 +2187,7 @@ void PlayerBotMgr::AddNewAccountBot(bool faction, Classes prof)
         }
     }
 
-    consoleToUtf8(std::string("|cffff8800Ã»ÓÐÕÒµ½ºÍÄãÏàÍ¬ÕóÓªµÄÖ¸¶¨Ö°ÒµµÄ×Ô½¨ÕËºÅ½ÇÉ«|r"), allonlineText);
+    consoleToUtf8(std::string("|cffff8800Ã»ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¬ï¿½ï¿½Óªï¿½ï¿½Ö¸ï¿½ï¿½Ö°Òµï¿½ï¿½ï¿½Ô½ï¿½ï¿½ËºÅ½ï¿½É«|r"), allonlineText);
     sWorld->SendGlobalText(allonlineText.c_str(), NULL);
 }
 
@@ -2279,7 +2287,7 @@ void PlayerBotMgr::AddNewPlayerBotByClass(uint32 count, Classes prof)
     if (allianceCount > 0 || hordeCount > 0)
     {
         std::string allonlineText;
-        consoleToUtf8(std::string("|cffff8800ËùÓÐ»úÆ÷ÈËÕËºÅÒÑ¾­È«²¿ÔÚÏß£¬ÎÞ·¨ÉÏÏßÐÂ»úÆ÷ÈË¡£|r"), allonlineText);
+        consoleToUtf8(std::string("|cffff8800ï¿½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëºï¿½ï¿½Ñ¾ï¿½È«ï¿½ï¿½ï¿½ï¿½ï¿½ß£ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â»ï¿½ï¿½ï¿½ï¿½Ë¡ï¿½|r"), allonlineText);
         sWorld->SendGlobalText(allonlineText.c_str(), NULL);
     }
 }
@@ -2405,7 +2413,7 @@ void PlayerBotMgr::AddNewPlayerBotToBG(TeamId team, uint32 minLV, uint32 maxLV, 
     }
 
     std::string allonlineText;
-    consoleToUtf8(std::string("|cffff8800ËùÓÐ»úÆ÷ÈËÕËºÅÒÑ¾­È«²¿ÔÚÏß£¬ÎÞ·¨¼ÓÈëÐÂ»úÆ÷ÈËµ½Õ½³¡ÖÐ¡£|r"), allonlineText);
+    consoleToUtf8(std::string("|cffff8800ï¿½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëºï¿½ï¿½Ñ¾ï¿½È«ï¿½ï¿½ï¿½ï¿½ï¿½ß£ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â»ï¿½ï¿½ï¿½ï¿½Ëµï¿½Õ½ï¿½ï¿½ï¿½Ð¡ï¿½|r"), allonlineText);
     sWorld->SendGlobalText(allonlineText.c_str(), NULL);
 }
 
@@ -2663,7 +2671,7 @@ void PlayerBotMgr::AddNewPlayerBotToAA(TeamId team, BattlegroundTypeId bgTypeID,
     }
 
     std::string allonlineText;
-    consoleToUtf8(std::string("|cffff8800ËùÓÐ»úÆ÷ÈËÕËºÅÒÑ¾­È«²¿ÔÚÏß£¬ÎÞ·¨¼ÓÈëÐÂ»úÆ÷ÈËµ½¾º¼¼³¡ÖÐ¡£|r"), allonlineText);
+    consoleToUtf8(std::string("|cffff8800ï¿½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëºï¿½ï¿½Ñ¾ï¿½È«ï¿½ï¿½ï¿½ï¿½ï¿½ß£ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â»ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½|r"), allonlineText);
     sWorld->SendGlobalText(allonlineText.c_str(), NULL);
 }
 

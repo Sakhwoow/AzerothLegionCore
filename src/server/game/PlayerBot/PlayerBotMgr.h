@@ -312,6 +312,7 @@ public:
     std::set<uint32> GetArenaTeamPlayerBotIDCountByTeam(TeamId team, int32 count, ArenaGroupTypes type);
     PlayerBotBaseInfo* GetPlayerBotAccountInfo(uint32 guid);
     PlayerBotBaseInfo* GetAccountBotAccountInfo(uint32 guid);
+    bool IsCharacterOfBotAccount(uint32 accountId, uint64 charGuid);
 
     void UpdateLastAccountIndex(std::string& username);
     void UpAllPlayerBotSession();
