@@ -43,7 +43,7 @@
 Pet::Pet(Player* owner, PetType type) :
     Guardian(NULL, owner, true), m_removed(false),
     m_petType(type), m_duration(0), m_loading(false), m_groupUpdateMask(0),
-    m_declinedname(NULL), m_petSpecialization(0)
+    m_declinedname(NULL), m_petSpecialization(0), m_petSlot(0)
 {
     ASSERT(GetOwner());
 
@@ -414,6 +414,20 @@ void Pet::SavePetToDB(PetSaveMode mode)
         CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHAR_PET_BY_ID);
         stmt->setUInt32(0, m_charmInfo->GetPetNumber());
         trans->Append(stmt);
+
+        // Guard against an unassigned/corrupt slot before it is sent to a
+        // tinyint unsigned column: assign a real free slot instead of letting
+        // the INSERT fail and silently drop the whole pet row.
+        if (m_petSlot > PET_SLOT_LAST)
+        {
+            Optional<uint8> fixedSlot = IsHunterPet() ? GetOwner()->GetFirstUnusedActivePetSlot() : GetOwner()->GetFirstUnusedPetSlot();
+            TC_LOG_ERROR("entities.pet", "Pet::SavePetToDB: pet %u had an invalid slot %u, reassigning to %d.",
+                m_charmInfo->GetPetNumber(), m_petSlot, fixedSlot ? int32(*fixedSlot) : -1);
+            if (fixedSlot)
+                SetSlot(*fixedSlot);
+            else
+                return; // no free slot at all: leave the existing row untouched
+        }
 
         // save pet
         stmt = CharacterDatabase.GetPreparedStatement(CHAR_INS_PET);
