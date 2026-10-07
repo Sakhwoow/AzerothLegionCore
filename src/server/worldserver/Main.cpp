@@ -403,7 +403,11 @@ extern int main(int argc, char** argv)
         TC_LOG_INFO("server.worldserver", "Starting up anti-freeze thread (%u seconds max stuck time)...", coreStuckTime);
     }
 
-    TC_LOG_INFO("server.worldserver", "%s (worldserver-daemon) ready...", GitRevision::GetFullVersion());
+    // Not using GitRevision::GetFullVersion() here: this build environment has no access to
+    // git tags/history, so it always renders as "AzerothCore rev. unknown 1970-01-01 00:00:00
+    // +0000 (Archived branch) ..." -- same reason the equivalent line was dropped from
+    // ".server info" earlier. A plain, accurate line beats a broken-looking one.
+    TC_LOG_INFO("server.worldserver", "AzerothCore (worldserver-daemon) ready...");
 
     sScriptMgr->OnStartup();
 
