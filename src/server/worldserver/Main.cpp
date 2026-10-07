@@ -332,7 +332,34 @@ extern int main(int argc, char** argv)
     std::shared_ptr<void> sWorldSocketMgrHandle(nullptr, [](void*)
     {
         sWorld->KickAll();                                       // save and kick all players
-        sWorld->UpdateSessions(1);                             // real players unload required UpdateSessions call
+
+        // A single UpdateSessions(1) pass only finishes sessions whose SaveToDB already
+        // completed by then. At real-player scale that's normally everyone, but at bot
+        // scale (hundreds of sessions queuing a save at once) some are still in flight
+        // after one pass. Any session left in World::m_sessions at this point is only
+        // cleaned up later by World::~World(), which runs automatically during global
+        // destruction -- well after sWorldSocketMgr.StopNetwork()/ClearOnlineAccounts()
+        // below and after the DatabasePools close, so its delayed WorldSession::LogoutPlayer()
+        // -> Player::SaveToDB() call segfaults on database handles that no longer exist.
+        // Confirmed via a core dump from a live shutdown with 500 bots online: crash in
+        // Player::SaveToDB() <- WorldSession::~WorldSession() <- World::~World() <-
+        // __run_exit_handlers, i.e. after main() had already returned.
+        // Keep polling (with the same per-tick budget World::Update normally gets) until
+        // every session has actually finished, with a generous but bounded cap so a
+        // genuinely stuck session can't hang shutdown forever.
+        uint32 const sessionDrainTimeoutMs = 30000;
+        uint32 sessionDrainWaitedMs = 0;
+        while (!sWorld->GetAllSessions().empty() && sessionDrainWaitedMs < sessionDrainTimeoutMs)
+        {
+            sWorld->UpdateSessions(1);
+            if (sWorld->GetAllSessions().empty())
+                break;
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            sessionDrainWaitedMs += 50;
+        }
+        if (!sWorld->GetAllSessions().empty())
+            TC_LOG_ERROR("server.worldserver", "%u session(s) still open after %u ms waiting on shutdown; they will be force-cleaned by World::~World() without DB access.",
+                uint32(sWorld->GetAllSessions().size()), sessionDrainWaitedMs);
 
         sWorldSocketMgr.StopNetwork();
         sToolSocketMgr.StopNetwork();
