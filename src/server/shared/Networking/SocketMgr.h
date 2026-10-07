@@ -70,6 +70,13 @@ public:
 
     virtual void StopNetwork()
     {
+        // Safe to call even if StartNetwork() was never called or already failed
+        // (e.g. ToolSocketMgr, whose network is never started on this core but whose
+        // StopNetwork() is still called unconditionally during worldserver shutdown --
+        // that used to dereference a null _acceptor and crash every shutdown).
+        if (!_acceptor)
+            return;
+
         _acceptor->Close();
 
         if (_threadCount != 0)
