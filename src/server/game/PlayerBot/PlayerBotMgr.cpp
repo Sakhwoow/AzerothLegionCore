@@ -1171,7 +1171,7 @@ void PlayerBotMgr::OnPlayerBotCreate(ObjectGuid const& guid, uint32 accountId, s
     PlayerBotBaseInfo* pInfo = GetPlayerBotAccountInfo(accountId);
     if (!pInfo)
         return;
-    uint32 id = uint32(uint64(guid));
+    uint32 id = uint32(guid.GetCounter());
     if (pInfo->characters.find(id) != pInfo->characters.end())
     {
         return;
@@ -1184,7 +1184,7 @@ void PlayerBotMgr::OnAccountBotCreate(ObjectGuid const& guid, uint32 accountId, 
     PlayerBotBaseInfo* pInfo = GetAccountBotAccountInfo(accountId);
     if (!pInfo)
         return;
-    uint32 id = uint32(uint64(guid));
+    uint32 id = uint32(guid.GetCounter());
     if (pInfo->characters.find(id) != pInfo->characters.end())
     {
         return;
