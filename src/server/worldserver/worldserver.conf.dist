@@ -1321,7 +1321,7 @@ FeatureSystem.CharacterUndelete.Cooldown = 2592000
 
 DB2.Hotfix.LoadData = 1
 DB2.Hotfix.LoadStrings = 1
-DB2.Hotfix.LoadAllLocales = 0
+DB2.Hotfix.LoadAllLocales = 1
 DB2.Files.LoadAllLocales = 1
 
 #
