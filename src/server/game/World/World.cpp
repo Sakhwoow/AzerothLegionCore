@@ -2497,6 +2497,17 @@ void World::SetInitialWorldSettings()
         if (warfareSize >= 0 && warfareSize <= 3)
             FieldBotMgr::FIELDWARFARE_SIZE = warfareSize;
 
+        BotUtility::QuestAIEnabled = (sConfigMgr->GetIntDefault("questbot_enable", 0) != 0);
+        int questbotPercent = sConfigMgr->GetIntDefault("questbot_percent", 0);
+        if (questbotPercent < 0)
+            questbotPercent = 0;
+        if (questbotPercent > 100)
+            questbotPercent = 100;
+        BotUtility::QuestAIPercent = uint32(questbotPercent);
+        int questbotMaxLevel = sConfigMgr->GetIntDefault("questbot_maxlevel", 20);
+        BotUtility::QuestAIMaxLevel = uint32(questbotMaxLevel > 0 ? questbotMaxLevel : 0);
+        BotUtility::QuestAIDebug = (sConfigMgr->GetIntDefault("questbot_debug", 0) != 0);
+
         Json::Value jsonDiminishing = sConfigMgr->GetIntDefault("diminishing", 1);
         BotUtility::ControllSpellDiminishing = (sConfigMgr->GetIntDefault("diminishing", 1) != 0) ? true : false;
 

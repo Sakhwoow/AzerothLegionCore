@@ -100,6 +100,7 @@ m_WishStore(player),
 m_CheckSetting(player),
 m_CastRecords(player),
 m_CheckDuel(player),
+m_QuestDirector(player),
 m_HasReset(false)
 {
 	if (!me->IsPvP())
@@ -223,6 +224,16 @@ void BotFieldAI::ResetBotAI()
 	m_HasReset = true;
 
 	m_CastRecords.ClearRecordSpell();
+
+	if (!m_QuestDirector.IsActive())
+	{
+		bool eligible = BotUtility::QuestAIEnabled && me->IsPlayerBot() &&
+			me->getLevel() < BotUtility::QuestAIMaxLevel && !me->GetGroup() &&
+			!me->InBattleground() && !me->InArena() && !me->isUsingLfg() &&
+			(uint32(me->GetGUID().GetCounter() % 100) < BotUtility::QuestAIPercent);
+		if (eligible)
+			m_QuestDirector.SetActive(true);
+	}
 }
 
 void BotFieldAI::SetDrivingPVP(bool driving)
@@ -297,7 +308,7 @@ bool BotFieldAI::IsNotSelect(Unit* pTarget)
 {
 	if (!pTarget || !pTarget->IsAlive())
 		return true;
-	if (pTarget->HasAura(27827)) // (27827 ¾ÈÊêÖ®»ê ÉñÄÁËÀÍöºó)
+	if (pTarget->HasAura(27827)) // (27827 ï¿½ï¿½ï¿½ï¿½Ö®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
 		return true;
 	return false;
 }
@@ -799,10 +810,17 @@ void BotFieldAI::ProcessFlee()
 
 void BotFieldAI::ProcessIDLE()
 {
-	if (!ProcessWarfare())
-		m_IDLE.UpdateIDLEMovement(m_Movement);
-	else
+	if (ProcessWarfare())
+	{
 		m_IDLE.Clear();
+		return;
+	}
+	if (m_QuestDirector.IsActive())
+	{
+		m_QuestDirector.Update(m_Movement);
+		return;
+	}
+	m_IDLE.UpdateIDLEMovement(m_Movement);
 }
 
 void BotFieldAI::ProcessHealth()
@@ -1465,11 +1483,11 @@ bool BotFieldAI::TargetIsStealth(Player* pTarget)
 {
 	if (!pTarget)
 		return false;
-	// (1784 µÁÔôÇ±ÐÐ || 5215 µÂÂ³ÒÁÇ±ÐÐ || 66 ·¨Ê¦ÒþÐÎ || 58984 °µÒ¹Òþ¶Ý)
+	// (1784 ï¿½ï¿½ï¿½ï¿½Ç±ï¿½ï¿½ || 5215 ï¿½ï¿½Â³ï¿½ï¿½Ç±ï¿½ï¿½ || 66 ï¿½ï¿½Ê¦ï¿½ï¿½ï¿½ï¿½ || 58984 ï¿½ï¿½Ò¹ï¿½ï¿½ï¿½ï¿½)
 	if (pTarget->HasAura(1784) || pTarget->HasAura(5215) ||
 		pTarget->HasAura(66) || pTarget->HasAura(58984))
 	{
-		if (!me->CanSeeOrDetect(pTarget, false, true)) // Õì²âÇ±ÐÐ
+		if (!me->CanSeeOrDetect(pTarget, false, true)) // ï¿½ï¿½ï¿½Ç±ï¿½ï¿½
 			return true;
 	}
 	return false;

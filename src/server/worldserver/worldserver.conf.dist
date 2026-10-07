@@ -4477,6 +4477,40 @@ field_driving = 0
 warfare_size = 0
 
 #
+# Quest Bot AI (Phase 1 MVP)
+#
+#   questbot_enable
+#        Description: Enables the autonomous leveling/questing AI for ungrouped field
+#                     bots under questbot_maxlevel. Bots running it are exempt from the
+#                     ambient-population draft (warfare_size) while active, so they stay
+#                     in their own zone instead of being teleported next to real players.
+#        Default:     0 - Disabled
+#                     1 - Enabled
+#
+#   questbot_percent
+#        Description: Percentage (0-100) of eligible bots that get the quest AI armed,
+#                     picked deterministically by GUID. Use a low value for a canary
+#                     rollout before raising it.
+#        Default:     0
+#
+#   questbot_maxlevel
+#        Description: Bots at or above this level never get the quest AI armed (and an
+#                     active bot that reaches it falls back to normal field behaviour).
+#        Default:     20
+#
+#   questbot_debug
+#        Description: Logs every quest AI state transition (accepted/turned in/abandoned,
+#                     gear resync) per bot to server.loading, for verifying behaviour.
+#        Default:     0 - Disabled
+#                     1 - Enabled
+#
+
+questbot_enable = 0
+questbot_percent = 0
+questbot_maxlevel = 20
+questbot_debug = 0
+
+#
 # Diminishing Returns
 #
 #   diminishing

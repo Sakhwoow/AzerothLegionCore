@@ -86,6 +86,10 @@ public:
     static bool ArenaIsHell;
     static uint32 BotArenaTeamTactics;
     static bool DisableDKQuest;
+    static bool QuestAIEnabled;
+    static uint32 QuestAIPercent;
+    static uint32 QuestAIMaxLevel;
+    static bool QuestAIDebug;
 
 public:
     static SpellEntry* BuildNewArenaSpellEntry();

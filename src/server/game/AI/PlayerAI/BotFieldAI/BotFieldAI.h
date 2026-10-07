@@ -20,6 +20,7 @@
 
 #include "BotAITool.h"
 #include "BotAISpells.h"
+#include "BotAIQuestDirector.h"
 #include "SpellMgr.h"
 #include "PlayerBotSetting.h"
 #include "GridNotifiers.h"
@@ -56,6 +57,7 @@ public:
 	void UpdateTeleport(uint32 diff) { m_Teleporting.Update(diff, m_Movement); }
 	bool HasCruxMovement() { return m_CruxMovement.HasCruxMovement(); }
 	void SetCruxMovement(Position& pos);
+	bool IsQuesting() { return m_QuestDirector.IsActive(); }
 	bool IsNotSelect(Unit* pTarget);
 	bool IsIDLEBot();
 	virtual void OnLevelUp(uint32 talentType) {}
@@ -145,6 +147,7 @@ protected:
 	BotAICheckSetting m_CheckSetting;
 	BotAIRecordCastSpell m_CastRecords;
 	BotAICheckDuel m_CheckDuel;
+	BotAIQuestDirector m_QuestDirector;
 
 	bool m_HasReset;
 

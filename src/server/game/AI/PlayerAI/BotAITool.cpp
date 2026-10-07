@@ -47,6 +47,10 @@ bool BotUtility::DownBotArenaTeam = false;
 bool BotUtility::ArenaIsHell = false;
 uint32 BotUtility::BotArenaTeamTactics = 1;
 bool BotUtility::DisableDKQuest = false;
+bool BotUtility::QuestAIEnabled = false;
+uint32 BotUtility::QuestAIPercent = 0;
+uint32 BotUtility::QuestAIMaxLevel = 20;
+bool BotUtility::QuestAIDebug = false;
 
 SpellEntry* BotUtility::BuildNewArenaSpellEntry()
 {
