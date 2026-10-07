@@ -1835,6 +1835,13 @@ void World::SetInitialWorldSettings()
     TC_LOG_INFO("server.loading", "Initialize data stores...");
     ///- Load DB2s
     sDB2Manager.LoadStores(m_dataPath, m_defaultDbcLocale);
+    // m_availableDbcLocaleMask was initialized to 0 and never assigned anywhere else, so
+    // GetAvailableDbcLocale() always silently fell back to the default locale for every
+    // player no matter which client locale they actually connected with (e.g. a ruRU client
+    // still got served enUS BroadcastText/creature-yell strings even with a fully populated
+    // ruRU dbc/db2 folder on disk). DB2Manager already computes exactly this per-locale
+    // availability while loading, so just reuse it instead of re-deriving it here.
+    m_availableDbcLocaleMask = sDB2Manager.GetAvailableDb2LocaleMask();
     TC_LOG_INFO("misc", "Loading hotfix blobs...");
     sDB2Manager.LoadHotfixBlob();
     TC_LOG_INFO("misc", "Loading hotfix info...");

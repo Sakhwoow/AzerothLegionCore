@@ -294,6 +294,15 @@ public:
     void LoadStores(std::string const& dataPath, uint32 defaultLocale);
     DB2StorageBase const* GetStorage(uint32 type) const;
 
+    // Bitmask (1 << LocaleConstant) of locales whose *.db2 files were actually found and
+    // loaded alongside defaultLocale during the LoadStores() call above. World::SetInitialWorldSettings()
+    // copies this into its own m_availableDbcLocaleMask right after calling LoadStores() --
+    // that mask used to be left at its initial 0 forever (nothing ever assigned to it), so
+    // World::GetAvailableDbcLocale() always silently fell back to the default locale for
+    // every player regardless of which client locale they actually connected with or which
+    // *.db2 locale folders genuinely existed on disk.
+    uint32 GetAvailableDb2LocaleMask() const { return _availableDb2LocaleMask; }
+
     void LoadHotfixData();
     void LoadHotfixBlob();
     std::map<uint64, int32> const& GetHotfixData() const;
@@ -399,6 +408,7 @@ private:
     friend class DB2HotfixGeneratorBase;
     void InsertNewHotfix(uint32 tableHash, uint32 recordId);
     uint32 _maxHotfixId = 0;
+    uint32 _availableDb2LocaleMask = 0;
 };
 
 #define sDB2Manager DB2Manager::Instance()

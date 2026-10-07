@@ -1341,6 +1341,8 @@ void DB2Manager::LoadStores(std::string const& dataPath, uint32 defaultLocale)
         exit(1);
     }
 
+    _availableDb2LocaleMask = availableDb2Locales;
+
     TC_LOG_INFO("server.loading", ">> Initialized " SZFMTD " DB2 data stores in %u ms", _stores.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
