@@ -688,7 +688,7 @@ DBC.Locale = 0
 #        Default:     0 - (Disabled, Except when the Russian RealmZone is set)
 #                     1 - (Enabled)
 
-DeclinedNames = 0
+DeclinedNames = 1
 
 #
 #    Expansion
