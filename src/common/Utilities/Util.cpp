@@ -140,6 +140,24 @@ struct tm* localtime_r(const time_t* time, struct tm *result)
 }
 #endif
 
+// Russian numeral declension: 1 -> one, 2-4 -> few, 0/5-20/25-30... -> many
+// (11-14 are "many" regardless of the last digit, e.g. 11 дней not 11 день).
+static char const* RussianPlural(uint64 n, char const* one, char const* few, char const* many)
+{
+    uint64 mod100 = n % 100;
+    if (mod100 >= 11 && mod100 <= 14)
+        return many;
+
+    switch (n % 10)
+    {
+        case 1: return one;
+        case 2:
+        case 3:
+        case 4: return few;
+        default: return many;
+    }
+}
+
 std::string secsToTimeString(uint64 timeInSecs, bool shortText, bool hoursOnly)
 {
     uint64 secs    = timeInSecs % MINUTE;
@@ -149,15 +167,15 @@ std::string secsToTimeString(uint64 timeInSecs, bool shortText, bool hoursOnly)
 
     std::ostringstream ss;
     if (days)
-        ss << days << (shortText ? "d" : " Day(s) ");
+        ss << days << (shortText ? "d" : (std::string(" ") + RussianPlural(days, "день", "дня", "дней") + " "));
     if (hours || hoursOnly)
-        ss << hours << (shortText ? "h" : " Hour(s) ");
+        ss << hours << (shortText ? "h" : (std::string(" ") + RussianPlural(hours, "час", "часа", "часов") + " "));
     if (!hoursOnly)
     {
         if (minutes)
-            ss << minutes << (shortText ? "m" : " Minute(s) ");
+            ss << minutes << (shortText ? "m" : (std::string(" ") + RussianPlural(minutes, "минута", "минуты", "минут") + " "));
         if (secs || (!days && !hours && !minutes) )
-            ss << secs << (shortText ? "s" : " Second(s).");
+            ss << secs << (shortText ? "s" : (std::string(" ") + RussianPlural(secs, "секунда", "секунды", "секунд") + "."));
     }
 
     return ss.str();
