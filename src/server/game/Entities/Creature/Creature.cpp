@@ -245,7 +245,14 @@ void Creature::RemoveFromWorld()
 {
     if (IsInWorld())
     {
-        if (GetZoneScript())
+        // Same dangling-zone-script hazard as GameObject::RemoveFromWorld() (see that function
+        // for the full explanation): GetZoneScript() commonly points at an OutdoorPvP/Battlefield
+        // instance that Main.cpp's shutdown sequence deliberately kills (sOutdoorPvPMgr->Die())
+        // before unloading maps (sMapMgr->UnloadAll()), so a surviving Creature's zone script
+        // pointer is dangling by the time this runs during full shutdown. Confirmed via a core
+        // dump: heap corruption surfacing as a crash inside free()/jemalloc, the classic signature
+        // of a call through a garbage vtable pointer.
+        if (GetZoneScript() && !World::IsStopped())
             GetZoneScript()->OnCreatureRemove(this);
 
         if (m_formation)
