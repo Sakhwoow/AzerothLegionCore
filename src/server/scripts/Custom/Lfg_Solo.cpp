@@ -21,7 +21,7 @@ public:
         // Announce Module
         if (sConfigMgr->GetBoolDefault("SoloLFG.Announce", true))
         {
-            ChatHandler(player->GetSession()).SendSysMessage("Service |cff4CFF00Solo LFG|r running.");
+            ChatHandler(player->GetSession()).SendSysMessage("Сервис |cff4CFF00Соло ЛФГ|r запущен.");
          }
     }
 };
