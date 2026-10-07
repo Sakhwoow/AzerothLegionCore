@@ -1761,78 +1761,46 @@ void PlayerBotSetting::UpdateReset()
 
 	if (m_Player->IsInCombat())
 		m_Player->CombatStop(true);
-	switch (m_ResetStep)
-	{
-	case 1:
-		m_Player->ResetTalents(true);
-		++m_ResetStep;
-		break;
-	case 2:
-		LearnTalents();
-		++m_ResetStep;
-		break;
-	case 3:
-		RemoveSpells();
-		++m_ResetStep;
-		break;
-	case 4:
-		LearnCommonSpells();
-		++m_ResetStep;
-		break;
-	case 5:
-		LearnSpells();
-		++m_ResetStep;
-		break;
-	case 6:
-		UnequipFromAll();
-		++m_ResetStep;
-		break;
-	case 7:
-		CheckInventroy();
-		++m_ResetStep;
-		break;
-	case 8:
-		AddEquipFromAll();
-		++m_ResetStep;
-		break;
-	case 9:
-		UpequipFromAll();
-		++m_ResetStep;
-		break;
-	case 10:
-		SupplementOtherItems();
-		++m_ResetStep;
-		break;
-	case 11:
-		if (!m_Player->IsPlayerBot())
-			m_Player->SendTalentsInfoData();
-		++m_ResetStep;
-		break;
-	case 12:
-		if (m_Player->IsPlayerBot())
-			CheckHunterPet(m_Player);
-		++m_ResetStep;
-		break;
-	case 13:
-		PlayerBotSetting::ClearUnknowMount(m_Player);
-		m_Player->SetFullHealth();
-		m_Player->UpdateSkillsForLevel();
-		m_Player->UpdateAllStats();
-		m_Player->SaveToDB();
-		++m_ResetStep;
-		break;
-	}
 
-	m_Finish = (m_ResetStep >= 14);
-	if (m_Finish && m_Player->IsPlayerBot())
+	// Run the whole level/talent/spell/gear reset as a single atomic pass instead of one
+	// step per tick: spreading this across ~13 ticks left a window, after GiveLevel()
+	// already raised the level in memory (ResetPlayerToLevel) but before the SaveToDB()
+	// that used to sit at the last step, during which the bot's new gear was being
+	// created (and persisted via the item's own save) at the new level while the
+	// character's level itself was not committed yet. Any interruption in that window
+	// (crash, forced shutdown) left a level-1 bot already wearing gear generated for its
+	// intended high level. mod-playerbots (AzerothCore) avoids this the same way: build
+	// everything in memory and save once at the end.
+	m_Player->ResetTalents(true);
+	LearnTalents();
+	RemoveSpells();
+	LearnCommonSpells();
+	LearnSpells();
+	UnequipFromAll();
+	CheckInventroy();
+	AddEquipFromAll();
+	UpequipFromAll();
+	SupplementOtherItems();
+	if (!m_Player->IsPlayerBot())
+		m_Player->SendTalentsInfoData();
+	if (m_Player->IsPlayerBot())
+		CheckHunterPet(m_Player);
+	PlayerBotSetting::ClearUnknowMount(m_Player);
+	m_Player->SetFullHealth();
+	m_Player->UpdateSkillsForLevel();
+	m_Player->UpdateAllStats();
+	m_Player->SaveToDB();
+
+	m_ResetStep = 14;
+	m_Finish = true;
+	if (m_Player->IsPlayerBot())
 	{
 		BotGlobleSchedule schedule(BotGlobleScheduleType::BGSType_DelayLevelup, m_Player->GetGUID());
 		PlayerBotSession* pSession = dynamic_cast<PlayerBotSession*>(m_Player->GetSession());
 		if (pSession)
 			pSession->PushScheduleToQueue(schedule);
 	}
-	if (m_Finish)
-		m_TenacitySetting = false;
+	m_TenacitySetting = false;
 }
 
 void PlayerBotSetting::LearnTalents()
