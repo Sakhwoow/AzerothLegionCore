@@ -187,7 +187,15 @@ void GameObject::RemoveFromWorld()
     ///- Remove the gameobject from the accessor
     if (IsInWorld())
     {
-        if (m_zoneScript)
+        // m_zoneScript commonly points at an OutdoorPvP/Battlefield instance owned by a
+        // global singleton (WorldObject::SetZoneScript()), not by this object's map. During
+        // full server shutdown, Main.cpp deliberately kills OutdoorPvP (sOutdoorPvPMgr->Die())
+        // before unloading maps (sMapMgr->UnloadAll()), so any surviving GameObject whose
+        // zone script pointed at one of those now holds a dangling pointer -- calling through
+        // it here crashed every shutdown that still had a world-PvP-zone object left standing.
+        // The notification is meaningless once the whole world is being torn down anyway, so
+        // just skip it rather than try to guarantee cross-singleton teardown ordering.
+        if (m_zoneScript && !World::IsStopped())
             m_zoneScript->OnGameObjectRemove(this);
 
         RemoveFromOwner();
