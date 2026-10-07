@@ -261,7 +261,6 @@ public:
         uint32 updateTime           = sWorld->GetUpdateTime();
 
         handler->PSendSysMessage("Добро пожаловать на сервер Azeroth.su!");
-        handler->PSendSysMessage("%s", GitRevision::GetFullVersion());
         handler->PSendSysMessage(LANG_CONNECTED_PLAYERS, playersNum, maxPlayersNum);
         handler->PSendSysMessage(LANG_CONNECTED_USERS, activeClientsNum, maxActiveClientsNum, queuedClientsNum, maxQueuedClientsNum);
         handler->PSendSysMessage(LANG_UPTIME, uptime.c_str());
