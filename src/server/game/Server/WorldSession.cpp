@@ -116,7 +116,14 @@ WorldSession::WorldSession(uint32 id, std::string&& name, uint32 battlenetAccoun
     _accountName(std::move(name)),
     _battlenetAccountId(battlenetAccountId),
     _battlenetAccountName(std::move(battlenetAccountName)),
-    m_accountExpansion(expansion),
+    // Clamped the same way m_expansion is, right below: without this, raising/lowering the
+    // server-wide "Expansion" config did nothing for character creation specifically, since
+    // CharacterHandler::HandleCharCreateOpcode checks race/class unlock requirements against
+    // GetAccountExpansion() (this value), not GetExpansion() (m_expansion). An account whose
+    // own `account`.`expansion` DB column was left at its old/default value (e.g. 6 for every
+    // account created before the server's Expansion was lowered for a progression-style
+    // rollout) could still create any race/class regardless of the server's current era cap.
+    m_accountExpansion(std::min<uint8>(expansion, sWorld->getIntConfig(CONFIG_EXPANSION))),
     m_expansion(std::min<uint8>(expansion, sWorld->getIntConfig(CONFIG_EXPANSION))),
     _os(os),
     _battlenetRequestToken(0),
