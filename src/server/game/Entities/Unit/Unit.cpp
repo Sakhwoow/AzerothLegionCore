@@ -10139,16 +10139,38 @@ void Unit::RemoveFromWorld()
 
         if (!GetCharmerGUID().IsEmpty())
         {
-            TC_LOG_FATAL("entities.unit", "Unit %u has charmer guid when removed from world", GetEntry());
-            ABORT();
+            // During full server shutdown, every object on every map is torn down by
+            // Map::UnloadAll in whatever order it iterates them, with no guarantee a
+            // charmer is cleaned up before (or after) the unit it charmed. That ordering
+            // simply doesn't hold once the whole world is being destroyed at once, so
+            // self-heal instead of aborting the process over an invariant that only
+            // matters while the world is live.
+            if (World::IsStopped())
+            {
+                TC_LOG_ERROR("entities.unit", "Unit %u has charmer guid when removed from world (during shutdown, clearing instead of aborting)", GetEntry());
+                SetCharmerGUID(ObjectGuid::Empty);
+            }
+            else
+            {
+                TC_LOG_FATAL("entities.unit", "Unit %u has charmer guid when removed from world", GetEntry());
+                ABORT();
+            }
         }
 
         if (Unit* owner = GetOwner())
         {
             if (owner->m_Controlled.find(this) != owner->m_Controlled.end())
             {
-                TC_LOG_FATAL("entities.unit", "Unit %u is in controlled list of %u when removed from world", GetEntry(), owner->GetEntry());
-                ABORT();
+                if (World::IsStopped())
+                {
+                    TC_LOG_ERROR("entities.unit", "Unit %u is in controlled list of %u when removed from world (during shutdown, clearing instead of aborting)", GetEntry(), owner->GetEntry());
+                    owner->m_Controlled.erase(this);
+                }
+                else
+                {
+                    TC_LOG_FATAL("entities.unit", "Unit %u is in controlled list of %u when removed from world", GetEntry(), owner->GetEntry());
+                    ABORT();
+                }
             }
         }
 
