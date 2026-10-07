@@ -933,11 +933,11 @@ void PlayerBotMgr::UpdateLastAccountIndex(std::string& username)
 
 void PlayerBotMgr::SupplementAccount()
 {
-    uint32 needAccount = m_BotAccountAmount * 2 - m_idPlayerBotBase.size();
+    int64 needAccount = int64(m_BotAccountAmount) * 2 - int64(m_idPlayerBotBase.size());
     if (needAccount <= 0)
         return;
 
-    for (uint32 i = 0; i < needAccount; ++i)
+    for (int64 i = 0; i < needAccount; ++i)
     {
         ++m_LastBotAccountIndex;
         std::string userName = "playerbot" + std::to_string(m_LastBotAccountIndex);
