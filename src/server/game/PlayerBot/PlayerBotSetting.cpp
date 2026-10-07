@@ -1570,8 +1570,6 @@ void PlayerBotSetting::Initialize()
 	classesCommonSpells[1].push_back(2567);
 	classesCommonSpells[1].push_back(71);
 	classesCommonSpells[1].push_back(355);
-	classesCommonSpells[1].push_back(2458);
-	classesCommonSpells[1].push_back(7386);
 
 	classesCommonSpells[2].push_back(33388);
 	classesCommonSpells[2].push_back(33391);
