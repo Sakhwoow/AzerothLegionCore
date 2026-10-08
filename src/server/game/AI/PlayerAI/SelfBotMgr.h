@@ -45,8 +45,8 @@ public:
 	void Disable(Player* player);
 
 private:
-	SelfBotMgr() {}
-	~SelfBotMgr() {}
+	SelfBotMgr();
+	~SelfBotMgr();
 
 	std::unordered_map<ObjectGuid, std::unique_ptr<SelfBotAI>> m_SelfBots;
 };

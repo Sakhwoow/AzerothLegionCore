@@ -19,6 +19,12 @@
 #include "SelfBotAI.h"
 #include "Player.h"
 
+// Defined here, not inline in the header: m_SelfBots holds std::unique_ptr<SelfBotAI>, and its
+// destructor needs SelfBotAI to be a complete type, which it only is once SelfBotAI.h (above)
+// is visible - SelfBotMgr.h itself only forward-declares SelfBotAI.
+SelfBotMgr::SelfBotMgr() {}
+SelfBotMgr::~SelfBotMgr() {}
+
 SelfBotMgr* SelfBotMgr::instance()
 {
 	static SelfBotMgr instance;
