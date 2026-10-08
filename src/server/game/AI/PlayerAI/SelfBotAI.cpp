@@ -62,14 +62,56 @@ m_RotationSpell2(0)
 		m_NeedMana = false;
 }
 
+namespace
+{
+	// Standard, long-stable Classic/WotLK-era base spell ids (rank 1) - the same ones used
+	// across essentially every TrinityCore/MaNGOS-derived core for this exact purpose. Picked
+	// deliberately NOT from BotAISpells.h's per-spec tables (those target full endgame
+	// rotations for provisioned bots); FindMaxRankSpellByExist resolves each to whatever rank
+	// this specific character actually knows (or 0 if they don't know it yet at their level),
+	// so low-level characters simply get no rotation spell until they train one, same as the
+	// potion/gear logic elsewhere in this file never assumes a level it hasn't verified.
+	struct ClassRotationSpells
+	{
+		uint32 spell1;
+		uint32 spell2;
+	};
+
+	ClassRotationSpells GetClassRotationBaseSpells(uint8 cls)
+	{
+		switch (cls)
+		{
+		case 1: return { 78, 772 };      // Warrior: Heroic Strike, Rend
+		case 2: return { 35395, 21084 }; // Paladin: Crusader Strike, Seal of Righteousness
+		case 3: return { 3044, 0 };      // Hunter: Arcane Shot
+		case 4: return { 1752, 0 };      // Rogue: Sinister Strike
+		case 5: return { 585, 589 };     // Priest: Smite, Shadow Word: Pain
+		case 6: return { 45462, 45477 }; // Death Knight: Plague Strike, Icy Touch
+		case 7: return { 403, 8042 };    // Shaman: Lightning Bolt, Earth Shock
+		case 8: return { 133, 116 };     // Mage: Fireball, Frostbolt
+		case 9: return { 686, 0 };       // Warlock: Shadow Bolt
+		case 11: return { 5176, 8921 };  // Druid: Wrath, Moonfire
+		default: return { 0, 0 };
+		}
+	}
+}
+
 void SelfBotAI::SetActive(bool active)
 {
 	if (m_Active == active)
 		return;
 	m_Active = active;
 
+	if (active)
+	{
+		ClassRotationSpells base = GetClassRotationBaseSpells(me->getClass());
+		m_RotationSpell1 = base.spell1 ? BotUtility::FindMaxRankSpellByExist(me, base.spell1) : 0;
+		m_RotationSpell2 = base.spell2 ? BotUtility::FindMaxRankSpellByExist(me, base.spell2) : 0;
+	}
+
 	if (BotUtility::SelfBotDebug)
-		TC_LOG_INFO("server.loading", ">> SelfBot: %s (%s) %s", me->GetName().c_str(), me->GetGUID().ToString().c_str(), active ? "enabled" : "disabled");
+		TC_LOG_INFO("server.loading", ">> SelfBot: %s (%s) %s (rotation: %u, %u)", me->GetName().c_str(), me->GetGUID().ToString().c_str(),
+			active ? "enabled" : "disabled", m_RotationSpell1, m_RotationSpell2);
 }
 
 bool SelfBotAI::CanAct() const
@@ -118,11 +160,18 @@ void SelfBotAI::UpdateCombat()
 	TryUseRotationSpell(victim);
 }
 
-void SelfBotAI::TryUseRotationSpell(Unit* /*target*/)
+void SelfBotAI::TryUseRotationSpell(Unit* target)
 {
-	// Intentionally empty for now - the per-class rotation table is added last, once the
-	// attack-continuation/potion scaffolding above has been verified live (see the plan's
-	// sequencing). m_RotationSpell1/2 stay 0 until then.
+	if (!target)
+		return;
+
+	// Try the primary pick first, fall back to the secondary one. CastSpell(..., triggered=false)
+	// enforces GCD/range/cost/cooldown exactly like a manual keypress, so an attempt that can't
+	// go through yet is just a silent no-op here - never a forced or duplicate cast.
+	if (m_RotationSpell1 && me->CastSpell(target, m_RotationSpell1, false))
+		return;
+	if (m_RotationSpell2)
+		me->CastSpell(target, m_RotationSpell2, false);
 }
 
 void SelfBotAI::TryUseSelfPotion()
