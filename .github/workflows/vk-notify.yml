@@ -17,14 +17,10 @@ jobs:
           set -euo pipefail
 
           COUNT=$(jq '.commits | length' "$GITHUB_EVENT_PATH")
-          COMMITS=$(jq -r '.commits[:10][] | "• " + (.message | split("\n")[0]) + " (" + (.id[0:7]) + ")"' "$GITHUB_EVENT_PATH")
-          BEFORE=$(jq -r '.before' "$GITHUB_EVENT_PATH")
-          AFTER=$(jq -r '.after' "$GITHUB_EVENT_PATH")
+          COMMITS=$(jq -r '.commits[:10][] | "• " + .message + " (" + (.id[0:7]) + ")"' "$GITHUB_EVENT_PATH")
 
           MSG="🔧 ${GITHUB_REPOSITORY} — push в ${GITHUB_REF_NAME} от ${GITHUB_ACTOR} (${COUNT} коммит(ов)):
-          ${COMMITS}
-
-          https://github.com/${GITHUB_REPOSITORY}/compare/${BEFORE}...${AFTER}"
+          ${COMMITS}"
 
           curl -s "https://api.vk.com/method/messages.send" \
             --data-urlencode "access_token=${VK_ACCESS_TOKEN}" \
