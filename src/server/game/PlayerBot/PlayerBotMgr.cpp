@@ -1003,6 +1003,55 @@ void PlayerBotMgr::SupplementAccount()
     }
 }
 
+void PlayerBotMgr::DeleteAllPlayerBotAccounts()
+{
+    QueryResult result = LoginDatabase.Query("SELECT id, username, battlenet_account FROM account");
+    if (!result)
+        return;
+
+    std::vector<std::pair<uint32, uint32>> botAccounts; // <accountId, battlenetAccountId>
+    do
+    {
+        Field* fields = result->Fetch();
+        uint32 accountId = fields[0].GetUInt32();
+        std::string username = fields[1].GetString();
+        uint32 bnetId = fields[2].GetUInt32();
+
+        std::string lowerName = boost::algorithm::to_lower_copy(username);
+        if (IsBotAccuntName(lowerName))
+            botAccounts.emplace_back(accountId, bnetId);
+    } while (result->NextRow());
+
+    TC_LOG_INFO("server.loading", ">> AiPlayerbot.DeleteRandomBotAccounts: deleting %u PlayerBot account(s)...", uint32(botAccounts.size()));
+
+    // AccountMgr::DeleteAccount() kicks the bot if online and runs the normal
+    // Player::DeleteFromDB() cleanup (inventory, mail, pets, guild membership, group, social,
+    // quest/skill/talent data, ...) for every character on the account, then removes the
+    // account/account_access/account_banned/account_muted/realm_characters rows.
+    for (auto const& [accountId, bnetId] : botAccounts)
+        AccountMgr::DeleteAccount(accountId);
+
+    // Player::DeleteFromDB() does not know about arena teams, so clean up what it left behind
+    // the same way AzerothCore's mod-playerbots does when it wipes its random bot pool.
+    CharacterDatabase.Execute("DELETE FROM arena_team_member WHERE guid NOT IN (SELECT guid FROM characters)");
+    CharacterDatabase.Execute("DELETE FROM arena_team WHERE arenaTeamId NOT IN (SELECT arenaTeamId FROM arena_team_member)");
+
+    // Each bot account got its own dedicated, game-account-less battlenet account in
+    // SupplementAccount(); now that the account row is gone, drop the orphaned bnet row too.
+    for (auto const& [accountId, bnetId] : botAccounts)
+    {
+        if (bnetId)
+            LoginDatabase.PExecute(
+                "DELETE FROM battlenet_accounts WHERE id=%u AND id NOT IN (SELECT battlenet_account FROM account WHERE battlenet_account IS NOT NULL)",
+                bnetId);
+    }
+
+    ClearBaseInfo();
+    m_LastBotAccountIndex = 0;
+
+    TC_LOG_INFO("server.loading", ">> AiPlayerbot.DeleteRandomBotAccounts: done. Set it back to 0 before the next restart.");
+}
+
 void PlayerBotMgr::DestroyBotMail(uint32 guid)
 {
     char sql[256] = { 0 };

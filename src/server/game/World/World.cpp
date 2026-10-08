@@ -1871,6 +1871,17 @@ void World::SetInitialWorldSettings()
     if (VMAP::VMapManager2* vmmgr2 = dynamic_cast<VMAP::VMapManager2*>(VMAP::VMapFactory::createOrGetVMapManager()))
         vmmgr2->InitializeThreadUnsafe(mapData);
 
+    // One-shot maintenance switch, mirrors AiPlayerbot.DeleteRandomBotAccounts on AzerothCore:
+    // wipe every PlayerBot account/character and flag the server to stop so the admin can
+    // reset the setting and restart into a freshly-seeded pool.
+    if (sConfigMgr->GetBoolDefault("AiPlayerbot.DeleteRandomBotAccounts", false))
+    {
+        TC_LOG_INFO("server.loading", "AiPlayerbot.DeleteRandomBotAccounts is enabled - deleting all PlayerBot accounts...");
+        sPlayerBotMgr->DeleteAllPlayerBotAccounts();
+        TC_LOG_INFO("server.loading", "PlayerBot accounts deleted. Set AiPlayerbot.DeleteRandomBotAccounts back to 0, then restart the server.");
+        World::StopNow(SHUTDOWN_EXIT_CODE);
+    }
+
     // Must run before LoadPlayerBotBaseInfo(), which sizes the startup account pool from
     // m_BotAccountAmount (SupplementAccount() creates m_BotAccountAmount * 2 accounts). The
     // SetMax() call later in LoadConfigSettings only re-reads the online cap at runtime; the

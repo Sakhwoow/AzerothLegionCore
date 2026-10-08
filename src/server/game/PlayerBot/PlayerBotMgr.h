@@ -360,6 +360,11 @@ public:
     // SupplementAccount() creates m_BotAccountAmount * 2 bot accounts at startup, so the pool
     // has to be sized to at least cover the online cap. Keeps the original 90*2=180 ratio.
     void SetBotAccountAmount(uint32 onlineCap) { m_BotAccountAmount = (onlineCap + 1) / 2; }
+    // AiPlayerbot.DeleteRandomBotAccounts=1 trigger: deletes every account matching
+    // IsBotAccuntName() (and its characters, via AccountMgr::DeleteAccount) plus the
+    // orphaned arena teams/battlenet accounts that leaves behind. Caller is responsible
+    // for shutting the server down afterwards and telling the admin to reset the flag.
+    void DeleteAllPlayerBotAccounts();
     int32 m_MaxOnlineBot;
     int32 m_BotOnlineCount;
 
