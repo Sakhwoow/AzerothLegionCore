@@ -20,6 +20,7 @@
 #include "Player.h"
 #include "Item.h"
 #include "Spell.h"
+#include "SpellMgr.h"
 #include "MotionMaster.h"
 #include "Log.h"
 
@@ -215,17 +216,32 @@ void SelfBotAI::TryUseRotationSpell(Unit* target)
 		return;
 
 	// Try each known spell in priority order, same shape as mod-playerbots' per-class
-	// NextAction chain. CastSpell(..., triggered=false) enforces GCD/range/cost/cooldown
-	// exactly like a manual keypress, so an attempt that can't go through yet (still on
-	// cooldown, out of range/mana) is a silent no-op and we just move on to the next
-	// candidate - never a forced or duplicate cast. If none succeed, plain melee auto-attack
-	// from Phase 1 keeps going on its own.
+	// NextAction chain. Deliberately NOT using Unit::CastSpell(...)'s bool-returning overload:
+	// it just does `return spell->prepare(&targets, triggeredByAura);`, implicitly converting
+	// the real SpellCastResult to bool - and SPELL_CAST_OK is 0, so a SUCCESSFUL cast comes
+	// back as false and an actual FAILURE (still on cooldown, out of range, etc.) comes back
+	// as true. Confirmed by instrumenting a live fight: Judgement (on its real cooldown) logged
+	// as "ok" on almost every 500ms tick while it was actually failing and blocking, and the
+	// one time it genuinely went off logged as "failed", which was then (wrongly, per the old
+	// inverted check) treated as a reason to keep falling through to the next spell. Every
+	// existing bot in this codebase avoids this by building the Spell and checking the real
+	// SpellCastResult explicitly (see BotBGAI::TryCastSpell, BotAI.cpp) - do the same here.
 	for (uint32 spellId : m_RotationSpells)
 	{
-		bool ok = me->CastSpell(target, spellId, false);
+		SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(spellId);
+		if (!spellInfo)
+			continue;
+
+		Spell* spell = new Spell(me, spellInfo, TriggerCastFlags::TRIGGERED_NONE, ObjectGuid::Empty);
+		SpellCastTargets targets;
+		targets.SetUnitTarget(target);
+		SpellCastResult result = spell->prepare(&targets, nullptr);
+
 		if (BotUtility::SelfBotDebug)
-			TC_LOG_INFO("server.loading", ">> SelfBot: %s cast %u -> %s", me->GetName().c_str(), spellId, ok ? "ok" : "failed");
-		if (ok)
+			TC_LOG_INFO("server.loading", ">> SelfBot: %s cast %u -> %s (%u)", me->GetName().c_str(), spellId,
+				result == SPELL_CAST_OK ? "ok" : "failed", uint32(result));
+
+		if (result == SPELL_CAST_OK)
 			return;
 	}
 }
