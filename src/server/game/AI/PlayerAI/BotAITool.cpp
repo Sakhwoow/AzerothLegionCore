@@ -51,6 +51,8 @@ bool BotUtility::QuestAIEnabled = false;
 uint32 BotUtility::QuestAIPercent = 0;
 uint32 BotUtility::QuestAIMaxLevel = 20;
 bool BotUtility::QuestAIDebug = false;
+uint32 BotUtility::SelfBotLevel = 1;
+bool BotUtility::SelfBotDebug = false;
 
 SpellEntry* BotUtility::BuildNewArenaSpellEntry()
 {

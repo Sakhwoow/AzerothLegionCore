@@ -20,6 +20,8 @@
 // Bot
 void AddSC_pbotaccount_commandscript();
 void AddSC_pbotai_commandscript();
+void AddSC_selfbot_commandscript();
+void AddSC_selfbot_script();
 
 
 // The name of this function should match:
@@ -29,4 +31,6 @@ void AddPlayerBotScripts()
 	// Bot
     AddSC_pbotaccount_commandscript();
     AddSC_pbotai_commandscript();
+    AddSC_selfbot_commandscript();
+    AddSC_selfbot_script();
 }

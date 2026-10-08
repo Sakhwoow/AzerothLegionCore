@@ -680,7 +680,7 @@ StrictPetNames = 0
 #                     10  - (ptBR)
 #                     11  - (itIT)
 
-DBC.Locale = 0
+DBC.Locale = 8
 
 #
 #    DeclinedNames
@@ -1292,37 +1292,40 @@ FeatureSystem.CharacterUndelete.Cooldown = 2592000
 ###################################################################################################
 
 ###################################################################################################
-#    DB2 / HOTFIX LOADING
+#    DB2 / HOTFIX LOADING (Загрузка DB2 и хотфиксов)
 #
-#    The server loads DB2 files from DataDir/dbc/<locale>/ at startup.
-#    Additionally it can apply hotfix overrides from the HotfixDatabase.
+#    При запуске сервер загружает файлы DB2 из DataDir/dbc/<локаль>/.
+#    Дополнительно он может применять переопределения (хотфиксы) из HotfixDatabase.
 #
 #    DB2.Hotfix.LoadData
-#        Description: Enables loading hotfix records from the HotfixDatabase.
-#                     This also provides the base/enUS hotfix string fallback.
+#        Description: Включает загрузку записей хотфиксов из HotfixDatabase.
+#                     Также обеспечивает базовые строки хотфиксов (enUS) на случай отсутствия
+#                     локализованных.
 #        Default:     1
 #
 #    DB2.Hotfix.LoadStrings
-#        Description: Enables loading localized hotfix strings from the HotfixDatabase.
-#                     The server default locale is loaded as override.
+#        Description: Включает загрузку локализованных строк хотфиксов из HotfixDatabase.
+#                     Локаль сервера по умолчанию загружается как переопределение.
 #        Default:     1
 #
 #    DB2.Hotfix.LoadAllLocales
-#        Description: Enables loading localized hotfix strings for every available locale.
-#                     This can heavily increase startup time, especially for BroadcastText.db2.
-#                     Keep disabled unless you really serve multiple client locales from hotfix DB.
+#        Description: Включает загрузку локализованных строк хотфиксов для всех доступных
+#                     локалей. Может сильно увеличить время запуска, особенно из-за
+#                     BroadcastText.db2. Держите выключенным, если только вы действительно не
+#                     обслуживаете клиентов с разными локалями через базу хотфиксов.
 #        Default:     0
 #
 #    DB2.Files.LoadAllLocales
-#        Description: Enables loading localized strings from client DB2 files for every available locale.
-#                     This preserves the old behavior for file-based locale data.
+#        Description: Включает загрузку локализованных строк из клиентских файлов DB2 для
+#                     всех доступных локалей. Сохраняет прежнее поведение для данных локалей
+#                     из файлов.
 #        Default:     1
 #
 
 DB2.Hotfix.LoadData = 1
 DB2.Hotfix.LoadStrings = 1
-DB2.Hotfix.LoadAllLocales = 1
-DB2.Files.LoadAllLocales = 1
+DB2.Hotfix.LoadAllLocales = 0
+DB2.Files.LoadAllLocales = 0
 
 #
 ###################################################################################################
@@ -4264,25 +4267,28 @@ SoloLFG.Announce = 1
 ###################################################################################################
 
 ###################################################################################################
-# Solocraft
+# Solocraft (Усиление одиночных игроков в подземельях и рейдах)
 #
 # 	Solocraft.Enable
-#       Description: Solocraft is a mod that boosts stats of players on dungeons and raids.
-#                    Mod for singleplayer or low populated servers.
-#       Default:     0 (disabled)
-#                    1 (enabled)
+#       Description: Solocraft - модуль, который усиливает характеристики игроков в
+#                    подземельях и рейдах. Предназначен для одиночной игры или серверов с
+#                    низким онлайном.
+#       Default:     0 (отключено)
+#                    1 (включено)
 
 Solocraft.Enable = 1
 
 #   Solocraft.Announce
-#       Description: If solocraft is enabled, announce that it is on when entering a dungeon?
-#       Default:     0 (disabled)
-#                    1 (enabled)
+#       Description: Если Solocraft включён, сообщать ли игроку о его работе при входе в
+#                    подземелье?
+#       Default:     0 (отключено)
+#                    1 (включено)
 
 Solocraft.Announce = 1
 
-#   Difficulty Multipliers
-#      	Description: Difficulty multipliers for dungeons.
+#   Difficulty Multipliers (Множители сложности)
+#      	Description: Множители сложности для подземелий и рейдов (по порядку: обычное
+#                    подземелье, героическое, рейд на 10, рейд на 25, рейд на 30, рейд на 40).
 #       Defaults: 5, 10, 10, 25, 30, 40
 
 Solocraft.Dungeon = 5
@@ -4531,6 +4537,28 @@ questbot_enable = 0
 questbot_percent = 0
 questbot_maxlevel = 20
 questbot_debug = 0
+
+#
+# Selfbot (ИИ играет за собственного персонажа игрока)
+#
+#   selfbot_level
+#        Description: Кто может включить себе AI-помощника командой .selfbot (авто-атака,
+#                     ротация способностей, авто-зелья из уже имеющихся в сумке).
+#        Default:     1
+#                     0 - Отключено для всех
+#                     1 - Только GM
+#                     2 - Все игроки
+#                     3 - Включается автоматически при входе в игру
+#
+#   selfbot_debug
+#        Description: Записывает в server.loading включение/выключение и срабатывания AI
+#                     по каждому игроку - для проверки поведения.
+#        Default:     0 - Отключено
+#                     1 - Включено
+#
+
+selfbot_level = 1
+selfbot_debug = 0
 
 #
 # Diminishing Returns (Убывающая эффективность контроля)

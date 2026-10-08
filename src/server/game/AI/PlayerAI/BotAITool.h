@@ -90,6 +90,8 @@ public:
     static uint32 QuestAIPercent;
     static uint32 QuestAIMaxLevel;
     static bool QuestAIDebug;
+    static uint32 SelfBotLevel;
+    static bool SelfBotDebug;
 
 public:
     static SpellEntry* BuildNewArenaSpellEntry();

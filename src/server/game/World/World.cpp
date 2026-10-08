@@ -2519,6 +2519,14 @@ void World::SetInitialWorldSettings()
         BotUtility::QuestAIMaxLevel = uint32(questbotMaxLevel > 0 ? questbotMaxLevel : 0);
         BotUtility::QuestAIDebug = (sConfigMgr->GetIntDefault("questbot_debug", 0) != 0);
 
+        int selfbotLevel = sConfigMgr->GetIntDefault("selfbot_level", 1);
+        if (selfbotLevel < 0)
+            selfbotLevel = 0;
+        if (selfbotLevel > 3)
+            selfbotLevel = 3;
+        BotUtility::SelfBotLevel = uint32(selfbotLevel);
+        BotUtility::SelfBotDebug = (sConfigMgr->GetIntDefault("selfbot_debug", 0) != 0);
+
         Json::Value jsonDiminishing = sConfigMgr->GetIntDefault("diminishing", 1);
         BotUtility::ControllSpellDiminishing = (sConfigMgr->GetIntDefault("diminishing", 1) != 0) ? true : false;
 

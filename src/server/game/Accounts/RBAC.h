@@ -812,6 +812,7 @@ enum RBACPermissions
 	RBAC_PREM_COMMAND_PBOTAI_PETTALENTS                      = 1524,
 	RBAC_PREM_COMMAND_PBOTAI_SEARCHGO                        = 1525,
 	RBAC_PREM_COMMAND_PBOTAI_TESTROLL                        = 1526,
+	RBAC_PREM_COMMAND_SELFBOT                                = 1527,
 
     // ashamane permissions 2000+
     RBAC_PERM_COMMAND_DEBUG_MOVEMENT_FORCE                   = 2000,
