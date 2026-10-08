@@ -169,7 +169,8 @@ void SelfBotAI::UpdateCombat()
 		// already selected, or fight back if something is already attacking us (that's not
 		// "picking a target", it's not standing there and eating hits).
 		Unit* selected = me->GetSelectedUnit();
-		if (selected && selected->IsAlive() && me->IsValidAttackTarget(selected))
+		bool selectedValid = selected && selected->IsAlive() && me->IsValidAttackTarget(selected);
+		if (selectedValid)
 			victim = selected;
 		else if (!me->getAttackers().empty())
 		{
@@ -177,6 +178,11 @@ void SelfBotAI::UpdateCombat()
 			if (attacker && attacker->IsAlive())
 				victim = attacker;
 		}
+
+		if (BotUtility::SelfBotDebug)
+			TC_LOG_INFO("server.loading", ">> SelfBot: %s no victim - selected=%s valid=%d attackers=%u -> victim=%s",
+				me->GetName().c_str(), selected ? selected->GetName().c_str() : "none", selectedValid,
+				uint32(me->getAttackers().size()), victim ? victim->GetName().c_str() : "none");
 
 		if (!victim)
 			return;
@@ -188,8 +194,13 @@ void SelfBotAI::UpdateCombat()
 	// uses for this everywhere else in the core - re-issuing it only when the current motion
 	// isn't already a chase (of anything) avoids spamming a new path every 500ms while it's
 	// already closing in.
-	if (me->GetMotionMaster()->GetCurrentMovementGeneratorType() != CHASE_MOTION_TYPE)
+	uint32 motionType = me->GetMotionMaster()->GetCurrentMovementGeneratorType();
+	if (motionType != CHASE_MOTION_TYPE)
 		me->GetMotionMaster()->MoveChase(victim);
+
+	if (BotUtility::SelfBotDebug)
+		TC_LOG_INFO("server.loading", ">> SelfBot: %s combat victim=%s dist=%.1f motionType=%u",
+			me->GetName().c_str(), victim->GetName().c_str(), me->GetDistance(victim), motionType);
 
 	TryUseRotationSpell(victim);
 }
@@ -207,7 +218,10 @@ void SelfBotAI::TryUseRotationSpell(Unit* target)
 	// from Phase 1 keeps going on its own.
 	for (uint32 spellId : m_RotationSpells)
 	{
-		if (me->CastSpell(target, spellId, false))
+		bool ok = me->CastSpell(target, spellId, false);
+		if (BotUtility::SelfBotDebug)
+			TC_LOG_INFO("server.loading", ">> SelfBot: %s cast %u -> %s", me->GetName().c_str(), spellId, ok ? "ok" : "failed");
+		if (ok)
 			return;
 	}
 }
