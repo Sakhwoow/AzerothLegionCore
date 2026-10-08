@@ -244,6 +244,25 @@ bool SelfBotAI::TryUseHealSpell()
 	return cast;
 }
 
+Unit* SelfBotAI::FindGroupAssistTarget() const
+{
+	Group* group = me->GetGroup();
+	if (!group)
+		return nullptr;
+
+	for (GroupReference* itr = group->GetFirstMember(); itr != nullptr; itr = itr->next())
+	{
+		Player* member = itr->GetSource();
+		if (!member || member == me || !member->IsAlive() || member->GetMap() != me->GetMap())
+			continue;
+
+		Unit* memberVictim = member->GetVictim();
+		if (memberVictim && memberVictim->IsAlive() && me->IsValidAttackTarget(memberVictim) && me->IsWithinDist(memberVictim, 60.0f))
+			return memberVictim;
+	}
+	return nullptr;
+}
+
 void SelfBotAI::UpdateCombat()
 {
 	Unit* victim = me->GetVictim();
@@ -261,6 +280,14 @@ void SelfBotAI::UpdateCombat()
 			Unit* attacker = *me->getAttackers().begin();
 			if (attacker && attacker->IsAlive())
 				victim = attacker;
+		}
+		else
+		{
+			// Phase 4 (group assist): lowest priority of all three - only kicks in once the
+			// player has neither selected anything themselves nor is being attacked. Adopts
+			// whatever a group member is already fighting, same "continue, never pick on your
+			// own" spirit as the other two fallbacks above.
+			victim = FindGroupAssistTarget();
 		}
 
 		if (BotUtility::SelfBotDebug)

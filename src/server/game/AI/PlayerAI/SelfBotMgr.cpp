@@ -18,6 +18,11 @@
 #include "SelfBotMgr.h"
 #include "SelfBotAI.h"
 #include "Player.h"
+#include "Group.h"
+#include "GroupMgr.h"
+#include "ObjectAccessor.h"
+#include "Log.h"
+#include "BotAITool.h"
 
 // Defined here, not inline in the header: m_SelfBots holds std::unique_ptr<SelfBotAI>, and its
 // destructor needs SelfBotAI to be a complete type, which it only is once SelfBotAI.h (above)
@@ -66,4 +71,46 @@ void SelfBotMgr::Disable(Player* player)
 		return;
 	itr->second->SetActive(false);
 	m_SelfBots.erase(itr);
+}
+
+void SelfBotMgr::TryAutoAcceptInvite(Player* invitedPlayer)
+{
+	if (!invitedPlayer || !IsSelfBotActive(invitedPlayer))
+		return;
+
+	Group* invite = invitedPlayer->GetGroupInvite();
+	if (!invite)
+		return;
+
+	// Mirrors WorldSession::HandlePartyInviteResponseOpcode's Accept branch (GroupHandler.cpp)
+	// exactly, same order of calls, same bail-out conditions - just without a real client
+	// packet driving it.
+	invite->RemoveInvite(invitedPlayer);
+
+	if (invite->GetLeaderGUID() == invitedPlayer->GetGUID())
+		return; // can't accept an invite to your own group (shouldn't happen, defensive)
+
+	if (invite->IsFull())
+		return;
+
+	if (!invite->IsCreated())
+	{
+		Player* leader = ObjectAccessor::FindPlayer(invite->GetLeaderGUID());
+		if (!leader)
+		{
+			invite->RemoveAllInvites();
+			return;
+		}
+		invite->RemoveInvite(leader);
+		invite->Create(leader);
+		sGroupMgr->AddGroup(invite);
+	}
+
+	if (!invite->AddMember(invitedPlayer))
+		return;
+
+	invite->BroadcastGroupUpdate();
+
+	if (BotUtility::SelfBotDebug)
+		TC_LOG_INFO("server.loading", ">> SelfBot: %s auto-accepted group invite", invitedPlayer->GetName().c_str());
 }

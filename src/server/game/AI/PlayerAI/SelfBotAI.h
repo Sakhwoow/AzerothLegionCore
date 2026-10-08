@@ -43,6 +43,7 @@ public:
 private:
 	bool CanAct() const;
 	void UpdateCombat();
+	Unit* FindGroupAssistTarget() const;
 	bool TryUseHealSpell();
 	void TryUseRotationSpell(Unit* target);
 	bool TryCastFirstKnown(Unit* target, std::vector<uint32> const& spellList);

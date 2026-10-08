@@ -44,6 +44,14 @@ public:
 	void Enable(Player* player);
 	void Disable(Player* player);
 
+	// Phase 4: auto-accept a pending group invite for a player with selfbot active. Called
+	// right after the invite packet is sent out to them (GroupHandler.cpp::HandlePartyInviteOpcode)
+	// - inlines the same Group:: calls WorldSession::HandlePartyInviteResponseOpcode's accept
+	// branch makes, since that handler is written to run on the invited player's own session via
+	// a real CMSG_PARTY_INVITE_RESPONSE packet and isn't something to fake a packet for. No-op if
+	// the player doesn't have selfbot active, or isn't actually the invited player (defensive).
+	void TryAutoAcceptInvite(Player* invitedPlayer);
+
 private:
 	SelfBotMgr();
 	~SelfBotMgr();

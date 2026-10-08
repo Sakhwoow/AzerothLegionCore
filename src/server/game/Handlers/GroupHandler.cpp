@@ -33,6 +33,7 @@
 #include "WorldSession.h"
 #include "PlayerBotSession.h"
 #include "BotGroupAI.h"
+#include "SelfBotMgr.h"
 
 class Aura;
 
@@ -191,6 +192,11 @@ void WorldSession::HandlePartyInviteOpcode(WorldPackets::Party::PartyInviteClien
     WorldPackets::Party::PartyInvite partyInvite;
     partyInvite.Initialize(GetPlayer(), packet.ProposedRoles, true);
     player->GetSession()->SendPacket(partyInvite.Write());
+
+    // Selfbot Phase 4: a real player with .selfbot active auto-accepts invites instead of
+    // needing to click the popup themselves - no-op for everyone else (sSelfBotMgr checks
+    // IsSelfBotActive internally).
+    sSelfBotMgr->TryAutoAcceptInvite(player);
 
     SendPartyResult(PARTY_OP_INVITE, player->GetName(), ERR_PARTY_RESULT_OK);
 }
