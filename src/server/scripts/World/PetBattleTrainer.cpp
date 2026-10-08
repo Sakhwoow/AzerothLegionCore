@@ -56,7 +56,7 @@ public:
 
         }
 
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Let`s Go", GOSSIP_SENDER_MAIN, 0);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Начать бой", GOSSIP_SENDER_MAIN, 0);
         SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
 
         return true;
