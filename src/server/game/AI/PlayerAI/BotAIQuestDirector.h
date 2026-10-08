@@ -78,6 +78,15 @@ private:
 	uint32 m_StateTick;
 	uint32 m_ScanTick;
 	uint8 m_LevelAtLastGearSync;
+
+	// Snapshot of where/which zone this bot was in when quest AI armed (SetActive(true)).
+	// Without this, nothing stops a chain of quest turn-ins from walking a bot out of its
+	// starting zone one short hop at a time - each individual giver-scan/objective-travel
+	// distance is small, but it compounds over many quest cycles. Candidates outside the
+	// home zone (FindQuestgiverNearby) or too far from the home position
+	// (PickObjectivePosition) are rejected so the bot stays local for this phase.
+	uint32 m_HomeZoneId;
+	Position m_HomePos;
 };
 
 #endif // !_BOT_AI_QUEST_DIRECTOR_H_

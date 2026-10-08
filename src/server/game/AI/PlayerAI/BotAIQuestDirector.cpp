@@ -41,6 +41,7 @@ namespace
 	uint32 const QD_TIMEOUT_TRAVEL = 60000;
 	uint32 const QD_TIMEOUT_OBJECTIVE = 180000;
 	uint8 const QD_GEAR_SYNC_LEVEL_STEP = 3;
+	float const QD_MAX_HOME_DISTANCE = 500.0f;
 	uint32 const QD_AVAILABLE_STATUS_MASK = DIALOG_STATUS_AVAILABLE | DIALOG_STATUS_AVAILABLE_REP |
 		DIALOG_STATUS_LOW_LEVEL_AVAILABLE | DIALOG_STATUS_LOW_LEVEL_AVAILABLE_REP;
 }
@@ -53,7 +54,8 @@ BotAIQuestDirector::BotAIQuestDirector(Player* self) :
 	m_ObjectiveStorageIndex(-1),
 	m_StateTick(0),
 	m_ScanTick(0),
-	m_LevelAtLastGearSync(self ? self->getLevel() : 0)
+	m_LevelAtLastGearSync(self ? self->getLevel() : 0),
+	m_HomeZoneId(0)
 {
 }
 
@@ -62,7 +64,12 @@ void BotAIQuestDirector::SetActive(bool active)
 	if (m_Active == active)
 		return;
 	m_Active = active;
-	if (!active)
+	if (active)
+	{
+		m_HomeZoneId = me->GetZoneId();
+		m_HomePos = me->GetPosition();
+	}
+	else
 	{
 		m_State = QD_STATE_IDLE;
 		m_CurrentQuestId = 0;
@@ -156,6 +163,8 @@ bool BotAIQuestDirector::FindQuestgiverNearby()
 		if (!pCreature->IsQuestGiver())
 			continue;
 		if (me->IsValidAttackTarget(pCreature))
+			continue;
+		if (pCreature->GetZoneId() != m_HomeZoneId)
 			continue;
 		uint32 status = uint32(me->GetQuestDialogStatus(pCreature));
 		if (!(status & QD_AVAILABLE_STATUS_MASK))
@@ -308,6 +317,8 @@ bool BotAIQuestDirector::PickObjectivePosition()
 			QuestPOIPoint const& point = poi.points[poi.points.size() / 2];
 			float x = float(point.X);
 			float y = float(point.Y);
+			if (m_HomePos.GetExactDist2d(x, y) > QD_MAX_HOME_DISTANCE)
+				continue;
 			float z = me->GetPositionZ();
 			z = me->GetMap()->GetHeight(me->GetPhaseShift(), x, y, z);
 			m_ObjectivePos = Position(x, y, z, 0.0f);
