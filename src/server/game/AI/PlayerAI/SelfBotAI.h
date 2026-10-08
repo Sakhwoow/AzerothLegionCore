@@ -43,7 +43,9 @@ public:
 private:
 	bool CanAct() const;
 	void UpdateCombat();
+	bool TryUseHealSpell();
 	void TryUseRotationSpell(Unit* target);
+	bool TryCastFirstKnown(Unit* target, std::vector<uint32> const& spellList);
 	void TryUseSelfPotion();
 	Item* FindOwnedLifePotion() const;
 	Item* FindOwnedManaPotion() const;
@@ -61,6 +63,12 @@ private:
 	// order and falls through to the next on failure, with plain melee auto-attack (Phase 1)
 	// as the ultimate fallback if none are known/castable yet.
 	std::vector<uint32> m_RotationSpells;
+
+	// Same idea, for the 4 hybrid healer-capable classes only (Priest/Druid/Shaman/Paladin) -
+	// empty (and TryUseHealSpell() a no-op) for every other class. Only ever used while in a
+	// real group (Phase 3 scope: no solo behavior change) and only when a party member is
+	// actually hurt - see TryUseHealSpell().
+	std::vector<uint32> m_HealSpells;
 };
 
 #endif // !_SELF_BOT_AI_H_

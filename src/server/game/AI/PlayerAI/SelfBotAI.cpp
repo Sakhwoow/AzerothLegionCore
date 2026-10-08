@@ -18,6 +18,7 @@
 #include "SelfBotAI.h"
 #include "BotAITool.h"
 #include "Player.h"
+#include "Group.h"
 #include "Item.h"
 #include "Spell.h"
 #include "SpellMgr.h"
@@ -102,6 +103,33 @@ namespace
 		default: return none;
 		}
 	}
+
+	// Phase 3 (self-healing): only the 4 hybrid classes that can heal at all. Base rank-1 ids
+	// for each class's oldest, most structurally stable direct-heal spell - chosen the same way
+	// as the rotation lists above (long-lived classic/WotLK-era ids, resolved through whatever
+	// rank this character actually knows via FindMaxRankSpellByExist). Confidence varies: the
+	// Paladin entry (Flash of Light, 19750) is CONFIRMED valid for this fork - it showed up
+	// directly in a live level-6 test character's own known-spell list. The Priest/Druid/Shaman
+	// entries follow the identical convention but are NOT yet verified against a live character
+	// of those classes on this fork the way Judgement/Crusader Strike/Flash of Light were -
+	// first real test should confirm whether they resolve to anything before trusting them.
+	std::vector<uint32> const& GetClassHealBaseSpells(uint8 cls)
+	{
+		static std::vector<uint32> const priest = { 2061, 2060, 139 };  // Flash Heal, Heal, Renew
+		static std::vector<uint32> const druid = { 5185, 8936, 774 };   // Healing Touch, Regrowth, Rejuvenation
+		static std::vector<uint32> const shaman = { 331, 8004 };        // Healing Wave, Lesser Healing Wave
+		static std::vector<uint32> const paladin = { 19750 };           // Flash of Light - confirmed known id on this fork
+		static std::vector<uint32> const none;
+
+		switch (cls)
+		{
+		case 2: return paladin;
+		case 5: return priest;
+		case 7: return shaman;
+		case 11: return druid;
+		default: return none;
+		}
+	}
 }
 
 void SelfBotAI::SetActive(bool active)
@@ -111,6 +139,7 @@ void SelfBotAI::SetActive(bool active)
 	m_Active = active;
 
 	m_RotationSpells.clear();
+	m_HealSpells.clear();
 	if (active)
 	{
 		for (uint32 baseId : GetClassRotationBaseSpells(me->getClass()))
@@ -119,6 +148,12 @@ void SelfBotAI::SetActive(bool active)
 			if (known)
 				m_RotationSpells.push_back(known);
 		}
+		for (uint32 baseId : GetClassHealBaseSpells(me->getClass()))
+		{
+			uint32 known = BotUtility::FindMaxRankSpellByExist(me, baseId);
+			if (known)
+				m_HealSpells.push_back(known);
+		}
 	}
 
 	if (BotUtility::SelfBotDebug)
@@ -126,8 +161,11 @@ void SelfBotAI::SetActive(bool active)
 		std::string knownList;
 		for (uint32 id : m_RotationSpells)
 			knownList += std::to_string(id) + " ";
-		TC_LOG_INFO("server.loading", ">> SelfBot: %s (%s) %s (rotation: %s)", me->GetName().c_str(), me->GetGUID().ToString().c_str(),
-			active ? "enabled" : "disabled", knownList.empty() ? "none" : knownList.c_str());
+		std::string healList;
+		for (uint32 id : m_HealSpells)
+			healList += std::to_string(id) + " ";
+		TC_LOG_INFO("server.loading", ">> SelfBot: %s (%s) %s (rotation: %s) (heal: %s)", me->GetName().c_str(), me->GetGUID().ToString().c_str(),
+			active ? "enabled" : "disabled", knownList.empty() ? "none" : knownList.c_str(), healList.empty() ? "none" : healList.c_str());
 	}
 }
 
@@ -157,8 +195,53 @@ void SelfBotAI::Update(uint32 diff)
 	if (!CanAct())
 		return;
 
-	UpdateCombat();
+	// Heal check runs before the attack rotation and, if it actually casts something, skips
+	// combat for this tick - both share the GCD, so trying to also attack-cast the same tick
+	// would just fail harmlessly anyway, but skipping is cleaner and avoids a wasted log line.
+	if (!TryUseHealSpell())
+		UpdateCombat();
+
 	TryUseSelfPotion();
+}
+
+bool SelfBotAI::TryUseHealSpell()
+{
+	if (m_HealSpells.empty())
+		return false;
+
+	// Phase 3 scope: only while in a real group - no solo behavior change (plan:
+	// "gated so it only acts within an existing group").
+	Group* group = me->GetGroup();
+	if (!group)
+		return false;
+
+	Unit* lowestAlly = nullptr;
+	float lowestPct = 90.0f; // only bother healing below this - "maintenance", not full triage
+
+	for (GroupReference* itr = group->GetFirstMember(); itr != nullptr; itr = itr->next())
+	{
+		Player* member = itr->GetSource();
+		if (!member || !member->IsAlive())
+			continue;
+		if (member != me && (member->GetMap() != me->GetMap() || !me->IsWithinDist(member, 40.0f)))
+			continue;
+
+		float pct = member->GetHealthPct();
+		if (pct < lowestPct)
+		{
+			lowestPct = pct;
+			lowestAlly = member;
+		}
+	}
+
+	if (!lowestAlly)
+		return false;
+
+	bool cast = TryCastFirstKnown(lowestAlly, m_HealSpells);
+	if (BotUtility::SelfBotDebug)
+		TC_LOG_INFO("server.loading", ">> SelfBot: %s heal check target=%s pct=%.1f -> %s",
+			me->GetName().c_str(), lowestAlly->GetName().c_str(), lowestPct, cast ? "cast" : "none");
+	return cast;
 }
 
 void SelfBotAI::UpdateCombat()
@@ -215,6 +298,14 @@ void SelfBotAI::TryUseRotationSpell(Unit* target)
 	if (!target)
 		return;
 
+	TryCastFirstKnown(target, m_RotationSpells);
+}
+
+bool SelfBotAI::TryCastFirstKnown(Unit* target, std::vector<uint32> const& spellList)
+{
+	if (!target)
+		return false;
+
 	// Try each known spell in priority order, same shape as mod-playerbots' per-class
 	// NextAction chain. Deliberately NOT using Unit::CastSpell(...)'s bool-returning overload:
 	// it just does `return spell->prepare(&targets, triggeredByAura);`, implicitly converting
@@ -226,7 +317,7 @@ void SelfBotAI::TryUseRotationSpell(Unit* target)
 	// inverted check) treated as a reason to keep falling through to the next spell. Every
 	// existing bot in this codebase avoids this by building the Spell and checking the real
 	// SpellCastResult explicitly (see BotBGAI::TryCastSpell, BotAI.cpp) - do the same here.
-	for (uint32 spellId : m_RotationSpells)
+	for (uint32 spellId : spellList)
 	{
 		SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(spellId);
 		if (!spellInfo)
@@ -242,8 +333,9 @@ void SelfBotAI::TryUseRotationSpell(Unit* target)
 				result == SPELL_CAST_OK ? "ok" : "failed", uint32(result));
 
 		if (result == SPELL_CAST_OK)
-			return;
+			return true;
 	}
+	return false;
 }
 
 void SelfBotAI::TryUseSelfPotion()
