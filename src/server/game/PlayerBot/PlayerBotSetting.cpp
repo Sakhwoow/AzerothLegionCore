@@ -17,6 +17,7 @@
 
 #include "PlayerBotSetting.h"
 #include "ObjectMgr.h"
+#include "DB2Stores.h"
 #include "Pet.h"
 #include "WorldSession.h"
 #include "PlayerBotSession.h"
@@ -1968,6 +1969,35 @@ void PlayerBotSetting::AddEquipFromAll()
 	uint8 prof = m_Player->getClass();
 	if (prof <= 0 || prof >= MAX_CLASSES)
 		return;
+
+	// classesEquips below buckets items purely by ItemTemplate RequiredLevel and, for
+	// RequiredLevel < 20, keeps anything above Quality Common (Uncommon/Rare/Epic/
+	// Legendary) - heirlooms are Epic-quality with RequiredLevel 1, so a freshly made
+	// level-1 bot could legitimately roll one from that pool. Below level 5, use the
+	// same real character-creation starting outfit a real player gets instead, same as
+	// mod-playerbots (AzerothCore) does in PlayerbotFactory::InitEquipment().
+	if (level < 5)
+	{
+		if (CharStartOutfitEntry const* oEntry = sDB2Manager.GetCharStartOutfitEntry(m_Player->getRace(), prof, m_Player->GetByteValue(PLAYER_BYTES_3, PLAYER_BYTES_3_OFFSET_GENDER)))
+		{
+			for (int j = 0; j < MAX_OUTFIT_ITEMS; ++j)
+			{
+				if (oEntry->ItemID[j] <= 0)
+					continue;
+				uint32 itemId = oEntry->ItemID[j];
+				if (itemId == 6948) // hearthstone
+					continue;
+				ItemTemplate const* iProto = sObjectMgr->GetItemTemplate(itemId);
+				if (!iProto)
+					continue;
+				if (iProto->GetClass() == ITEM_CLASS_CONSUMABLE && iProto->GetSubClass() == ITEM_SUBCLASS_FOOD_DRINK)
+					continue;
+				AddOnceEquip(iProto);
+			}
+		}
+		return;
+	}
+
 	const ItemTemplate* firstFinger = NULL;
 	const ItemTemplate* firstTrinket = NULL;
 	for (int i = 0; i < InventoryType::INVTYPE_RELIC; i++)
