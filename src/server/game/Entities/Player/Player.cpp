@@ -20264,7 +20264,9 @@ void Player::QuestObjectiveSatisfy(uint32 objectId, uint32 amount, QuestObjectiv
 
         for (QuestObjective const& obj : quest->GetObjectives())
         {
-            if (obj.Type == type && (uint32)obj.ObjectID == objectId)
+            // ObjectID 0 is the data convention for "any" (e.g. quest 24460 "Out of Order" -
+            // win any pet battle regardless of species), not a literal id to match.
+            if (obj.Type == type && (obj.ObjectID == 0 || (uint32)obj.ObjectID == objectId))
             {
                 SetQuestObjectiveData(obj, std::min<uint32>(GetQuestObjectiveData(quest, obj.StorageIndex) + amount, obj.Amount));
 
