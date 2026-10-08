@@ -227,6 +227,30 @@ void PetBattleSystem::Update(uint32 diff)
         else if (battle->BattleStatus == PETBATTLE_STATUS_FINISHED)
         {
             battle->BattleStatus = PETBATTLE_STATUS_PENDING_DELETE;
+
+            // Nothing anywhere else ever clears Unit::_petBattleId back out once a battle
+            // sets it (only assignments to it are in CreateQueueBattle/BattlePetHandler - all
+            // on battle START). Left stuck non-empty after the first battle, every future
+            // CanPlayerEnterInPetBattle call returns PETBATTLE_REQUEST_IN_BATTLE forever for
+            // that player (and PETBATTLE_REQUEST_WILD_PET_TAPPED forever for a PvE opponent
+            // creature), silently blocking all further pet battles for the rest of the session.
+            for (PetBattleTeam* team : battle->Teams)
+            {
+                if (!team)
+                    continue;
+
+                if (team->OwnerGuid.IsPlayer())
+                {
+                    if (Player* owner = ObjectAccessor::FindPlayer(team->OwnerGuid))
+                        owner->_petBattleId = ObjectGuid::Empty;
+                }
+                else if (team->OwnerGuid.IsCreature())
+                {
+                    if (Creature* owner = ObjectAccessor::FindCreature(team->OwnerGuid))
+                        owner->_petBattleId = ObjectGuid::Empty;
+                }
+            }
+
             _petBattlesDeleteQueue.push(std::make_pair(itr.first, itr.second));
         }
     }
