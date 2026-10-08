@@ -191,12 +191,16 @@ void SelfBotAI::UpdateCombat()
 	}
 
 	// Walk into range if needed. MoveChase is the same engine-native primitive creature AI
-	// uses for this everywhere else in the core - re-issuing it only when the current motion
-	// isn't already a chase (of anything) avoids spamming a new path every 500ms while it's
-	// already closing in.
+	// uses for this everywhere else in the core, called unconditionally every time - confirmed
+	// against mod-playerbots' own MovementActions.cpp::ChaseTo, which has no "skip if already
+	// chasing" guard either. An earlier version here DID skip re-issuing when the current
+	// motion type was already CHASE_MOTION_TYPE, meant as an optimization - but that type check
+	// doesn't verify WHICH target the existing chase generator is for, so after killing one
+	// target and picking up a new one, the stale chase (still type CHASE_MOTION_TYPE, aimed at
+	// the dead target) silently blocked ever moving toward the new one. Always re-issuing is
+	// what the reference implementation does and is the correct fix, not just the simplest one.
 	uint32 motionType = me->GetMotionMaster()->GetCurrentMovementGeneratorType();
-	if (motionType != CHASE_MOTION_TYPE)
-		me->GetMotionMaster()->MoveChase(victim);
+	me->GetMotionMaster()->MoveChase(victim);
 
 	if (BotUtility::SelfBotDebug)
 		TC_LOG_INFO("server.loading", ">> SelfBot: %s combat victim=%s dist=%.1f motionType=%u",
