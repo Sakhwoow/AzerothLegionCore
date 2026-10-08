@@ -220,6 +220,9 @@ public:
 
             return true;
         }
+
+        CloseGossipMenuFor(player);
+        return false;
     }
 };
 
