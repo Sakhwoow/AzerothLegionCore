@@ -53,9 +53,7 @@ SelfBotAI::SelfBotAI(Player* self) :
 me(self),
 m_Active(false),
 m_NeedMana(true),
-m_ActionTick(0),
-m_RotationSpell1(0),
-m_RotationSpell2(0)
+m_ActionTick(0)
 {
 	uint8 cls = me ? me->getClass() : 0;
 	if (cls == 1 || cls == 4) // Warrior, Rogue: no mana resource
@@ -64,34 +62,42 @@ m_RotationSpell2(0)
 
 namespace
 {
-	// Standard, long-stable Classic/WotLK-era base spell ids (rank 1) - the same ones used
-	// across essentially every TrinityCore/MaNGOS-derived core for this exact purpose. Picked
-	// deliberately NOT from BotAISpells.h's per-spec tables (those target full endgame
-	// rotations for provisioned bots); FindMaxRankSpellByExist resolves each to whatever rank
-	// this specific character actually knows (or 0 if they don't know it yet at their level),
-	// so low-level characters simply get no rotation spell until they train one, same as the
-	// potion/gear logic elsewhere in this file never assumes a level it hasn't verified.
-	struct ClassRotationSpells
+	// Standard, long-stable Classic/WotLK-era base spell ids (rank 1), ordered highest-priority
+	// first - the same shape as mod-playerbots' per-class NextAction priority list (see e.g.
+	// DpsPaladinStrategy.cpp: hammer of wrath > judgement of wisdom > crusader strike >
+	// divine storm > consecration > melee), just expressed as a plain array instead of their
+	// Strategy/Action engine. Picked deliberately NOT from BotAISpells.h's per-spec tables
+	// (those target full endgame rotations for provisioned bots); FindMaxRankSpellByExist
+	// resolves each to whatever rank this specific character actually knows, so a low-level
+	// character simply ends up with a shorter resolved list (down to empty - plain melee
+	// auto-attack from Phase 1 is always the fallback) rather than an error.
+	std::vector<uint32> const& GetClassRotationBaseSpells(uint8 cls)
 	{
-		uint32 spell1;
-		uint32 spell2;
-	};
+		static std::vector<uint32> const warrior = { 772, 78, 6343, 1715 };            // Rend, Heroic Strike, Thunder Clap, Hamstring
+		static std::vector<uint32> const paladin = { 24275, 20271, 35395, 21084, 26573 }; // Hammer of Wrath, Judgement, Crusader Strike, Seal of Righteousness, Consecration
+		static std::vector<uint32> const hunter = { 3044, 1978, 5116 };                // Arcane Shot, Serpent Sting, Concussive Shot
+		static std::vector<uint32> const rogue = { 1752, 2098 };                       // Sinister Strike, Eviscerate
+		static std::vector<uint32> const priest = { 585, 8092, 589, 14914 };           // Smite, Mind Blast, Shadow Word: Pain, Holy Fire
+		static std::vector<uint32> const deathKnight = { 45462, 45477, 47541 };        // Plague Strike, Icy Touch, Death Coil
+		static std::vector<uint32> const shaman = { 403, 8050, 8042 };                 // Lightning Bolt, Flame Shock, Earth Shock
+		static std::vector<uint32> const mage = { 133, 116, 2136 };                    // Fireball, Frostbolt, Fire Blast
+		static std::vector<uint32> const warlock = { 686, 172, 348 };                  // Shadow Bolt, Corruption, Immolate
+		static std::vector<uint32> const druid = { 5176, 8921 };                       // Wrath, Moonfire
+		static std::vector<uint32> const none;
 
-	ClassRotationSpells GetClassRotationBaseSpells(uint8 cls)
-	{
 		switch (cls)
 		{
-		case 1: return { 78, 772 };      // Warrior: Heroic Strike, Rend
-		case 2: return { 35395, 21084 }; // Paladin: Crusader Strike, Seal of Righteousness
-		case 3: return { 3044, 0 };      // Hunter: Arcane Shot
-		case 4: return { 1752, 0 };      // Rogue: Sinister Strike
-		case 5: return { 585, 589 };     // Priest: Smite, Shadow Word: Pain
-		case 6: return { 45462, 45477 }; // Death Knight: Plague Strike, Icy Touch
-		case 7: return { 403, 8042 };    // Shaman: Lightning Bolt, Earth Shock
-		case 8: return { 133, 116 };     // Mage: Fireball, Frostbolt
-		case 9: return { 686, 0 };       // Warlock: Shadow Bolt
-		case 11: return { 5176, 8921 };  // Druid: Wrath, Moonfire
-		default: return { 0, 0 };
+		case 1: return warrior;
+		case 2: return paladin;
+		case 3: return hunter;
+		case 4: return rogue;
+		case 5: return priest;
+		case 6: return deathKnight;
+		case 7: return shaman;
+		case 8: return mage;
+		case 9: return warlock;
+		case 11: return druid;
+		default: return none;
 		}
 	}
 }
@@ -102,16 +108,25 @@ void SelfBotAI::SetActive(bool active)
 		return;
 	m_Active = active;
 
+	m_RotationSpells.clear();
 	if (active)
 	{
-		ClassRotationSpells base = GetClassRotationBaseSpells(me->getClass());
-		m_RotationSpell1 = base.spell1 ? BotUtility::FindMaxRankSpellByExist(me, base.spell1) : 0;
-		m_RotationSpell2 = base.spell2 ? BotUtility::FindMaxRankSpellByExist(me, base.spell2) : 0;
+		for (uint32 baseId : GetClassRotationBaseSpells(me->getClass()))
+		{
+			uint32 known = BotUtility::FindMaxRankSpellByExist(me, baseId);
+			if (known)
+				m_RotationSpells.push_back(known);
+		}
 	}
 
 	if (BotUtility::SelfBotDebug)
-		TC_LOG_INFO("server.loading", ">> SelfBot: %s (%s) %s (rotation: %u, %u)", me->GetName().c_str(), me->GetGUID().ToString().c_str(),
-			active ? "enabled" : "disabled", m_RotationSpell1, m_RotationSpell2);
+	{
+		std::string knownList;
+		for (uint32 id : m_RotationSpells)
+			knownList += std::to_string(id) + " ";
+		TC_LOG_INFO("server.loading", ">> SelfBot: %s (%s) %s (rotation: %s)", me->GetName().c_str(), me->GetGUID().ToString().c_str(),
+			active ? "enabled" : "disabled", knownList.empty() ? "none" : knownList.c_str());
+	}
 }
 
 bool SelfBotAI::CanAct() const
@@ -165,13 +180,17 @@ void SelfBotAI::TryUseRotationSpell(Unit* target)
 	if (!target)
 		return;
 
-	// Try the primary pick first, fall back to the secondary one. CastSpell(..., triggered=false)
-	// enforces GCD/range/cost/cooldown exactly like a manual keypress, so an attempt that can't
-	// go through yet is just a silent no-op here - never a forced or duplicate cast.
-	if (m_RotationSpell1 && me->CastSpell(target, m_RotationSpell1, false))
-		return;
-	if (m_RotationSpell2)
-		me->CastSpell(target, m_RotationSpell2, false);
+	// Try each known spell in priority order, same shape as mod-playerbots' per-class
+	// NextAction chain. CastSpell(..., triggered=false) enforces GCD/range/cost/cooldown
+	// exactly like a manual keypress, so an attempt that can't go through yet (still on
+	// cooldown, out of range/mana) is a silent no-op and we just move on to the next
+	// candidate - never a forced or duplicate cast. If none succeed, plain melee auto-attack
+	// from Phase 1 keeps going on its own.
+	for (uint32 spellId : m_RotationSpells)
+	{
+		if (me->CastSpell(target, spellId, false))
+			return;
+	}
 }
 
 void SelfBotAI::TryUseSelfPotion()

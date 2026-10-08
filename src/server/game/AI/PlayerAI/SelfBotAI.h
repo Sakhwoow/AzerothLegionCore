@@ -18,6 +18,8 @@
 #ifndef _SELF_BOT_AI_H_
 #define _SELF_BOT_AI_H_
 
+#include <vector>
+
 class Player;
 class Unit;
 
@@ -51,8 +53,14 @@ private:
 	bool m_NeedMana;
 	uint32 m_ActionTick;
 
-	uint32 m_RotationSpell1;
-	uint32 m_RotationSpell2;
+	// Already-known rotation spells for this activation, in priority order (highest first) -
+	// resolved once at SetActive(true) via BotUtility::FindMaxRankSpellByExist, same idea as
+	// mod-playerbots' per-class NextAction priority list (e.g. DpsPaladinStrategy.cpp's
+	// "hammer of wrath" > "judgement of wisdom" > "crusader strike" > ... > "melee" chain),
+	// just without porting its Strategy/Action engine: TryUseRotationSpell tries each in
+	// order and falls through to the next on failure, with plain melee auto-attack (Phase 1)
+	// as the ultimate fallback if none are known/castable yet.
+	std::vector<uint32> m_RotationSpells;
 };
 
 #endif // !_SELF_BOT_AI_H_
