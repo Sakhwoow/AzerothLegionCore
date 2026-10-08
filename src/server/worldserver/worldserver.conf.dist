@@ -2988,20 +2988,20 @@ WorldREST.AuthToken = ""
 ###################################################################################################
 
 ###################################################################################################
-# WORLD TO DISCORD
+# WORLD TO DISCORD (Передача мирового чата в Discord)
 #
 #
 #    WorldREST.Enabled
-#        Description: Enable World to Discord service.
-#        Default:     0 - (Disabled)
-#                     1 - (Enabled)
+#        Description: Включает службу передачи мирового чата в Discord.
+#        Default:     0 - (Отключено)
+#                     1 - (Включено)
 
 WorldToDiscord.Enabled = 0
 
 #
 #    WorldREST.RelayURL
-#        Description: Relay http server that will handle the http call
-#                     every 2 seconds with world channel player chats
+#        Description: Адрес relay HTTP-сервера, который обрабатывает HTTP-запрос с
+#                     сообщениями игроков из мирового канала каждые 2 секунды.
 #        Default:     "http://127.0.0.1:8083"
 
 WorldToDiscord.RelayURL = "http://127.0.0.1:8083"
@@ -4179,7 +4179,7 @@ TimeIsMoneyFriend.Money = 1000
 # BattlePay
 #
 #   FeatureSystem.BattlePay.Enabled
-#        Description: Enables the BattlePay feature system. 
+#        Description: Enables the BattlePay feature system.
 #                     Provides core support for in-game shop functionality.
 #        Default:     0 - Disabled
 #                     1 - Enabled
@@ -4265,26 +4265,26 @@ SoloLFG.Announce = 1
 
 ###################################################################################################
 # Solocraft
-# 
+#
 # 	Solocraft.Enable
 #       Description: Solocraft is a mod that boosts stats of players on dungeons and raids.
 #                    Mod for singleplayer or low populated servers.
 #       Default:     0 (disabled)
 #                    1 (enabled)
- 
+
 Solocraft.Enable = 1
- 
+
 #   Solocraft.Announce
 #       Description: If solocraft is enabled, announce that it is on when entering a dungeon?
 #       Default:     0 (disabled)
 #                    1 (enabled)
- 
+
 Solocraft.Announce = 1
- 
+
 #   Difficulty Multipliers
 #      	Description: Difficulty multipliers for dungeons.
 #       Defaults: 5, 10, 10, 25, 30, 40
- 
+
 Solocraft.Dungeon = 5
 Solocraft.Heroic = 10
 Solocraft.Raid10 = 10
@@ -4308,201 +4308,223 @@ Challenge.Enabled = 1
 ####################################################################################################
 # PLAYERBOT SETTINGS
 #
-# Fear Distance
+# Fear Distance (Дистанция страха)
 #
 #   CustomSpecialFearDistance
-#        Description: Defines the custom distance in yards at which PlayerBots will react to fear effects.
-#        Default:     0.0 - Disabled (use core default)
-#                     >0  - Custom distance in yards
+#        Description: Задаёт свою дистанцию (в ярдах), на которой PlayerBots реагируют на эффекты
+#                     страха.
+#        Default:     0.0 - Отключено (используется значение ядра по умолчанию)
+#                     >0  - Своя дистанция в ярдах
 #
 
 CustomSpecialFearDistance = 0.000000
 
 #
-# Max Online Bots
+# Max Online Bots (Максимум ботов онлайн)
 #
 #   AiPlayerbot.RandomBotMaxCount
-#        Description: Maximum number of PlayerBot accounts PlayerBotMgr keeps logged in
-#                     at once. PlayerBotMgr::Update() tops this up automatically every
-#                     30s via AllPlayerBotRandomLogin(). Also sizes the bot account/
-#                     character pool created once at server startup, so raising this
-#                     requires a worldserver restart to take effect, not just a reload.
+#        Description: Максимальное число аккаунтов PlayerBot, которые PlayerBotMgr держит в игре
+#                     одновременно. PlayerBotMgr::Update() каждые 30 секунд сам добирает нужное
+#                     количество через AllPlayerBotRandomLogin(). Также определяет размер пула
+#                     аккаунтов и персонажей ботов, который создаётся один раз при запуске сервера,
+#                     поэтому для увеличения значения нужен перезапуск worldserver, а не просто
+#                     перезагрузка конфига.
 #        Default:     180
 #
 
 AiPlayerbot.RandomBotMaxCount = 180
 
 #
-# WoWTool Port
+# Delete all PlayerBot accounts (Удаление всех аккаунтов ботов)
+#
+#   AiPlayerbot.DeleteRandomBotAccounts
+#        Description: Разовый выключатель техобслуживания. Если включить (=1) и перезапустить
+#                     сервер, при старте будут удалены ВСЕ аккаунты вида playerbotN и все их
+#                     персонажи (через обычное удаление персонажа — шмот, почта, питомцы, гильдии,
+#                     группы и т.п.), следом подчистятся осиротевшие арена-команды и привязанные
+#                     battlenet-аккаунты. После удаления сервер сам себя остановит (не примет
+#                     игроков) — нужно вручную вернуть это значение в 0 и перезапустить сервер
+#                     заново, чтобы PlayerBotMgr создал новый чистый пул ботов.
+#        Default:     0
+#
+
+AiPlayerbot.DeleteRandomBotAccounts = 0
+
+#
+# WoWTool Port (Порт WoWTool)
 #
 #   WOWToolListenPort
-#        Description: TCP port used for external tool connections to PlayerBot system (e.g. WoWTool).
+#        Description: TCP-порт для подключения внешних инструментов к системе PlayerBot
+#                     (например, WoWTool).
 #        Default:     8116
 #
 
 WOWToolListenPort = 8116
 
 #
-# Battleground Score Rate
+# Battleground Score Rate (Множитель очков на полях боя)
 #
 #   bgscorerate
-#        Description: Multiplier for score gained by PlayerBots in battlegrounds.
-#        Default:     1.0 - Normal score rate
-#                     2.0 - Double score rate
+#        Description: Множитель очков, получаемых PlayerBots на полях боя.
+#        Default:     1.0 - Обычная скорость набора очков
+#                     2.0 - Двойная скорость набора очков
 #
 
 bgscorerate = 1.000000
 
 #
-# Auto Setting
+# Auto Setting (Автонастройка)
 #
 #   auto_setting
-#        Description: Enables automatic default configuration of PlayerBots.
-#        Default:     0 - Disabled
-#                     1 - Enabled
+#        Description: Включает автоматическую настройку PlayerBots по умолчанию.
+#        Default:     0 - Отключено
+#                     1 - Включено
 #
 
 auto_setting = 1
 
 #
-# Maximum Level
+# Maximum Level (Максимальный уровень)
 #
 #    max_level
-#        Description: Sets the maximum level of the PlayerBots.
-#        Default:     0 - Level 60
-#                     1 - Level 70
-#                     2 - Level 80
-#                     3 - Level 85
-#                     4 - Level 90
-#                     5 - Level 100
-#                     6 - Level 110
+#        Description: Задаёт максимальный уровень PlayerBots.
+#        Default:     0 - Уровень 60
+#                     1 - Уровень 70
+#                     2 - Уровень 80
+#                     3 - Уровень 85
+#                     4 - Уровень 90
+#                     5 - Уровень 100
+#                     6 - Уровень 110
 
 max_level = 6
 
 #
-# Maximum Dungeon Access
+# Maximum Dungeon Access (Максимальный доступ к подземельям)
 #
 #   maxdungeon
-#        Description: Restricts the maximum dungeon difficulty PlayerBots can enter.
-#        Default:     0 - No dungeon access
-#                     1 - Normal
-#                     2 - Heroic
+#        Description: Ограничивает максимальную сложность подземелий, в которые могут заходить
+#                     PlayerBots.
+#        Default:     0 - Нет доступа к подземельям
+#                     1 - Обычный режим
+#                     2 - Героический режим
 #
 
-maxdungeon = 0
+maxdungeon = 2
 
 #
-# Driving
+# Driving (Управление транспортом)
 #
 #   driving
-#        Description: Enables PlayerBot vehicle/driving control.
-#        Default:     0 - Disabled
-#                     1 - Enabled
+#        Description: Включает управление транспортом/техникой для PlayerBot.
+#        Default:     0 - Отключено
+#                     1 - Включено
 #
 
 driving = 1
 
 #
-# Pull System
+# Pull System (Система пулла)
 #
 #   pull
-#        Description: Allows PlayerBots to automatically pull nearby creatures into combat.
-#        Default:     0 - Disabled
-#                     1 - Enabled
+#        Description: Позволяет PlayerBots автоматически вовлекать в бой ближайших существ.
+#        Default:     0 - Отключено
+#                     1 - Включено
 #
 
 pull = 1
 
 #
-# Additional Damage Multiplier
+# Additional Damage Multiplier (Дополнительный множитель урона)
 #
 #   addion
-#        Description: Damage multiplier applied to PlayerBots' abilities.
-#        Default:     1.0 - Normal damage
+#        Description: Множитель урона способностей PlayerBots.
+#        Default:     1.0 - Обычный урон
 #
 
 addion = 1.000000
 
 #
-# Endurance Multiplier
+# Endurance Multiplier (Множитель живучести)
 #
 #   endure
-#        Description: Multiplier applied to PlayerBots' health/endurance.
-#        Default:     1.0 - Normal endurance
+#        Description: Множитель здоровья/живучести PlayerBots.
+#        Default:     1.0 - Обычная живучесть
 #
 
 endure = 1.000000
 
 #
-# Auto Revive
+# Auto Revive (Автовоскрешение)
 #
 #   auto_revive
-#        Description: Enables automatic revival of PlayerBots after death.
-#        Default:     0 - Disabled
-#                     1 - Enabled
+#        Description: Включает автоматическое воскрешение PlayerBots после смерти.
+#        Default:     0 - Отключено
+#                     1 - Включено
 #
 
-auto_revive = 0
+auto_revive = 1
 
 #
-# Field Creature Combat
+# Field Creature Combat (Бой с существами в открытом мире)
 #
 #   field_creature
-#        Description: Determines if PlayerBots can engage open-world creatures.
-#        Default:     0 - Disabled
-#                     1 - Enabled
+#        Description: Определяет, могут ли PlayerBots вступать в бой с существами в открытом мире.
+#        Default:     0 - Отключено
+#                     1 - Включено
 #
 
 field_creature = 1
 
 #
-# Field Driving
+# Field Driving (Транспорт в открытом мире)
 #
 #   field_driving
-#        Description: Allows PlayerBots to use vehicles in open-world fields.
-#        Default:     0 - Disabled
-#                     1 - Enabled
+#        Description: Позволяет PlayerBots пользоваться транспортом в открытом мире.
+#        Default:     0 - Отключено
+#                     1 - Включено
 #
 
-field_driving = 0
+field_driving = 1
 
 #
-# Warfare Group Size
+# Warfare Group Size (Размер группы в масштабных сражениях)
 #
 #   warfare_size
-#        Description: Maximum number of PlayerBots allowed in warfare/large-scale battles.
-#        Default:     0 - Disabled
+#        Description: Максимальное число PlayerBots, допускаемых в масштабных сражениях.
+#        Default:     0 - Отключено
 #
 
 warfare_size = 0
 
 #
-# Quest Bot AI (Phase 1 MVP)
+# Quest Bot AI (Phase 1 MVP) (ИИ ботов-квестеров)
 #
 #   questbot_enable
-#        Description: Enables the autonomous leveling/questing AI for ungrouped field
-#                     bots under questbot_maxlevel. Bots running it are exempt from the
-#                     ambient-population draft (warfare_size) while active, so they stay
-#                     in their own zone instead of being teleported next to real players.
-#        Default:     0 - Disabled
-#                     1 - Enabled
+#        Description: Включает автономный ИИ прокачки и выполнения заданий для ботов в открытом
+#                     мире без группы с уровнем ниже questbot_maxlevel. Пока такой ИИ активен,
+#                     боты не участвуют в наборе "фоновой популяции" (warfare_size) и остаются в
+#                     своей зоне, а не телепортируются к реальным игрокам.
+#        Default:     0 - Отключено
+#                     1 - Включено
 #
 #   questbot_percent
-#        Description: Percentage (0-100) of eligible bots that get the quest AI armed,
-#                     picked deterministically by GUID. Use a low value for a canary
-#                     rollout before raising it.
+#        Description: Процент (0-100) подходящих ботов, у которых включается ИИ заданий.
+#                     Выбираются детерминированно по GUID. Для пробного запуска ставьте небольшое
+#                     значение и повышайте постепенно.
 #        Default:     0
 #
 #   questbot_maxlevel
-#        Description: Bots at or above this level never get the quest AI armed (and an
-#                     active bot that reaches it falls back to normal field behaviour).
+#        Description: Боты с уровнем не ниже этого значения никогда не получают ИИ заданий (а
+#                     активный бот, достигший его, возвращается к обычному поведению в открытом
+#                     мире).
 #        Default:     20
 #
 #   questbot_debug
-#        Description: Logs every quest AI state transition (accepted/turned in/abandoned,
-#                     gear resync) per bot to server.loading, for verifying behaviour.
-#        Default:     0 - Disabled
-#                     1 - Enabled
+#        Description: Записывает в server.loading каждый переход состояния ИИ заданий
+#                     (принято/сдано/отменено, пересборка экипировки) по каждому боту -
+#                     для проверки поведения.
+#        Default:     0 - Отключено
+#                     1 - Включено
 #
 
 questbot_enable = 0
@@ -4511,130 +4533,134 @@ questbot_maxlevel = 20
 questbot_debug = 0
 
 #
-# Diminishing Returns
+# Diminishing Returns (Убывающая эффективность контроля)
 #
 #   diminishing
-#        Description: Enables diminishing returns system for PlayerBots in PvP combat.
-#        Default:     0 - Disabled
-#                     1 - Enabled
+#        Description: Включает систему убывающей эффективности (diminishing returns) для
+#                     PlayerBots в PvP.
+#        Default:     0 - Отключено
+#                     1 - Включено
 #
 
 diminishing = 1
 
 #
-# Crowd Control Break
+# Crowd Control Break (Выход из контроля)
 #
 #   canbreak_controll
-#        Description: Allows PlayerBots to attempt breaking out of crowd-control effects.
-#        Default:     0 - Disabled
-#                     1 - Enabled
+#        Description: Позволяет PlayerBots пытаться вырываться из эффектов контроля.
+#        Default:     0 - Отключено
+#                     1 - Включено
 #
 
 canbreak_controll = 1
 
 #
-# Arena Bots
+# Arena Bots (Боты на арене)
 #
 #   downbotarena
-#        Description: Enables PlayerBots to participate in arena matches.
-#        Default:     0 - Disabled
-#                     1 - Enabled
+#        Description: Позволяет PlayerBots участвовать в матчах на арене.
+#        Default:     0 - Отключено
+#                     1 - Включено
 #
 
 downbotarena = 1
 
 #
-# Arena Hell Mode
+# Arena Hell Mode (Адский режим арены)
 #
 #   arenahell
-#        Description: Enables a harder arena mode for PlayerBots with increased difficulty.
-#        Default:     0 - Disabled
-#                     1 - Enabled
+#        Description: Включает более сложный режим арены для PlayerBots с повышенной сложностью.
+#        Default:     0 - Отключено
+#                     1 - Включено
 #
 
-arenahell = 0
+arenahell = 1
 
 #
-# Tactics System
+# Tactics System (Система тактик)
 #
 #   bottactics
-#        Description: Enables tactical AI system for PlayerBots in combat.
-#        Default:     0 - Disabled
-#                     1 - Enabled
+#        Description: Включает тактический ИИ для PlayerBots в бою.
+#        Default:     0 - Отключено
+#                     1 - Включено
 #
 
 bottactics = 1
 
 #
-# Death Knight Starting Quest
+# Death Knight Starting Quest (Стартовая цепочка рыцаря смерти)
 #
 #   dkquest
-#        Description: Enables PlayerBots to automatically complete Death Knight starting questline.
-#        Default:     0 - Disabled
-#                     1 - Enabled
+#        Description: Позволяет PlayerBots автоматически проходить стартовую цепочку заданий
+#                     рыцаря смерти.
+#        Default:     0 - Отключено
+#                     1 - Включено
 #
 
-dkquest = 0
+dkquest = 1
 
 #
-# Core Enable
+# Core Enable (Главный переключатель)
 #
 #   pbot
-#        Description: Master switch for enabling/disabling the PlayerBot system.
-#        Default:     0 - Disabled
-#                     1 - Enabled
+#        Description: Главный переключатель, включающий и отключающий всю систему PlayerBot.
+#        Default:     0 - Отключено
+#                     1 - Включено
 #
 
 pbot = 1
 
 #
-# PlayerBot Health Modifier
+# PlayerBot Health Modifier (Модификатор здоровья ботов)
 #
 #   pbot_hp
-#        Description: Sets the starting/max health of PlayerBots.
-#                     0 = Disabled (no extra HP)
-#                     1 = Normal HP (default)
-#                     >1 = Multiply HP by (pbot_hp - 1) factor
+#        Description: Задаёт начальное/максимальное здоровье PlayerBots.
+#                     0 = Отключено (без дополнительного здоровья)
+#                     1 = Обычное здоровье (по умолчанию)
+#                     >1 = Здоровье умножается на (pbot_hp - 1)
 #        Default:     1
 #
 
 pbot_hp = 1
 
 #
-# LFG Queue Extra Players
+# LFG Queue Extra Players (Дополнительные игроки в очереди LFG)
 #
 #   LFGnumPlayer_Add
-#        Description: Sets the number of additional players considered when checking LFG queue compatibility.
-#                     0 = Disabled, only real queued players are counted (default)
-#                     >0 = Adds this number to the current player count during compatibility checks
+#        Description: Задаёт число дополнительных игроков, учитываемых при проверке совместимости
+#                     очереди LFG.
+#                     0 = Отключено, учитываются только реальные игроки в очереди (по умолчанию)
+#                     >0 = Это число добавляется к текущему количеству игроков при проверках
+#                          совместимости
 #        Default:     0
 #
 
 LFGnumPlayer_Add = 0
 
 #
-# PlayerBot Global Enable
+# PlayerBot Global Enable (Глобальное включение PlayerBot)
 #
 #   pbotall
-#        Description: Enables or disables the automatic spawning of PlayerBots in the server.
-#                     0 = Disabled, no new PlayerBots will be added
-#                     1 = Enabled, PlayerBots can join the LFG queue (default)
+#        Description: Включает или отключает автоматическое появление PlayerBots на сервере.
+#                     0 = Отключено, новые PlayerBots добавляться не будут
+#                     1 = Включено, PlayerBots могут вставать в очередь LFG (по умолчанию)
 #        Default:     1
 #
 
 pbotall = 1
 
 #
-# PlayerBot Maximum Online Limit
+# PlayerBot Maximum Online Limit (Максимум ботов онлайн)
 #
 #   pbotasl
-#        Description: Sets the maximum number of PlayerBots allowed to be online at the same time.
-#                     0 = No limit
-#                     >0 = Maximum number of PlayerBots allowed simultaneously (default 88)
+#        Description: Задаёт максимальное число PlayerBots, которые могут быть онлайн одновременно.
+#                     0 = Без ограничений
+#                     >0 = Максимальное число PlayerBots одновременно (по умолчанию 88)
 #        Default:     88
 #
 
-pbotasl = 88
+pbotasl = 0
 
 #
 ####################################################################################################
