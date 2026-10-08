@@ -20,6 +20,7 @@
 #include "Player.h"
 #include "Item.h"
 #include "Spell.h"
+#include "MotionMaster.h"
 #include "Log.h"
 
 namespace
@@ -164,13 +165,31 @@ void SelfBotAI::UpdateCombat()
 	Unit* victim = me->GetVictim();
 	if (!victim || !victim->IsAlive())
 	{
-		// Never pick a new target on our own - only continue what the real client already
-		// started (via tab/click selection) or is already swinging at.
+		// Still never go looking for a fight on our own - only continue what the real client
+		// already selected, or fight back if something is already attacking us (that's not
+		// "picking a target", it's not standing there and eating hits).
 		Unit* selected = me->GetSelectedUnit();
 		if (selected && selected->IsAlive() && me->IsValidAttackTarget(selected))
-			me->Attack(selected, true);
-		return;
+			victim = selected;
+		else if (!me->getAttackers().empty())
+		{
+			Unit* attacker = *me->getAttackers().begin();
+			if (attacker && attacker->IsAlive())
+				victim = attacker;
+		}
+
+		if (!victim)
+			return;
+
+		me->Attack(victim, true);
 	}
+
+	// Walk into range if needed. MoveChase is the same engine-native primitive creature AI
+	// uses for this everywhere else in the core - re-issuing it only when the current motion
+	// isn't already a chase (of anything) avoids spamming a new path every 500ms while it's
+	// already closing in.
+	if (me->GetMotionMaster()->GetCurrentMovementGeneratorType() != CHASE_MOTION_TYPE)
+		me->GetMotionMaster()->MoveChase(victim);
 
 	TryUseRotationSpell(victim);
 }
