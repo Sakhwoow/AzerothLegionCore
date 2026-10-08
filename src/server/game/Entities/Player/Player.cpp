@@ -20174,6 +20174,8 @@ bool Player::QuestObjectiveActiveInPlayerByObject(uint32 objectId)
             }
         }
     }
+
+    return false;
 }
 
 PlayerPetData* Player::GetPlayerPetDataById(uint32 petId)
