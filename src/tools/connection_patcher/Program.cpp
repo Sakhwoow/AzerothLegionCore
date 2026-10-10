@@ -52,7 +52,16 @@ namespace Connection_Patcher
         {
             std::cout << "patching Portal\n";
             // '.actual.battle.net' -> '' to allow for set portal 'host'
-            patcher->Patch(Patches::Common::Portal(), Patterns::Common::Portal());
+            // some client distributions ship with '.bgs.battle.net' instead of '.actual.battle.net' -
+            // fall back to that pattern when the default one is not found
+            try
+            {
+                patcher->Patch(Patches::Common::Portal(), Patterns::Common::Portal());
+            }
+            catch (std::runtime_error const&)
+            {
+                patcher->Patch(Patches::Common::PortalBgs(), Patterns::Common::PortalBgs());
+            }
 
             std::cout << "patching redirect RSA Modulus\n";
             // public component of connection signing key to use known key pair

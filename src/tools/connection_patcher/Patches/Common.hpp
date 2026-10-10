@@ -28,6 +28,7 @@ namespace Connection_Patcher
         struct Common
         {
             static std::vector<unsigned char> Portal() { return { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }; }
+            static std::vector<unsigned char> PortalBgs() { return { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }; }
             static std::vector<unsigned char> Modulus()
             {
                 return
@@ -51,7 +52,11 @@ namespace Connection_Patcher
                 };
             }
             static std::string VersionsFile() { return "trinity6.github.io/%s/%s/build/versi"; };
-            static std::vector<unsigned char> CertBundleUrl() { return { 'h', 't', 't', 'p', 's', ':', '/', '/', 't', 'r', 'i', 'n', 'i', 't', 'y', '6', '.', 'g', 'i', 't', 'h', 'u', 'b', '.', 'i', 'o', '/', 'B', 'n', 'e', 't', '/', 'z', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', '/', 'c', 'l', 'i', 'e', 'n', 't', '/', 'b', 'g', 's', '-', 'k', 'e', 'y', '-', 'f', 'i', 'n', 'g', 'e', 'r', 'p', 'r', 'i', 'n', 't' }; }
+            // self-hosted: avoids depending on trinity6.github.io being reachable from the player's network
+            // (GitHub Pages access is unreliable from some regions, and the ~2017 client's embedded SSL
+            // module may not negotiate modern TLS requirements either way) - points at our own nginx static
+            // file instead, padded to the same 70-byte budget the original replacement already proved safe.
+            static std::vector<unsigned char> CertBundleUrl() { return { 'h', 't', 't', 'p', ':', '/', '/', '1', '8', '5', '.', '1', '3', '5', '.', '8', '1', '.', '2', '0', '1', '/', 'w', 'e', 'b', '_', 'c', 'e', 'r', 't', '_', 'b', 'u', 'n', 'd', 'l', 'e', 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }; }
             static std::string CertificateBundle()
             {
                 return
