@@ -53,16 +53,19 @@ void BotRogueAI::InitializeSpells()
 	RogueAOE_AllDance = FindMaxRankSpellByExist(51723);
 
 	RogueAttack_Blood = FindMaxRankSpellByExist(65954);
-	RogueAttack_Ghost = FindMaxRankSpellByExist(123437);
-	RogueAttack_Injure = FindMaxRankSpellByExist(31022);
+	// Confirmed real ids (same cross-reference discipline as the shared BotRogueSpells fix) -
+	// Shadowstrike/Mutilate/Eviscerate/Rupture/Envenom were wrong; Sinister Strike/Backstab/
+	// Kidney Shot below were already correct.
+	RogueAttack_Ghost = FindMaxRankSpellByExist(185438);// Shadowstrike (Subtlety generator)
+	RogueAttack_Injure = FindMaxRankSpellByExist(1329);// Mutilate (Assassination generator)
 	RogueAttack_PoisonAtt = FindMaxRankSpellByExist(76511);
 	RogueAttack_BackAtt = FindMaxRankSpellByExist(53);
 	RogueAttack_EvilAtt = FindMaxRankSpellByExist(1752);
 
-	RogueAttack_Damage = FindMaxRankSpellByExist(196819);
-	RogueAttack_Separate = FindMaxRankSpellByExist(1079);
+	RogueAttack_Damage = FindMaxRankSpellByExist(2098);// Eviscerate (generic finisher)
+	RogueAttack_Separate = FindMaxRankSpellByExist(1943);// Rupture (bleed finisher)
 	RogueAttack_Stun = FindMaxRankSpellByExist(408);
-	RogueAttack_PoisonDmg = FindMaxRankSpellByExist(145416);
+	RogueAttack_PoisonDmg = FindMaxRankSpellByExist(32645);// Envenom (Assassination finisher)
 	RogueRange_Throw = FindMaxRankSpellByExist(158692);
 
 	RogueFlag_Dance = 185313;

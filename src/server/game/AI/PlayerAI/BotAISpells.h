@@ -248,16 +248,23 @@ protected:
 	uint32 RogueAOE_AllDance =51723;// 51690			����ɱ��(ս��ϵ)
 
 	uint32 RogueAttack_Blood =65954;// 48660			��Ѫ(����ϵ)
-	uint32 RogueAttack_Ghost =123437;// 14278			���ȹ���(����ϵ) ������+����
-	uint32 RogueAttack_Injure =31022;// 48666			����(��ɱϵ)
+	// Confirmed via Wowhead/wiki cross-reference (2+ sources each, same discipline as Paladin/
+	// Hunter this session): Mutilate/Shadowstrike/Envenom/Rupture/Eviscerate were all wrong -
+	// live testing would've shown zero casts of any Assassination/Subtlety finisher or generator.
+	// Sinister Strike(1752)/Backstab(53)/Kidney Shot(408) below were ALREADY correct - this
+	// class needed id fixes only, not the structural rebuild Hunter needed (combo-point
+	// generator/finisher split was already right).
+	uint32 RogueAttack_Ghost = 185438;// was 123437		Shadowstrike (Subtlety generator)
+	uint32 RogueAttack_Injure = 1329;// was 31022			Mutilate (Assassination generator)
 	uint32 RogueAttack_PoisonAtt =76511;// 5938		����
-	uint32 RogueAttack_BackAtt =53;// 48657			����
-	uint32 RogueAttack_EvilAtt =1752;// 48638			а�񹥻�
+	uint32 RogueAttack_BackAtt =53;// 48657			���� (confirmed: real Backstab)
+	uint32 RogueAttack_EvilAtt =1752;// 48638			а�񹥻� (confirmed: real Sinister Strike)
 
-	uint32 RogueAttack_Damage =196819;// 48668			�޹�
-	uint32 RogueAttack_Separate =1079;// 48672		����
-	uint32 RogueAttack_Stun =408;// 8643				����
-	uint32 RogueAttack_PoisonDmg =145416;// 57993		����
+	uint32 RogueAttack_Damage = 2098;// was 196819		Eviscerate (generic finisher)
+	uint32 RogueAttack_Separate = 1943;// was 1079		Rupture (bleed finisher)
+	uint32 RogueAttack_Stun =408;// 8643				���� (confirmed: real Kidney Shot)
+	uint32 RogueAttack_PoisonDmg = 32645;// was 145416	Envenom (Assassination finisher - unknown
+														// to other specs, safely skipped if not)
 	uint32 RogueAttack_Incision =5171;// 6774			�и�(�����ٶ��սἼ)
 	uint32 RogueRange_Throw =158692;// 48674			����Ͷ��
 

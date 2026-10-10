@@ -214,16 +214,16 @@ void BotRogueSpells::InitializeSpells(Player* player)
 	RogueAOE_AllDance = BotUtility::FindMaxRankSpellByExist(player, 51723);
 
 	RogueAttack_Blood = BotUtility::FindMaxRankSpellByExist(player, 65954);
-	RogueAttack_Ghost = BotUtility::FindMaxRankSpellByExist(player, 123437);
-	RogueAttack_Injure = BotUtility::FindMaxRankSpellByExist(player, 31022);
+	RogueAttack_Ghost = BotUtility::FindMaxRankSpellByExist(player, 185438);
+	RogueAttack_Injure = BotUtility::FindMaxRankSpellByExist(player, 1329);
 	RogueAttack_PoisonAtt = BotUtility::FindMaxRankSpellByExist(player, 76511);
 	RogueAttack_BackAtt = BotUtility::FindMaxRankSpellByExist(player, 53);
 	RogueAttack_EvilAtt = BotUtility::FindMaxRankSpellByExist(player, 1752);
 
-	RogueAttack_Damage = BotUtility::FindMaxRankSpellByExist(player, 196819);
-	RogueAttack_Separate = BotUtility::FindMaxRankSpellByExist(player, 1079);
+	RogueAttack_Damage = BotUtility::FindMaxRankSpellByExist(player, 2098);
+	RogueAttack_Separate = BotUtility::FindMaxRankSpellByExist(player, 1943);
 	RogueAttack_Stun = BotUtility::FindMaxRankSpellByExist(player, 408);
-	RogueAttack_PoisonDmg = BotUtility::FindMaxRankSpellByExist(player, 145416);
+	RogueAttack_PoisonDmg = BotUtility::FindMaxRankSpellByExist(player, 32645);
 	RogueAttack_Incision = BotUtility::FindMaxRankSpellByExist(player, 5171);
 	RogueRange_Throw = BotUtility::FindMaxRankSpellByExist(player, 158692);
 
