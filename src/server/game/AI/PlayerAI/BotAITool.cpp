@@ -439,18 +439,17 @@ Item* BotUtility::StoreNewItemByEntry(Player* player, uint32 entry, int32 count)
 
 namespace
 {
-	// Primary stat each class scales its damage/healing off - the one well-known convention
-	// AC's own scoring tables also key off, re-derived here (not copied) since Legion's
-	// secondary-stat budget is different enough that the rest of AC's weights don't transfer.
-	// Not spec-aware (e.g. enhancement shaman wants agility, not intellect) - a known
-	// simplification for this first version, see EvaluateItemScore's own comment.
+	// Class-only fallback for an unspecialized character (GetSpecializationId() == 0, e.g. a
+	// brand new bot before its first spec pick) - used by GetGearStatWeights below as the
+	// starting point before a recognized spec ID narrows it further. Wrong for a few hybrids at
+	// this class-only granularity (e.g. defaults Shaman/Druid to their most common case), which
+	// is exactly why GetGearStatWeights exists - this is only the fallback, not the real answer.
 	int32 GetPrimaryStatMod(uint8 cls)
 	{
 		switch (cls)
 		{
 		case CLASS_WARRIOR:
 		case CLASS_DEATH_KNIGHT:
-			return ITEM_MOD_STRENGTH;
 		case CLASS_PALADIN:
 			return ITEM_MOD_STRENGTH;
 		case CLASS_HUNTER:
@@ -466,6 +465,173 @@ namespace
 			return ITEM_MOD_STRENGTH;
 		}
 	}
+
+	struct GearStatWeights
+	{
+		int32 primaryStatMod;
+		float crit = 1.0f, haste = 1.0f, mastery = 1.0f, versatility = 1.0f;
+	};
+
+	// Per-class-per-spec secondary stat weights, same architectural shape as AC's
+	// StatsWeightCalculator::GenerateBasicWeights (one big per-spec table assigning a relative
+	// float weight to each stat type) - adapted, not ported line-for-line, because WotLK's stat
+	// budget (hit/expertise/defense/armor penetration rating, the stats AC's table is actually
+	// built around) doesn't exist on this Legion client at all; Legion's real secondary budget
+	// is just Crit/Haste/Mastery/Versatility. Spec IDs are Blizzard's own stable
+	// ChrSpecialization ids (unchanged since Mists introduced them, same ones every modern
+	// client/addon uses - not guessed, not DB-looked-up, since this fork's own
+	// legion_hotfixes.chr_specialization SQL mirror is empty, like several other hotfix mirror
+	// tables found empty this session). Priorities below reflect commonly-cited Legion-era
+	// (~7.2/7.3) community consensus (Icy Veins/Noxxic-tier knowledge), not a per-patch sim like
+	// AC's own numbers - approximate on purpose, see the user-facing discussion that led here.
+	GearStatWeights GetGearStatWeights(Player* bot)
+	{
+		GearStatWeights w;
+		w.primaryStatMod = GetPrimaryStatMod(bot->getClass());
+
+		switch (bot->GetSpecializationId())
+		{
+		// Warrior
+		case 71: // Arms
+			w.primaryStatMod = ITEM_MOD_STRENGTH;
+			w.crit = 1.4f; w.haste = 1.3f; w.mastery = 1.5f; w.versatility = 1.0f;
+			break;
+		case 72: // Fury
+			w.primaryStatMod = ITEM_MOD_STRENGTH;
+			w.crit = 1.2f; w.haste = 1.6f; w.mastery = 1.4f; w.versatility = 1.0f;
+			break;
+		case 73: // Protection
+			w.primaryStatMod = ITEM_MOD_STRENGTH;
+			w.crit = 1.0f; w.haste = 1.4f; w.mastery = 1.3f; w.versatility = 1.5f;
+			break;
+		// Paladin
+		case 65: // Holy
+			w.primaryStatMod = ITEM_MOD_INTELLECT;
+			w.crit = 1.5f; w.haste = 1.4f; w.mastery = 1.6f; w.versatility = 1.1f;
+			break;
+		case 66: // Protection
+			w.primaryStatMod = ITEM_MOD_STRENGTH;
+			w.crit = 1.0f; w.haste = 1.3f; w.mastery = 1.2f; w.versatility = 1.5f;
+			break;
+		case 70: // Retribution
+			w.primaryStatMod = ITEM_MOD_STRENGTH;
+			w.crit = 1.2f; w.haste = 1.4f; w.mastery = 1.6f; w.versatility = 1.0f;
+			break;
+		// Hunter
+		case 253: // Beast Mastery
+			w.primaryStatMod = ITEM_MOD_AGILITY;
+			w.crit = 1.6f; w.haste = 1.2f; w.mastery = 1.4f; w.versatility = 1.0f;
+			break;
+		case 254: // Marksmanship
+			w.primaryStatMod = ITEM_MOD_AGILITY;
+			w.crit = 1.5f; w.haste = 1.2f; w.mastery = 1.4f; w.versatility = 1.0f;
+			break;
+		case 255: // Survival (melee spec in Legion)
+			w.primaryStatMod = ITEM_MOD_AGILITY;
+			w.crit = 1.3f; w.haste = 1.2f; w.mastery = 1.6f; w.versatility = 1.0f;
+			break;
+		// Rogue
+		case 259: // Assassination
+			w.primaryStatMod = ITEM_MOD_AGILITY;
+			w.crit = 1.3f; w.haste = 1.1f; w.mastery = 1.6f; w.versatility = 1.4f;
+			break;
+		case 260: // Outlaw
+			w.primaryStatMod = ITEM_MOD_AGILITY;
+			w.crit = 1.2f; w.haste = 1.1f; w.mastery = 1.4f; w.versatility = 1.6f;
+			break;
+		case 261: // Subtlety
+			w.primaryStatMod = ITEM_MOD_AGILITY;
+			w.crit = 1.3f; w.haste = 1.1f; w.mastery = 1.6f; w.versatility = 1.4f;
+			break;
+		// Priest
+		case 256: // Discipline
+			w.primaryStatMod = ITEM_MOD_INTELLECT;
+			w.crit = 1.5f; w.haste = 1.3f; w.mastery = 1.6f; w.versatility = 1.0f;
+			break;
+		case 257: // Holy
+			w.primaryStatMod = ITEM_MOD_INTELLECT;
+			w.crit = 1.6f; w.haste = 1.5f; w.mastery = 1.3f; w.versatility = 1.0f;
+			break;
+		case 258: // Shadow
+			w.primaryStatMod = ITEM_MOD_INTELLECT;
+			w.crit = 1.3f; w.haste = 1.5f; w.mastery = 1.6f; w.versatility = 1.0f;
+			break;
+		// Death Knight
+		case 250: // Blood
+			w.primaryStatMod = ITEM_MOD_STRENGTH;
+			w.crit = 1.0f; w.haste = 1.3f; w.mastery = 1.5f; w.versatility = 1.6f;
+			break;
+		case 251: // Frost
+			w.primaryStatMod = ITEM_MOD_STRENGTH;
+			w.crit = 1.6f; w.haste = 1.5f; w.mastery = 1.2f; w.versatility = 1.0f;
+			break;
+		case 252: // Unholy
+			w.primaryStatMod = ITEM_MOD_STRENGTH;
+			w.crit = 1.2f; w.haste = 1.5f; w.mastery = 1.6f; w.versatility = 1.0f;
+			break;
+		// Shaman
+		case 262: // Elemental
+			w.primaryStatMod = ITEM_MOD_INTELLECT;
+			w.crit = 1.2f; w.haste = 1.6f; w.mastery = 1.5f; w.versatility = 1.0f;
+			break;
+		case 263: // Enhancement
+			w.primaryStatMod = ITEM_MOD_AGILITY;
+			w.crit = 1.1f; w.haste = 1.6f; w.mastery = 1.5f; w.versatility = 1.0f;
+			break;
+		case 264: // Restoration
+			w.primaryStatMod = ITEM_MOD_INTELLECT;
+			w.crit = 1.5f; w.haste = 1.2f; w.mastery = 1.6f; w.versatility = 1.0f;
+			break;
+		// Mage
+		case 62: // Arcane
+			w.primaryStatMod = ITEM_MOD_INTELLECT;
+			w.crit = 1.3f; w.haste = 1.6f; w.mastery = 1.3f; w.versatility = 1.0f;
+			break;
+		case 63: // Fire
+			w.primaryStatMod = ITEM_MOD_INTELLECT;
+			w.crit = 1.6f; w.haste = 1.5f; w.mastery = 1.2f; w.versatility = 1.0f;
+			break;
+		case 64: // Frost
+			w.primaryStatMod = ITEM_MOD_INTELLECT;
+			w.crit = 1.4f; w.haste = 1.2f; w.mastery = 1.6f; w.versatility = 1.0f;
+			break;
+		// Warlock
+		case 265: // Affliction
+			w.primaryStatMod = ITEM_MOD_INTELLECT;
+			w.crit = 1.2f; w.haste = 1.5f; w.mastery = 1.6f; w.versatility = 1.0f;
+			break;
+		case 266: // Demonology
+			w.primaryStatMod = ITEM_MOD_INTELLECT;
+			w.crit = 1.2f; w.haste = 1.5f; w.mastery = 1.6f; w.versatility = 1.0f;
+			break;
+		case 267: // Destruction
+			w.primaryStatMod = ITEM_MOD_INTELLECT;
+			w.crit = 1.6f; w.haste = 1.5f; w.mastery = 1.2f; w.versatility = 1.0f;
+			break;
+		// Druid
+		case 102: // Balance
+			w.primaryStatMod = ITEM_MOD_INTELLECT;
+			w.crit = 1.3f; w.haste = 1.6f; w.mastery = 1.2f; w.versatility = 1.0f;
+			break;
+		case 103: // Feral
+			w.primaryStatMod = ITEM_MOD_AGILITY;
+			w.crit = 1.3f; w.haste = 1.0f; w.mastery = 1.6f; w.versatility = 1.4f;
+			break;
+		case 104: // Guardian
+			w.primaryStatMod = ITEM_MOD_AGILITY;
+			w.crit = 1.0f; w.haste = 1.2f; w.mastery = 1.5f; w.versatility = 1.5f;
+			break;
+		case 105: // Restoration
+			w.primaryStatMod = ITEM_MOD_INTELLECT;
+			w.crit = 1.3f; w.haste = 1.5f; w.mastery = 1.6f; w.versatility = 1.0f;
+			break;
+		// Hunter/Rogue/Mage/Warlock pure-DPS classes with no tank/healer branch, and
+		// specId == 0 (not yet specialized): keep the flat 1.0f/class-primary-stat fallback.
+		default:
+			break;
+		}
+		return w;
+	}
 }
 
 float BotUtility::EvaluateItemScore(Player* bot, Item const* item, bool isTank)
@@ -478,7 +644,7 @@ float BotUtility::EvaluateItemScore(Player* bot, Item const* item, bool isTank)
 		return 0.0f;
 
 	float score = 0.0f;
-	int32 primaryMod = GetPrimaryStatMod(bot->getClass());
+	GearStatWeights w = GetGearStatWeights(bot);
 	// Tanks want dodge/parry/block/extra-armor as a real priority, closer to stamina than to a
 	// throwaway secondary stat; everyone else only wants it as a mild tiebreaker (still non-zero -
 	// off-tanking/soloing is common enough on this fork that zeroing it outright would be wrong).
@@ -492,13 +658,18 @@ float BotUtility::EvaluateItemScore(Player* bot, Item const* item, bool isTank)
 			continue;
 
 		float weight;
-		if (type == primaryMod)
+		if (type == w.primaryStatMod)
 			weight = 3.0f;
 		else if (type == ITEM_MOD_STAMINA)
 			weight = 1.5f;
-		else if (type == ITEM_MOD_CRIT_RATING || type == ITEM_MOD_HASTE_RATING ||
-			type == ITEM_MOD_MASTERY_RATING || type == ITEM_MOD_VERSATILITY)
-			weight = 1.0f;
+		else if (type == ITEM_MOD_CRIT_RATING)
+			weight = w.crit;
+		else if (type == ITEM_MOD_HASTE_RATING)
+			weight = w.haste;
+		else if (type == ITEM_MOD_MASTERY_RATING)
+			weight = w.mastery;
+		else if (type == ITEM_MOD_VERSATILITY)
+			weight = w.versatility;
 		else if (type == ITEM_MOD_ATTACK_POWER || type == ITEM_MOD_SPELL_POWER)
 			weight = 1.0f;
 		else if (type == ITEM_MOD_DODGE_RATING || type == ITEM_MOD_PARRY_RATING ||
