@@ -358,9 +358,15 @@ Unit* SelfBotAI::ResolveCombatVictim()
 	{
 		// Still never go looking for a fight on our own - only continue what the real client
 		// already selected, or fight back if something is already attacking us (that's not
-		// "picking a target", it's not standing there and eating hits).
+		// "picking a target", it's not standing there and eating hits). Selection alone must
+		// NOT start a fight that doesn't exist yet - confirmed against mod-playerbots' real
+		// master-assist trigger (PlayerbotMgr.cpp: "master->IsInCombat() || bot->IsInCombat()"),
+		// which never looks at the master's current selection at all for this purpose -
+		// GetSelectedUnit() there is only used for explicit actions (pull, trainer), never as an
+		// implicit "start swinging" signal. Without the IsInCombat() gate, merely tabbing/
+		// clicking a hostile mob to check its level made the selfbot attack it on the spot.
 		Unit* selected = me->GetSelectedUnit();
-		bool selectedValid = selected && selected->IsAlive() && me->IsValidAttackTarget(selected);
+		bool selectedValid = selected && selected->IsAlive() && me->IsValidAttackTarget(selected) && me->IsInCombat();
 		if (selectedValid)
 			victim = selected;
 		else if (!me->getAttackers().empty())
