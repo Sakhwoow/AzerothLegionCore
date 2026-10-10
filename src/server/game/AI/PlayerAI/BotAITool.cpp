@@ -17,6 +17,7 @@
 
 #include "DB2Structure.h"
 #include "DB2Stores.h"
+#include <algorithm>
 #include "BotAITool.h"
 #include "Pet.h"
 #include "PlayerBotSession.h"
@@ -66,6 +67,7 @@ bool BotUtility::SelfBotDebug = false;
 bool BotUtility::AutoGearEnabled = false;
 bool BotUtility::AutoGearDebug = false;
 uint32 BotUtility::AutoGearMaxItemLevel = 397;
+uint32 BotUtility::AutoGearMaxQuality = ITEM_QUALITY_RARE;
 bool BotUtility::GuildTaskEnabled = false;
 uint32 BotUtility::GuildTaskChancePercent = 5;
 bool BotUtility::GuildTaskDebug = false;
@@ -528,7 +530,7 @@ float BotUtility::EvaluateItemScore(Player* bot, Item const* item, bool isTank)
 	return score;
 }
 
-bool BotUtility::TryAutoEquipUpgrade(Player* bot, Item* item, bool isTank)
+bool BotUtility::TryAutoEquipUpgrade(Player* bot, Item* item, bool isTank, uint32 maxQuality, uint32 maxItemLevel)
 {
 	if (!AutoGearEnabled || !bot || !item || bot->IsInCombat())
 		return false;
@@ -541,7 +543,11 @@ bool BotUtility::TryAutoEquipUpgrade(Player* bot, Item* item, bool isTank)
 	if (slot == NULL_SLOT)
 		return false; // not equippable gear - a consumable/trade good/quest item looted alongside real gear
 
-	if (item->GetItemLevel(bot) > AutoGearMaxItemLevel)
+	uint32 effectiveQuality = maxQuality ? std::min(maxQuality, AutoGearMaxQuality) : AutoGearMaxQuality;
+	uint32 effectiveItemLevel = maxItemLevel ? std::min(maxItemLevel, AutoGearMaxItemLevel) : AutoGearMaxItemLevel;
+	if (proto->GetQuality() > effectiveQuality)
+		return false;
+	if (item->GetItemLevel(bot) > effectiveItemLevel)
 		return false;
 
 	Item* equipped = bot->GetEquippedItem(EquipmentSlots(slot));
@@ -575,7 +581,7 @@ bool BotUtility::TryAutoEquipUpgrade(Player* bot, Item* item, bool isTank)
 	return true;
 }
 
-bool BotUtility::TryAutoGearFromBags(Player* bot, bool isTank)
+bool BotUtility::TryAutoGearFromBags(Player* bot, bool isTank, uint32 maxQuality, uint32 maxItemLevel)
 {
 	if (!AutoGearEnabled || !bot || bot->IsInCombat())
 		return false;
@@ -583,7 +589,7 @@ bool BotUtility::TryAutoGearFromBags(Player* bot, bool isTank)
 	for (uint8 slot = InventoryPackSlots::INVENTORY_SLOT_ITEM_START; slot < InventoryPackSlots::INVENTORY_SLOT_ITEM_END; slot++)
 	{
 		if (Item* item = bot->GetItemByPos(255, slot))
-			if (TryAutoEquipUpgrade(bot, item, isTank))
+			if (TryAutoEquipUpgrade(bot, item, isTank, maxQuality, maxItemLevel))
 				return true;
 	}
 	for (uint8 i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; ++i)
@@ -594,11 +600,35 @@ bool BotUtility::TryAutoGearFromBags(Player* bot, bool isTank)
 		for (uint32 j = 0; j < bag->GetBagSize(); j++)
 		{
 			if (Item* item = bag->GetItemByPos(uint8(j)))
-				if (TryAutoEquipUpgrade(bot, item, isTank))
+				if (TryAutoEquipUpgrade(bot, item, isTank, maxQuality, maxItemLevel))
 					return true;
 		}
 	}
 	return false;
+}
+
+bool BotUtility::TryUnequipAllToBags(Player* bot)
+{
+	if (!bot)
+		return false;
+
+	for (uint8 slot = EquipmentSlots::EQUIPMENT_SLOT_START; slot < EquipmentSlots::EQUIPMENT_SLOT_END; slot++)
+	{
+		Item* item = bot->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
+		if (!item)
+			continue;
+		if (bot->CanUnequipItem(item->GetPos(), false) != EQUIP_ERR_OK)
+			continue;
+
+		ItemPosCountVec dest;
+		InventoryResult msg = bot->CanStoreItem(NULL_BAG, NULL_SLOT, dest, item, false);
+		if (msg != EQUIP_ERR_OK)
+			break; // out of bag space - stop here, leave whatever's left equipped
+
+		bot->RemoveItem(INVENTORY_SLOT_BAG_0, slot, true);
+		bot->StoreItem(dest, item, true);
+	}
+	return true;
 }
 
 namespace

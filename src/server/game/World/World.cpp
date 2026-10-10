@@ -2535,6 +2535,7 @@ void World::SetInitialWorldSettings()
         BotUtility::AutoGearEnabled = (sConfigMgr->GetIntDefault("autogear_enable", 0) != 0);
         BotUtility::AutoGearDebug = (sConfigMgr->GetIntDefault("autogear_debug", 0) != 0);
         BotUtility::AutoGearMaxItemLevel = sConfigMgr->GetIntDefault("autogear_max_itemlevel", 397);
+        BotUtility::AutoGearMaxQuality = sConfigMgr->GetIntDefault("autogear_max_quality", ITEM_QUALITY_RARE);
 
         BotUtility::GuildTaskEnabled = (sConfigMgr->GetIntDefault("guildtask_enable", 0) != 0);
         int guildTaskChance = sConfigMgr->GetIntDefault("guildtask_chance_percent", 5);

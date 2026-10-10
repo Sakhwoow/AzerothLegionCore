@@ -288,4 +288,15 @@ void EnsureSelfBotStrategiesRegistered()
 	{
 		return new ManualBotValue<bool>(false);
 	});
+	// 0 = use the realm-wide BotUtility::AutoGearMaxQuality/AutoGearMaxItemLevel default -
+	// ".selfbot autogear <color>" / ".selfbot autogear <number>" set a tighter personal choice,
+	// always clamped to the realm ceiling (see TryAutoEquipUpgrade), never looser than it.
+	BotAiObjectContext::RegisterValue("autogear quality", [](Player*) -> UntypedBotValue*
+	{
+		return new ManualBotValue<uint32>(0);
+	});
+	BotAiObjectContext::RegisterValue("autogear ilvl", [](Player*) -> UntypedBotValue*
+	{
+		return new ManualBotValue<uint32>(0);
+	});
 }

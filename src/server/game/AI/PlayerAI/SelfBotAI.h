@@ -67,8 +67,17 @@ public:
 	// combat only - TryAutoGearFromBags/TryAutoEquipUpgrade already refuse mid-combat too, this
 	// is just the earliest, cheapest check). Scans the player's own bags rather than hooking a
 	// loot event, since a selfbot has no AI object for LootHandler.cpp to dynamic_cast to - see
-	// AutoGearSelfAction in SelfBotStrategies.cpp for where this is actually called from.
+	// AutoGearSelfAction in SelfBotStrategies.cpp for where this is actually called from. Reads
+	// this player's own "autogear quality"/"autogear ilvl" override values (0 = use the realm
+	// default) - set via ".selfbot autogear <color>" / ".selfbot autogear <number>".
 	bool TryUseAutoGear();
+
+	// ".selfbot autogear reset" - mirrors AC's "autogear reset": move everything currently
+	// equipped into bags (never destroyed, see BotUtility::TryUnequipAllToBags), then run the
+	// bag-scan repeatedly until nothing more qualifies under the current quality/ilvl limits.
+	// A real, user-invoked one-shot action (unlike TryUseAutoGear, not gated by the "autogear"
+	// enabled toggle - requesting a reset IS the request to act).
+	bool TryResetAndRegear();
 
 	// Phase 8 (command skeleton): exposes the engine/value registry to cs_selfbot.cpp's
 	// subcommand handlers and to the Action adapters in SelfBotStrategies.cpp, so a command

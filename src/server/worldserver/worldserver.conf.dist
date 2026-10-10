@@ -4615,10 +4615,18 @@ selfbot_debug = 0
 #                     Expansion сервера.
 #        Default:     397
 #
+#   autogear_max_quality
+#        Description: Независимый от itemLevel потолок по качеству предмета (как
+#                     AiPlayerbot.AutoGearQualityLimit в AC) - 1=обычное/белое,
+#                     2=необычное/зелёное, 3=редкое/синее, 4=эпик/фиолетовое,
+#                     5=легендарное, 6=артефакт, 7=heirloom.
+#        Default:     3 (редкое - тот же дефолт что у AC)
+#
 
 autogear_enable = 0
 autogear_debug = 0
 autogear_max_itemlevel = 397
+autogear_max_quality = 3
 
 #
 # Гильд-таски для ботов (Phase 9, "Legion Bot Architecture")

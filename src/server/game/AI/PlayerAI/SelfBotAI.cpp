@@ -429,7 +429,34 @@ bool SelfBotAI::TryUseAutoGear()
 	if (me->IsInCombat())
 		return false;
 
-	return BotUtility::TryAutoGearFromBags(me, me->GetRoleForGroup() == ROLE_TANK);
+	uint32 quality = 0, itemLevel = 0;
+	if (BotValue<uint32>* qualityVal = GetContext()->GetValue<uint32>("autogear quality"))
+		quality = qualityVal->Get();
+	if (BotValue<uint32>* ilvlVal = GetContext()->GetValue<uint32>("autogear ilvl"))
+		itemLevel = ilvlVal->Get();
+
+	return BotUtility::TryAutoGearFromBags(me, me->GetRoleForGroup() == ROLE_TANK, quality, itemLevel);
+}
+
+bool SelfBotAI::TryResetAndRegear()
+{
+	if (me->IsInCombat())
+		return false;
+
+	BotUtility::TryUnequipAllToBags(me);
+
+	uint32 quality = 0, itemLevel = 0;
+	if (BotValue<uint32>* qualityVal = GetContext()->GetValue<uint32>("autogear quality"))
+		quality = qualityVal->Get();
+	if (BotValue<uint32>* ilvlVal = GetContext()->GetValue<uint32>("autogear ilvl"))
+		itemLevel = ilvlVal->Get();
+
+	bool isTank = me->GetRoleForGroup() == ROLE_TANK;
+	uint8 maxEquipSlots = EquipmentSlots::EQUIPMENT_SLOT_END - EquipmentSlots::EQUIPMENT_SLOT_START;
+	for (uint8 i = 0; i < maxEquipSlots; i++)
+		if (!BotUtility::TryAutoGearFromBags(me, isTank, quality, itemLevel))
+			break;
+	return true;
 }
 
 bool SelfBotAI::TryCastFirstKnown(Unit* target, std::vector<uint32> const& spellList)

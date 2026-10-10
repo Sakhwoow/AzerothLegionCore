@@ -114,6 +114,11 @@ public:
     // Cataclysm's heroic-raid ceiling (~397, Dragonwrath/heroic 4.3 BiS) - the realm's current
     // Expansion config tier as of this writing.
     static uint32 AutoGearMaxItemLevel;
+    // Second, independent cap, mirroring AC's AutoGearQualityLimit (same default, 3 = rare) -
+    // AC treats quality and item level as two separate ceilings, not one combined number, so
+    // this does too (e.g. a 397 rare and a 200 epic can both be "within limits" depending on
+    // which cap is the binding one for that particular item).
+    static uint32 AutoGearMaxQuality;
     // Phase 9 (guild tasks): also off by default, same reasoning as AutoGear above - a new,
     // unvalidated system (see GuildTaskMgr).
     static bool GuildTaskEnabled;
@@ -160,14 +165,29 @@ public:
     // (WorldSession::HandleAutoEquipItemOpcode) rather than reimplementing the slot/swap logic.
     // No-op (returns false) while AutoGearEnabled is off, mid-combat, or for anything that isn't
     // equippable gear (consumables/trade goods/quest items flowing through the same loot hook).
-    static bool TryAutoEquipUpgrade(Player* bot, Item* item, bool isTank = false);
+    // maxQuality/maxItemLevel of 0 mean "use the realm-wide AutoGearMaxQuality/
+    // AutoGearMaxItemLevel default" - existing Field/Group call sites that don't pass these at
+    // all keep working unchanged. SelfBotAI passes its own per-player override (".selfbot
+    // autogear green" / ".selfbot autogear 200") when the player has set one, same two-tier
+    // "server ceiling, optional tighter personal choice" relationship AC's AutoGearScoreLimit
+    // has with its own "autogear <x>" command argument (x is clamped to the server ceiling,
+    // never allowed to exceed it).
+    static bool TryAutoEquipUpgrade(Player* bot, Item* item, bool isTank = false, uint32 maxQuality = 0, uint32 maxItemLevel = 0);
     // Scans all of the bot's bags (main pack + equipped bags, same traversal
     // FindItemFromAllBag uses) and tries TryAutoEquipUpgrade on the first equippable item that
     // turns out to be a strict upgrade, stopping there - one equip attempt per call, same
     // "don't do everything in one tick" shape as the rest of this fork's bot maintenance
     // checks. For SelfBotAI (a real player's own character, no loot hook to piggyback on)
     // rather than the loot-triggered Field/Group path.
-    static bool TryAutoGearFromBags(Player* bot, bool isTank = false);
+    static bool TryAutoGearFromBags(Player* bot, bool isTank = false, uint32 maxQuality = 0, uint32 maxItemLevel = 0);
+    // Mirrors AC's "autogear reset" (strip gear, then re-gear from whatever's left in bags under
+    // the current limits). Moves equipped items into a free bag slot (Player::SwapItem - the
+    // same safe, undoable move a manual unequip does), never destroys anything - unlike
+    // PlayerBotSetting::UnequipFromAll (which DestroyItem()s outright), that's only ever correct
+    // for disposable, regenerated-every-level bot gear, never for a real player's own items via
+    // .selfbot. Stops and leaves the rest equipped if bag space runs out rather than failing
+    // loudly partway - a selfbot command should never need a GM to clean up after it.
+    static bool TryUnequipAllToBags(Player* bot);
     // Phase 9 (professions): grants Skinning+Leatherworking once (SetSkill's own engine logic -
     // Player::LearnSkillRewardedSpells, called internally - auto-learns every skill-appropriate
     // recipe already in SkillLineAbility data; no recipe spell ids are guessed at here at all).
