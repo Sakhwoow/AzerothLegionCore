@@ -309,6 +309,150 @@ INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Te
 (91149, 0, 4, 'ruRU', 'Я жив$g:а;!'),
 (91149, 0, 5, 'ruRU', 'Ты... ты спас$g:ла; меня!');
 
+-- Stoneblood Temptress (91598) - group0 IDs0,1,3,4 and group2 ID2 English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 91598 AND `Locale` = 'ruRU' AND ((`GroupID`=0 AND `ID` IN (0,1,3,4)) OR (`GroupID`=2 AND `ID`=2));
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(91598, 0, 0, 'ruRU', 'А-а... будь ты проклят$g:а;!'),
+(91598, 0, 1, 'ruRU', 'Сдери плоть и развей кости!'),
+(91598, 0, 3, 'ruRU', 'Глупец! Умри!'),
+(91598, 0, 4, 'ruRU', 'Кррггхааав!'),
+(91598, 2, 2, 'ruRU', 'Нас не остановить!');
+
+-- Absolon (101848) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 101848 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(101848, 0, 0, 'ruRU', 'Тьма рассеивается... спасибо тебе.'),
+(101848, 1, 0, 'ruRU', 'Я покинул город, чтобы найти свою дочь. Она была одной из тех, кто осмелился выступить против Элисанды...'),
+(101848, 2, 0, 'ruRU', 'Её больше нет. Я думал, что присоединюсь к ней в руинах безмозглой оболочкой, но ты...'),
+(101848, 3, 0, 'ruRU', 'Ты спас$g:ла; меня.'),
+(101848, 4, 0, 'ruRU', 'Теперь я поищу укрытие. Надеюсь, мы ещё встретимся, друг.');
+
+-- Tyrande Whisperwind (103022, a third separate entry alongside 104728/104799) - groups
+-- 0,1,3,4,5 English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 103022 AND `Locale` = 'ruRU' AND `GroupID` IN (0,1,3,4,5);
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(103022, 0, 0, 'ruRU', 'Идём. Не задерживай нас.'),
+(103022, 1, 0, 'ruRU', 'Тропа разделяется. Погоди, что это?'),
+(103022, 3, 0, 'ruRU', 'Перья и кровь... Ещё не высохла! Возможно, ещё есть время!'),
+(103022, 4, 0, 'ruRU', 'Порча здесь очень сильна. Что это там, за мостом? Держись рядом.'),
+(103022, 5, 0, 'ruRU', 'Элотир? Клянусь Элуной... только не ты тоже! Ты не видел$g:а; моего мужа?');
+
+-- Arluin (107253) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 107253 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(107253, 0, 0, 'ruRU', 'Лорина найдёшь на площади. Силесса часто бывает у каналов. А Сирилла просто поищи на базаре — его сложно не заметить.'),
+(107253, 1, 0, 'ruRU', 'Так вот чем она занята? Храбрая девчонка. Я бы с радостью помог, но...'),
+(107253, 2, 0, 'ruRU', 'Всегда пожалуйста. Сделай по-моему, и она станет советницей ещё до ужина.'),
+(107253, 3, 0, 'ruRU', 'Арлуин манит тебя подойти.'),
+(107253, 4, 0, 'ruRU', 'Я... пойду домой. Мне нечего делать среди столь уважаемых особ.'),
+(107253, 5, 0, 'ruRU', 'Кстати, я принимаю твою благодарность!');
+
+-- Blood-Thane Lucard (107588) - groups 0,1,2,6 plain text English; group 3 has embedded game
+-- markup (icon/spell-link tags) - translated only the surrounding text, kept markup intact.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 107588 AND `Locale` = 'ruRU' AND `GroupID` IN (0,1,2,3,6);
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(107588, 0, 0, 'ruRU', 'Глупец! Ты правда думал, что кусочек дерева меня остановит?!'),
+(107588, 1, 0, 'ruRU', 'Ты истечёшь кровью!'),
+(107588, 2, 0, 'ruRU', 'Кровь поддерживает меня!'),
+(107588, 3, 0, 'ruRU', '|TInterface\\Icons\\ability_ironmaidens_bloodritual:20|t Лукард начинает |cFFFF0404|Hspell:215000|h[Поглощение живых]|h|r! Скорее убейте корсара!'),
+(107588, 6, 0, 'ruRU', 'Я... не... повержен...');
+
+-- Queen's Reprisal Sailor (89289) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 89289 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(89289, 0, 0, 'ruRU', 'Королева макрура... демон...'),
+(89289, 1, 0, 'ruRU', 'Мы... направлялись в Штормхейм... после Расколотого берега.'),
+(89289, 2, 0, 'ruRU', 'Демон... здесь...'),
+(89289, 4, 0, 'ruRU', 'Мы держали путь в... Штормхейм.');
+
+-- Runeseer Faljar (93093) - fully English, group1 has embedded game markup kept intact.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93093 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93093, 0, 0, 'ruRU', 'Думаешь, сможешь меня остановить? Я повелитель мстительных мертвецов!'),
+(93093, 1, 0, 'ruRU', '|TInterface\\Icons\\INV_Misc_Rune_10:20|t Разбейте рунический камень, чтобы прервать |cFFFF0404|Hspell:208544|h[Рунический бастион]|h|r Толкователя рун Фальяра!'),
+(93093, 2, 0, 'ruRU', 'Глупо было вмешиваться. Мои армии вечны!'),
+(93093, 4, 0, 'ruRU', 'Довольно этого!');
+
+-- Valeera Sanguinar (98102) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 98102 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(98102, 0, 0, 'ruRU', 'Валира соглашается.'),
+(98102, 2, 0, 'ruRU', 'Акаари... твой час настал.'),
+(98102, 3, 0, 'ruRU', 'Акаари отступила наверх, когда мы прибыли. Она вся твоя.'),
+(98102, 4, 0, 'ruRU', 'Вал''зуун, я стану твоей смертью!');
+
+-- Noressa (111318) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 111318 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(111318, 0, 0, 'ruRU', 'Я была так уверена, что он мёртв...'),
+(111318, 1, 0, 'ruRU', 'Норесса быстро пробегает глазами письмо.'),
+(111318, 2, 0, 'ruRU', 'О, Абсолон...'),
+(111318, 3, 0, 'ruRU', 'Спасибо тебе. Я сохраню его слова в своём сердце.');
+
+-- Darkfiend Defiler (93111) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93111 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93111, 0, 0, 'ruRU', 'Дай мне взглянуть на твои внутренности!'),
+(93111, 0, 1, 'ruRU', 'Хозяин...'),
+(93111, 0, 2, 'ruRU', 'Ты опоздал$g:а;... эта земля наша!'),
+(93111, 0, 3, 'ruRU', 'Твоя лунная богиня здесь бессильна!');
+
+-- Lalla Brightweave (93524) - groups 1-4 English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93524 AND `Locale` = 'ruRU' AND `GroupID` IN (1,2,3,4);
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93524, 1, 0, 'ruRU', 'Я только что получила свежую партию рунических кетгутовых нитей, $n. Если у тебя заканчиваются, можешь купить у меня.'),
+(93524, 2, 0, 'ruRU', 'О, $n. У меня есть на продажу шипы фей, если нужны для рецепта сумки.'),
+(93524, 3, 0, 'ruRU', 'Призыв? Конечно! Где, говоришь, он находится?'),
+(93524, 4, 0, 'ruRU', 'Секундочку... вот! Поймала его!');
+
+-- Prince Farondis (106843) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 106843 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(106843, 0, 0, 'ruRU', 'Прошли века с тех пор, как я видел Камень приливов целым, но вот он стоит передо мной.'),
+(106843, 1, 0, 'ruRU', 'Я и мой народ в неоплатном долгу перед тобой.'),
+(106843, 2, 0, 'ruRU', 'Прошу, возвращайся в Азсуну как можно скорее. Многое ещё предстоит сделать, $n.'),
+(106843, 3, 0, 'ruRU', 'Я, как и весь мой народ, обязан$g:а; тебе.');
+
+-- Ruven (110365) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 110365 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(110365, 0, 0, 'ruRU', 'Претендент? Не смеши меня!'),
+(110365, 1, 0, 'ruRU', 'Легион дарует нам бесконечную силу!'),
+(110365, 2, 0, 'ruRU', 'Таким, как ты, меня не одолеть!'),
+(110365, 3, 0, 'ruRU', 'Они... обещали...');
+
+-- Darkfiend Dreadbringer (92789) - groups 1-4 English, same flavor template as Darkfiend Zealot.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 92789 AND `Locale` = 'ruRU' AND `GroupID` IN (1,2,3,4);
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(92789, 1, 0, 'ruRU', 'Добро пожаловать в свой кошмар!'),
+(92789, 2, 0, 'ruRU', 'Глупец... эта земля уже обречена...'),
+(92789, 3, 0, 'ruRU', 'Жаль. Ты мог бы присоединиться к нам...'),
+(92789, 4, 0, 'ruRU', 'Тебе не... сбежать... от своих снов....');
+
+-- Mightstone Rockcaller (100433) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 100433 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(100433, 0, 0, 'ruRU', 'Камень! Повинуйся мне!'),
+(100433, 0, 1, 'ruRU', 'Пусть тьма поглотит тебя!'),
+(100433, 0, 2, 'ruRU', 'Умри, шан ронир!'),
+(100433, 0, 3, 'ruRU', 'Глупый каркун! Посмотрим, как быстро ты умрёшь!');
+
+-- Jandvik Splintershield (100888) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 100888 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(100888, 0, 0, 'ruRU', 'Клянусь клинком!'),
+(100888, 1, 0, 'ruRU', 'От твоей руки я встречаю свой конец...'),
+(100888, 2, 0, 'ruRU', '$R здесь не рады!'),
+(100888, 3, 0, 'ruRU', 'Валькиры, заберите меня!');
+
+-- Syrana Starweaver (101765) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 101765 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(101765, 0, 0, 'ruRU', 'Вот!'),
+(101765, 1, 0, 'ruRU', 'Магия Лотриуса позвала меня. Должно быть, он всё ещё жив! Скорее — помоги нам воссоединиться с остальными.'),
+(101765, 2, 0, 'ruRU', 'Мы двинемся, когда путь будет свободен. Твоя храбрость стоит больше, чем ты думаешь, друг.'),
+(101765, 3, 0, 'ruRU', 'Это магия помраченных эльфов... но она позвала нас.');
+
 -- Mythandros Irongrove (103569) - groups 0-4 English; group 5 already Russian.
 DELETE FROM `creature_text_locale` WHERE `CreatureID` = 103569 AND `Locale` = 'ruRU' AND `GroupID` IN (0,1,2,3,4);
 INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
