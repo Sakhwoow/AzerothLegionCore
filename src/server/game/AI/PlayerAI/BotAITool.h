@@ -192,6 +192,18 @@ public:
     // false (leaves quality untouched) for anything unrecognized, including an empty string.
     // Shared between .selfbot's and a companion bot's "autogear <color>" command parsing.
     static bool ParseGearQualityWord(std::string const& word, uint32& quality);
+    // Assigns a real, weighted-random Legion specialization to a freshly-created bot via
+    // Player::ActivateTalentGroup (the same function dual-spec switching uses) - mirrors AC's
+    // AiPlayerbot.RandomClassSpecProb.<class>.<specno> config (new config key per spec, see
+    // bot_spec_weight_<specId> in worldserver.conf.dist). Found and fixed a real, previously
+    // invisible gap this session: every bot of a class was getting the exact same class-default
+    // spec (confirmed live - every Warrior Arms, every Paladin Retribution, every Druid Balance,
+    // zero tanks/healers anywhere in the population) because nothing ever called this before -
+    // bots only ever got Player::ResetTalentSpecialization()'s single fixed default, via the
+    // ordinary login fallback every other player also goes through. Call once, at creation only
+    // (CreateQueuedPlayerBotForSession) - calling this repeatedly would thrash a bot's spec every
+    // level-up instead of letting it persist like a real player's choice does.
+    static void AssignRandomSpec(Player* bot);
     // Phase 9 (professions): grants Skinning+Leatherworking once (SetSkill's own engine logic -
     // Player::LearnSkillRewardedSpells, called internally - auto-learns every skill-appropriate
     // recipe already in SkillLineAbility data; no recipe spell ids are guessed at here at all).

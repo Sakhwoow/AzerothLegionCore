@@ -893,6 +893,12 @@ bool PlayerBotMgr::CreateQueuedPlayerBotForSession(PlayerBotBaseInfo* pInfo, Wor
 
     newChar.setCinematic(2);
     newChar.SetAtLoginFlag(AT_LOGIN_FIRST);
+    // Without this every bot of a class got the exact same Player::ResetTalentSpecialization()
+    // class-default spec on first login (confirmed live: every Warrior Arms, every Paladin
+    // Retribution, every Druid Balance - zero tanks/healers anywhere) since nothing before this
+    // ever actually chose between a class's real specs. Called once, here at creation, so it
+    // persists through every future login exactly like a real player's own spec choice would.
+    BotUtility::AssignRandomSpec(&newChar);
     newChar.SaveToDB(true);
 
     sWorld->AddCharacterInfo(newChar.GetGUID(), pSession->GetAccountId(),

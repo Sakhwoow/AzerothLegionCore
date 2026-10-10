@@ -17,6 +17,7 @@
 
 #include "DB2Structure.h"
 #include "DB2Stores.h"
+#include "Config.h"
 #include <algorithm>
 #include "BotAITool.h"
 #include "Pet.h"
@@ -776,6 +777,63 @@ bool BotUtility::TryAutoGearFromBags(Player* bot, bool isTank, uint32 maxQuality
 		}
 	}
 	return false;
+}
+
+namespace
+{
+	struct ClassSpecEntry { uint8 cls; uint32 specId; };
+	// Same 27 real, stable Blizzard ChrSpecialization ids as GetGearStatWeights above (Demon
+	// Hunter/Monk excluded - not in this fork's bot class-creation range).
+	ClassSpecEntry const CLASS_SPECS[] = {
+		{ CLASS_WARRIOR, 71 }, { CLASS_WARRIOR, 72 }, { CLASS_WARRIOR, 73 },
+		{ CLASS_PALADIN, 65 }, { CLASS_PALADIN, 66 }, { CLASS_PALADIN, 70 },
+		{ CLASS_HUNTER, 253 }, { CLASS_HUNTER, 254 }, { CLASS_HUNTER, 255 },
+		{ CLASS_ROGUE, 259 }, { CLASS_ROGUE, 260 }, { CLASS_ROGUE, 261 },
+		{ CLASS_PRIEST, 256 }, { CLASS_PRIEST, 257 }, { CLASS_PRIEST, 258 },
+		{ CLASS_DEATH_KNIGHT, 250 }, { CLASS_DEATH_KNIGHT, 251 }, { CLASS_DEATH_KNIGHT, 252 },
+		{ CLASS_SHAMAN, 262 }, { CLASS_SHAMAN, 263 }, { CLASS_SHAMAN, 264 },
+		{ CLASS_MAGE, 62 }, { CLASS_MAGE, 63 }, { CLASS_MAGE, 64 },
+		{ CLASS_WARLOCK, 265 }, { CLASS_WARLOCK, 266 }, { CLASS_WARLOCK, 267 },
+		{ CLASS_DRUID, 102 }, { CLASS_DRUID, 103 }, { CLASS_DRUID, 104 }, { CLASS_DRUID, 105 },
+	};
+}
+
+void BotUtility::AssignRandomSpec(Player* bot)
+{
+	if (!bot)
+		return;
+
+	std::vector<uint32> candidates;
+	std::vector<float> weights;
+	float totalWeight = 0.0f;
+	for (ClassSpecEntry const& entry : CLASS_SPECS)
+	{
+		if (entry.cls != bot->getClass())
+			continue;
+		float weight = sConfigMgr->GetFloatDefault(("bot_spec_weight_" + std::to_string(entry.specId)).c_str(), 1.0f);
+		if (weight <= 0.0f)
+			continue;
+		candidates.push_back(entry.specId);
+		weights.push_back(weight);
+		totalWeight += weight;
+	}
+	if (candidates.empty())
+		return;
+
+	float roll = frand(0.0f, totalWeight);
+	uint32 chosenSpecId = candidates.back();
+	for (size_t i = 0; i < candidates.size(); ++i)
+	{
+		if (roll <= weights[i])
+		{
+			chosenSpecId = candidates[i];
+			break;
+		}
+		roll -= weights[i];
+	}
+
+	if (ChrSpecializationEntry const* spec = sChrSpecializationStore.LookupEntry(chosenSpecId))
+		bot->ActivateTalentGroup(spec);
 }
 
 bool BotUtility::ParseGearQualityWord(std::string const& word, uint32& quality)

@@ -4646,6 +4646,64 @@ autogear_max_itemlevel = 397
 autogear_max_quality = 3
 
 #
+# Распределение специализаций ботов (найдено и исправлено в этой сессии: без этого ВСЕ боты
+# одного класса получали один и тот же дефолтный спек Legion - подтверждено вживую: все Воины
+# Arms(71), все Паладины Retribution(70), все Друиды Balance(102), ни одного танка/хилера во
+# всей популяции). Назначается ОДИН раз при создании персонажа (PlayerBotMgr.cpp,
+# CreateQueuedPlayerBotForSession) через Player::ActivateTalentGroup - тот же метод что
+# переключение спека через интерфейс - и дальше сохраняется как обычный выбор игрока.
+#
+# bot_spec_weight_<specId> = <вес>
+#        Description: Относительный вес при случайном выборе спека для класса (как
+#                     AiPlayerbot.RandomClassSpecProb в AC, но без привязки к номеру слота -
+#                     у Legion ID спека сам по себе уникален и однозначно указывает класс).
+#                     0 или отсутствие ключа - спек исключён из выбора для этого класса.
+#        Default:     1.0 для каждого (равные шансы)
+#
+
+# Воин (Warrior)
+bot_spec_weight_71 = 1.0  # Arms
+bot_spec_weight_72 = 1.0  # Fury
+bot_spec_weight_73 = 1.0  # Protection
+# Паладин (Paladin)
+bot_spec_weight_65 = 1.0  # Holy
+bot_spec_weight_66 = 1.0  # Protection
+bot_spec_weight_70 = 1.0  # Retribution
+# Охотник (Hunter)
+bot_spec_weight_253 = 1.0 # Beast Mastery
+bot_spec_weight_254 = 1.0 # Marksmanship
+bot_spec_weight_255 = 1.0 # Survival
+# Разбойник (Rogue)
+bot_spec_weight_259 = 1.0 # Assassination
+bot_spec_weight_260 = 1.0 # Outlaw
+bot_spec_weight_261 = 1.0 # Subtlety
+# Жрец (Priest)
+bot_spec_weight_256 = 1.0 # Discipline
+bot_spec_weight_257 = 1.0 # Holy
+bot_spec_weight_258 = 1.0 # Shadow
+# Рыцарь Смерти (Death Knight)
+bot_spec_weight_250 = 1.0 # Blood
+bot_spec_weight_251 = 1.0 # Frost
+bot_spec_weight_252 = 1.0 # Unholy
+# Шаман (Shaman)
+bot_spec_weight_262 = 1.0 # Elemental
+bot_spec_weight_263 = 1.0 # Enhancement
+bot_spec_weight_264 = 1.0 # Restoration
+# Маг (Mage)
+bot_spec_weight_62 = 1.0  # Arcane
+bot_spec_weight_63 = 1.0  # Fire
+bot_spec_weight_64 = 1.0  # Frost
+# Чернокнижник (Warlock)
+bot_spec_weight_265 = 1.0 # Affliction
+bot_spec_weight_266 = 1.0 # Demonology
+bot_spec_weight_267 = 1.0 # Destruction
+# Друид (Druid)
+bot_spec_weight_102 = 1.0 # Balance
+bot_spec_weight_103 = 1.0 # Feral
+bot_spec_weight_104 = 1.0 # Guardian
+bot_spec_weight_105 = 1.0 # Restoration
+
+#
 # Гильд-таски для ботов (Phase 9, "Legion Bot Architecture")
 #
 #   guildtask_enable
