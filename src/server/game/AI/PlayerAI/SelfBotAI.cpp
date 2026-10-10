@@ -24,6 +24,9 @@
 #include "SpellMgr.h"
 #include "MotionMaster.h"
 #include "Log.h"
+#include "BotAiObjectContext.h"
+#include "BotEngine.h"
+#include "SelfBotStrategies.h"
 
 namespace
 {
@@ -61,6 +64,24 @@ m_ActionTick(0)
 	uint8 cls = me ? me->getClass() : 0;
 	if (cls == 1 || cls == 4) // Warrior, Rogue: no mana resource
 		m_NeedMana = false;
+
+	EnsureSelfBotStrategiesRegistered();
+	m_Context = std::make_unique<BotAiObjectContext>(me);
+	m_Engine = std::make_unique<BotEngine>(me, m_Context.get());
+	m_Engine->AddStrategy("heal");
+	m_Engine->AddStrategy("rotation");
+	m_Engine->AddStrategy("buff");
+	m_Engine->AddStrategy("follow");
+}
+
+SelfBotAI::~SelfBotAI() { }
+
+void SelfBotAI::SetHealEnabled(bool enabled)
+{
+	if (enabled)
+		m_Engine->AddStrategy("heal");
+	else
+		m_Engine->RemoveStrategy("heal");
 }
 
 namespace
@@ -130,6 +151,41 @@ namespace
 		default: return none;
 		}
 	}
+
+	// One well-known, long-stable self-buff base id per class - same "hand-picked classic rank
+	// 1 id, resolved via FindMaxRankSpellByExist" convention as the two tables above, not pulled
+	// from BotAISpells.h's Legion-specific per-spec tables. No entry for Rogue - classic rogues
+	// have no real self-buff spell (poisons need reagents/weapon-application handling, out of
+	// scope here). Confidence follows the same pattern as the heal table: these are the
+	// well-documented classic ids for each spell, not yet individually confirmed against a live
+	// character of every class on this fork.
+	std::vector<uint32> const& GetClassBuffBaseSpells(uint8 cls)
+	{
+		static std::vector<uint32> const warrior = { 6673 };      // Battle Shout
+		static std::vector<uint32> const paladin = { 20217 };     // Blessing of Kings
+		static std::vector<uint32> const hunter = { 13165 };      // Aspect of the Hawk
+		static std::vector<uint32> const priest = { 1243 };       // Power Word: Fortitude
+		static std::vector<uint32> const deathKnight = { 57330 }; // Horn of Winter
+		static std::vector<uint32> const shaman = { 324 };        // Lightning Shield
+		static std::vector<uint32> const mage = { 1459 };         // Arcane Intellect
+		static std::vector<uint32> const warlock = { 687 };       // Demon Armor
+		static std::vector<uint32> const druid = { 1126 };        // Mark of the Wild
+		static std::vector<uint32> const none;
+
+		switch (cls)
+		{
+		case 1: return warrior;
+		case 2: return paladin;
+		case 3: return hunter;
+		case 5: return priest;
+		case 6: return deathKnight;
+		case 7: return shaman;
+		case 8: return mage;
+		case 9: return warlock;
+		case 11: return druid;
+		default: return none;
+		}
+	}
 }
 
 void SelfBotAI::SetActive(bool active)
@@ -140,6 +196,7 @@ void SelfBotAI::SetActive(bool active)
 
 	m_RotationSpells.clear();
 	m_HealSpells.clear();
+	m_BuffSpells.clear();
 	if (active)
 	{
 		for (uint32 baseId : GetClassRotationBaseSpells(me->getClass()))
@@ -154,6 +211,12 @@ void SelfBotAI::SetActive(bool active)
 			if (known)
 				m_HealSpells.push_back(known);
 		}
+		for (uint32 baseId : GetClassBuffBaseSpells(me->getClass()))
+		{
+			uint32 known = BotUtility::FindMaxRankSpellByExist(me, baseId);
+			if (known)
+				m_BuffSpells.push_back(known);
+		}
 	}
 
 	if (BotUtility::SelfBotDebug)
@@ -164,8 +227,12 @@ void SelfBotAI::SetActive(bool active)
 		std::string healList;
 		for (uint32 id : m_HealSpells)
 			healList += std::to_string(id) + " ";
-		TC_LOG_INFO("server.loading", ">> SelfBot: %s (%s) %s (rotation: %s) (heal: %s)", me->GetName().c_str(), me->GetGUID().ToString().c_str(),
-			active ? "enabled" : "disabled", knownList.empty() ? "none" : knownList.c_str(), healList.empty() ? "none" : healList.c_str());
+		std::string buffList;
+		for (uint32 id : m_BuffSpells)
+			buffList += std::to_string(id) + " ";
+		TC_LOG_INFO("server.loading", ">> SelfBot: %s (%s) %s (rotation: %s) (heal: %s) (buff: %s)", me->GetName().c_str(), me->GetGUID().ToString().c_str(),
+			active ? "enabled" : "disabled", knownList.empty() ? "none" : knownList.c_str(), healList.empty() ? "none" : healList.c_str(),
+			buffList.empty() ? "none" : buffList.c_str());
 	}
 }
 
@@ -195,11 +262,13 @@ void SelfBotAI::Update(uint32 diff)
 	if (!CanAct())
 		return;
 
-	// Heal check runs before the attack rotation and, if it actually casts something, skips
-	// combat for this tick - both share the GCD, so trying to also attack-cast the same tick
-	// would just fail harmlessly anyway, but skipping is cleaner and avoids a wasted log line.
-	if (!TryUseHealSpell())
-		UpdateCombat();
+	// Phase 7: heal-vs-rotation exclusivity is now arbitrated by m_Engine instead of this
+	// explicit if/else - "heal ally" carries a higher relevance than "rotation spell" (see
+	// Strategies/SelfBotStrategies.cpp), so the engine tries heal first and automatically falls
+	// through to rotation only when HealAllySpellAction::Execute() returns false, same as
+	// before. Neither action needs an externally-supplied target (heal picks its own ally,
+	// rotation resolves its own victim via ResolveCombatVictim()), so there's nothing to pass.
+	m_Engine->DoNextAction(nullptr);
 
 	TryUseSelfPotion();
 }
@@ -263,7 +332,7 @@ Unit* SelfBotAI::FindGroupAssistTarget() const
 	return nullptr;
 }
 
-void SelfBotAI::UpdateCombat()
+Unit* SelfBotAI::ResolveCombatVictim()
 {
 	Unit* victim = me->GetVictim();
 	if (!victim || !victim->IsAlive())
@@ -296,10 +365,17 @@ void SelfBotAI::UpdateCombat()
 				uint32(me->getAttackers().size()), victim ? victim->GetName().c_str() : "none");
 
 		if (!victim)
-			return;
+			return nullptr;
 
 		me->Attack(victim, true);
 	}
+
+	// Phase 8 (".selfbot stay"): skip the chase-into-range step entirely when the player has
+	// toggled "stay" on - keeps fighting/casting from wherever they already are instead of
+	// being dragged into melee, useful for ranged specs. Attack() above still happens
+	// regardless (never refuses to fight back), only the movement is suppressed.
+	if (BotValue<bool>* stay = m_Context->GetValue<bool>("stay"); stay && stay->Get())
+		return victim;
 
 	// Walk into range if needed. MoveChase is the same engine-native primitive creature AI
 	// uses for this everywhere else in the core, called unconditionally every time - confirmed
@@ -317,15 +393,34 @@ void SelfBotAI::UpdateCombat()
 		TC_LOG_INFO("server.loading", ">> SelfBot: %s combat victim=%s dist=%.1f motionType=%u",
 			me->GetName().c_str(), victim->GetName().c_str(), me->GetDistance(victim), motionType);
 
-	TryUseRotationSpell(victim);
+	return victim;
 }
 
-void SelfBotAI::TryUseRotationSpell(Unit* target)
+bool SelfBotAI::TryUseRotationSpell(Unit* target)
 {
 	if (!target)
-		return;
+		return false;
 
-	TryCastFirstKnown(target, m_RotationSpells);
+	return TryCastFirstKnown(target, m_RotationSpells);
+}
+
+bool SelfBotAI::TryUseBuffSpell()
+{
+	if (m_BuffSpells.empty())
+		return false;
+
+	// Pre-pull maintenance only - never interrupts an actual fight to refresh a buff.
+	if (me->IsInCombat())
+		return false;
+
+	for (uint32 spellId : m_BuffSpells)
+	{
+		if (me->HasAura(spellId))
+			continue;
+		if (TryCastFirstKnown(me, { spellId }))
+			return true;
+	}
+	return false;
 }
 
 bool SelfBotAI::TryCastFirstKnown(Unit* target, std::vector<uint32> const& spellList)

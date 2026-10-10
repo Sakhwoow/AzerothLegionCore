@@ -450,6 +450,12 @@ void WorldSession::HandleChatMessage(ChatMsg type, uint32 lang, std::string msg,
             WorldPackets::Chat::Chat packet;
             packet.Initialize(ChatMsg(type), Language(lang), sender, nullptr, msg);
             group->BroadcastPacket(packet.Write(), false);
+
+            // Mirrors the CHAT_MSG_PARTY branch above - group-say bot commands ("summon" etc.)
+            // never reached raid members at all, only party ones, since this call was simply
+            // missing here.
+            if (type == CHAT_MSG_RAID_LEADER)
+                group->ProcessGroupBotCommand(GetPlayer(), msg);
             break;
         }
         case CHAT_MSG_RAID_WARNING:

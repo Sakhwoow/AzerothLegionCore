@@ -1887,6 +1887,10 @@ void World::SetInitialWorldSettings()
     // SetMax() call later in LoadConfigSettings only re-reads the online cap at runtime; the
     // account pool itself is only ever grown here, at startup.
     sPlayerBotMgr->SetBotAccountAmount(sConfigMgr->GetIntDefault("AiPlayerbot.RandomBotMaxCount", 180));
+    // Same idea for the AccountBot pool ("accountbotN" accounts) - off by default (0), since
+    // these were previously only ever provisioned manually via the external WoWTool. Raising
+    // this auto-creates accounts up to the target count at startup; it never deletes any.
+    sPlayerBotMgr->SetAccountBotAmount(sConfigMgr->GetIntDefault("AiPlayerbot.AccountBotMaxCount", 0));
 
     TC_LOG_INFO("server.loading", "Loading Player bot base store...");
     sPlayerBotMgr->LoadPlayerBotBaseInfo();
@@ -2518,6 +2522,7 @@ void World::SetInitialWorldSettings()
         int questbotMaxLevel = sConfigMgr->GetIntDefault("questbot_maxlevel", 20);
         BotUtility::QuestAIMaxLevel = uint32(questbotMaxLevel > 0 ? questbotMaxLevel : 0);
         BotUtility::QuestAIDebug = (sConfigMgr->GetIntDefault("questbot_debug", 0) != 0);
+        BotUtility::QuestAIWorldQuestEnabled = (sConfigMgr->GetIntDefault("questbot_worldquest_enable", 0) != 0);
 
         int selfbotLevel = sConfigMgr->GetIntDefault("selfbot_level", 1);
         if (selfbotLevel < 0)
@@ -2526,6 +2531,21 @@ void World::SetInitialWorldSettings()
             selfbotLevel = 3;
         BotUtility::SelfBotLevel = uint32(selfbotLevel);
         BotUtility::SelfBotDebug = (sConfigMgr->GetIntDefault("selfbot_debug", 0) != 0);
+
+        BotUtility::AutoGearEnabled = (sConfigMgr->GetIntDefault("autogear_enable", 0) != 0);
+        BotUtility::AutoGearDebug = (sConfigMgr->GetIntDefault("autogear_debug", 0) != 0);
+
+        BotUtility::GuildTaskEnabled = (sConfigMgr->GetIntDefault("guildtask_enable", 0) != 0);
+        int guildTaskChance = sConfigMgr->GetIntDefault("guildtask_chance_percent", 5);
+        if (guildTaskChance < 0)
+            guildTaskChance = 0;
+        if (guildTaskChance > 100)
+            guildTaskChance = 100;
+        BotUtility::GuildTaskChancePercent = uint32(guildTaskChance);
+        BotUtility::GuildTaskDebug = (sConfigMgr->GetIntDefault("guildtask_debug", 0) != 0);
+
+        BotUtility::ProfessionEnabled = (sConfigMgr->GetIntDefault("profession_enable", 0) != 0);
+        BotUtility::ProfessionDebug = (sConfigMgr->GetIntDefault("profession_debug", 0) != 0);
 
         Json::Value jsonDiminishing = sConfigMgr->GetIntDefault("diminishing", 1);
         BotUtility::ControllSpellDiminishing = (sConfigMgr->GetIntDefault("diminishing", 1) != 0) ? true : false;

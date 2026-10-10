@@ -23,8 +23,11 @@
 #include "SpellMgr.h"
 #include "PlayerBotSetting.h"
 #include "GridNotifiers.h"
+#include <functional>
 #include <mutex>
+#include <unordered_map>
 
+class Item;
 class Player;
 class BotBGAIMovement;
 class BotAIVehicleMovement3D;
@@ -49,6 +52,17 @@ public:
 
 	Player* GetAIPayer() { return me; }
 	void ProcessBotCommand(Player* srcPlayer, std::string cmd);
+
+	// Phase 9 ("Legion Bot Architecture" plan): a registered name -> handler table, mirroring
+	// AC's ChatTriggerContext creators map, instead of ProcessBotCommand's old long if/else
+	// chain - adding a command is now a map entry, not an edit to that function. Lambdas are
+	// defined inside this (a BotGroupAI static member) so they keep member access to protected
+	// Process*Command()/m_ForceFlee/etc, same as if they were written directly in
+	// ProcessBotCommand. The handler signature is uniform (srcPlayer, param) even for commands
+	// that need neither, so every entry fits one map regardless of the wrapped method's own
+	// signature.
+	using CommandHandler = std::function<void(BotGroupAI*, Player*, std::string const&)>;
+	static std::unordered_map<std::string, CommandHandler> const& GetCommandDispatchTable();
 	void DamageDealt(Unit* victim, uint32& damage, DamageEffectType damageType) override;
 	void DamageEndure(Unit* attacker, uint32& damage, DamageEffectType damageType);
 	void UpdateAI(uint32 diff) override;
@@ -71,7 +85,11 @@ public:
 	bool CanExecuteSeduce();
 	virtual uint32 GetSeducePriority() { return 0; }
 	virtual void OnLevelUp(uint32 talentType);
-	void OnLootedItem(uint32 entry);
+	// Phase 9 (gear scoring): now takes the actual Item* (LootHandler.cpp/Group.cpp both have
+	// it in scope at the call site already) instead of just the entry id, so this can run
+	// BotUtility::TryAutoEquipUpgrade on it, in addition to the existing loot-notification
+	// tracking (m_LootedItems) this already did.
+	void OnLootedItem(Item* item);
 	void DelayGiveXP(uint32 xp) { m_DelayGiveXP.DelayAddXP(xp); }
 	void SearchCreatureListFromRange(Unit* center, NearCreatureVec& nearCreatures, float range, bool selfFaction);
 	void ToggleFliterCreature(Creature* pCreature, bool fliter);
@@ -107,6 +125,23 @@ protected:
 	void ProcessUseItem(Player* srcPlayer, std::string& equipLink);
 	void ProcessTalent(Player* srcPlayer, std::string& talentText);
 	void ProcessSummonRiteSpell(Player* srcPlayer);
+
+	// Phase 9 ("Legion Bot Architecture" plan): read-only/low-risk commands added to close part
+	// of the gap with AC's ~138-command whisper surface - picked the ones that reuse engine
+	// data/methods already on hand rather than needing new subsystems.
+	void ProcessStatsCommand(Player* srcPlayer);
+	void ProcessSpellsCommand(Player* srcPlayer);
+	void ProcessPositionCommand(Player* srcPlayer);
+	void ProcessRangeCommand(Player* srcPlayer);
+	void ProcessRepairCommand(Player* srcPlayer);
+	// ".sell" - vendor-sells every Poor-quality (grey) item across all bags for its listed sell
+	// price, same "no vendor-distance check" convention ProcessRepairCommand already uses.
+	// Never touches anything above Poor quality - a real upgrade decision is AutoGear's job, not
+	// this command's; this only ever clears out junk nobody would want to keep.
+	void ProcessSellCommand(Player* srcPlayer);
+	// ".pet attack" dispatch helper - looks up the caller's current target and forwards through
+	// the virtual CommandPetAttack() hook (no-op for classes without a pet).
+	void ProcessPetAttackCommand(Player* srcPlayer);
 
 protected:
 	void ProcessHorror(uint32 diff);
@@ -182,6 +217,9 @@ public:
 	virtual bool IsRangeBotAI();
 	virtual bool IsHealerBotAI();
 	virtual bool IsAttacker() { return true; }
+	// ".pet attack" whisper command - no-op by default (most classes have no pet); overridden
+	// by the pet classes to reuse their own existing PetAction() rather than duplicating it.
+	virtual void CommandPetAttack(Unit* /*target*/) { }
 
 protected:
 	int32 m_UpdateTick;

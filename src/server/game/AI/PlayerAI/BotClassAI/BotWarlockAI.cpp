@@ -19,6 +19,8 @@
 #include "PlayerBotSession.h"
 #include "Pet.h"
 #include "BotBGAIMovement.h"
+#include "CellImpl.h"
+#include "GridNotifiersImpl.h"
 #include "Group.h"
 #include "SpellHistory.h"
 #include "MotionMaster.h"
@@ -928,7 +930,11 @@ uint32 BotWarlockAI::TryCastSummonRiteSpell()
 	std::list<GameObject*> goResults;
 	Trinity::GameObjectInRangeCheck checkerGO(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), BOTAI_SEARCH_RANGE);
 	Trinity::GameObjectListSearcher<Trinity::GameObjectInRangeCheck> searcherGO(me, goResults, checkerGO);
-	//me->VisitNearbyGridObject(BOTAI_SEARCH_RANGE, searcherGO);
+	CellCoord pair(Trinity::ComputeCellCoord(me->GetPositionX(), me->GetPositionY()));
+	Cell cell(pair);
+	cell.SetNoCreate();
+	TypeContainerVisitor<Trinity::GameObjectListSearcher<Trinity::GameObjectInRangeCheck>, GridTypeMapContainer> visitorGO(searcherGO);
+	cell.Visit(pair, visitorGO, *me->GetMap(), *me, BOTAI_SEARCH_RANGE);
 	for (GameObject* go : goResults)
 	{
 		if (go->GetSpellId() == WarlockIDLE_SummonRite)

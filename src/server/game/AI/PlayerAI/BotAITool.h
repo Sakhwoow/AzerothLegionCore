@@ -68,6 +68,7 @@ enum BOTAI_WORKTYPE
 struct SpellEntry;
 class Player;
 class Group;
+class GameObject;
 class BotBGAIMovement;
 class BotFieldAI;
 
@@ -90,8 +91,33 @@ public:
     static uint32 QuestAIPercent;
     static uint32 QuestAIMaxLevel;
     static bool QuestAIDebug;
+    // Separate sub-toggle, off by default even once QuestAIEnabled is on: world quests have a
+    // different lifecycle (time-limited, not always in the usual home-zone radius) than the
+    // static quests BotAIQuestDirector was originally built around. Confirmed via the live
+    // Legion world DB that this isn't blocked by the existing IsDaily/IsWeekly/IsRepeatable
+    // exclusion already in IsQuestWorthDoing() (of 1133 real world-quest rows, only 6/5/0 trip
+    // those flags) - so this toggle is the only thing standing between "on" and actually trying
+    // them, and should stay separately gated until soak-tested on its own.
+    static bool QuestAIWorldQuestEnabled;
     static uint32 SelfBotLevel;
     static bool SelfBotDebug;
+    // Phase 9 ("Legion Bot Architecture" plan, gear scoring): off by default on purpose - this
+    // is a fresh, deliberately simple scoring approximation (see EvaluateItemScore), not a
+    // ported, battle-tested system like AC's, so it should be turned on deliberately per-realm
+    // after a live check, not assumed safe everywhere by default.
+    static bool AutoGearEnabled;
+    static bool AutoGearDebug;
+    // Phase 9 (guild tasks): also off by default, same reasoning as AutoGear above - a new,
+    // unvalidated system (see GuildTaskMgr).
+    static bool GuildTaskEnabled;
+    static uint32 GuildTaskChancePercent;
+    static bool GuildTaskDebug;
+    // Phase 9 (professions - gathering/crafting): same reasoning again, off by default. Grants
+    // Skinning+Leatherworking only (a deliberately small first version - Mining/Herbalism need a
+    // GameObject chest-interaction mechanism this fork's GameObject::Use() doesn't appear to
+    // implement at all, confirmed by reading it; left out rather than guessed at - see the plan).
+    static bool ProfessionEnabled;
+    static bool ProfessionDebug;
 
 public:
     static SpellEntry* BuildNewArenaSpellEntry();
@@ -110,6 +136,61 @@ public:
     static Item* StoreNewItemByEntry(Player* player, uint32 entry, int32 count = 1);
     static uint32 FindMaxRankSpellByExist(Player* player, uint32 spellID);
     static uint32 FindPetMaxRankSpellByExist(Player* player, uint32 spellID);
+    // Phase 9 (gear scoring): a deliberately simple weighted-stat sum for comparing two items
+    // in the same equip slot for a given bot - NOT a port of AC's scoring (Legion's secondary
+    // stat budget, Crit/Haste/Mastery/Versatility with no hit/expertise, has no WotLK analog to
+    // copy), just a fresh approximation. Weights primary stat for the bot's class highest,
+    // stamina next, the 4 Legion secondaries roughly equally, ignores dead WotLK/WoD-era stats
+    // (hit/expertise/resilience ratings, the old CR_* bonus stats). Good enough to catch a clear
+    // upgrade/downgrade, not a replacement for a theorycrafted stat priority per spec. Takes the
+    // live Item (not just its template) so armor/weapon-damage scale off Item::GetItemLevel() -
+    // the real, bonus-ID-adjusted level - rather than the template's flat base level; stat values
+    // themselves still come from the template (bonus-scaled stats are a separate, bigger task).
+    static float EvaluateItemScore(Player* bot, Item const* item, bool isTank = false);
+    // Auto-equips `item` in place of whatever the bot currently has in that slot if (and only
+    // if) EvaluateItemScore says it's a strict upgrade. Reuses the exact simulated-packet
+    // mechanism ProcessUpequip already uses for master-commanded equips
+    // (WorldSession::HandleAutoEquipItemOpcode) rather than reimplementing the slot/swap logic.
+    // No-op (returns false) while AutoGearEnabled is off, mid-combat, or for anything that isn't
+    // equippable gear (consumables/trade goods/quest items flowing through the same loot hook).
+    static bool TryAutoEquipUpgrade(Player* bot, Item* item, bool isTank = false);
+    // Phase 9 (professions): grants Skinning+Leatherworking once (SetSkill's own engine logic -
+    // Player::LearnSkillRewardedSpells, called internally - auto-learns every skill-appropriate
+    // recipe already in SkillLineAbility data; no recipe spell ids are guessed at here at all).
+    // No-op if the bot already has Skinning (covers "already granted" and "a selfbot/real player
+    // who picked their own professions" alike, even though this is only ever called for bots).
+    static void GrantStarterProfessions(Player* bot);
+    // Finds a nearby creature corpse that's become skinnable (UNIT_FLAG_SKINNABLE, set by the
+    // engine itself once normal loot is fully taken - see Creature::AllLootRemovedFromCorpse)
+    // and, if in range, casts the universal Skinning spell (8613, unchanged since Classic) on
+    // it. Returns the target so the caller can walk to it first if it's not in range yet, same
+    // two-phase shape as BotAIFindNearLoot::DoFindLoot's own corpse-walk-then-loot pattern -
+    // called from inside that exact function as a fallback when there's nothing left to loot
+    // normally.
+    static Creature* TryAutoSkin(Player* bot, float range);
+    // Mining/Herbalism, added once the user confirmed gathering works live for real players.
+    // GameObject::Use()'s switch genuinely has no GAMEOBJECT_TYPE_GATHERING_NODE case (read line
+    // by line, twice) and HandleLootOpcode rejects GameObject guids outright, so whatever the
+    // real client path is wasn't found in the source - almost certainly SmartAI data
+    // (smart_scripts rows per node entry), invisible to a code search. Sidesteps that entirely:
+    // Player::SendLoot(guid, LOOT_NONE) (Player.cpp) is the actual generic primitive that fills
+    // loot from GetGOInfo()->GetLootId() and opens the loot window, regardless of GO type or who
+    // calls it - confirmed by reading it, it's the same call fishing already uses. Finds the
+    // nearest GAMEOBJECT_TYPE_GATHERING_NODE in GO_READY state via the engine's own
+    // WorldObject::FindNearestGameObjectOfType and calls SendLoot directly once in range, same
+    // two-phase (walk-then-act) shape as TryAutoSkin. Does not check the node's required skill
+    // level (Lock_ reference, field "open") before attempting - a deliberate v1 simplification,
+    // not a guess: starter skill already follows bot level (GrantStarterProfessions), so this
+    // mostly self-corrects in practice.
+    static GameObject* TryAutoGather(Player* bot, float range);
+    // Tries every known spell with a SPELL_EFFECT_CREATE_ITEM effect (the universal mechanical
+    // shape of every crafting recipe in WoW, not a guessed list) whose reagents the bot actually
+    // has, and casts the first one that's affordable. A correct, complete MECHANISM as of today
+    // - but a bot has nothing to craft until it actually knows a recipe, and nothing currently
+    // grants recipes beyond whatever GrantStarterProfessions's SetSkill call auto-learned at the
+    // starting skill level (see its own comment) - a trainer-visit/skill-up feature to grant
+    // more over time is a natural next step, not built yet.
+    static bool TryAutoCraft(Player* bot);
     static void PlayerBotTogglePVP(Player* player, bool pvp);
     static void TryTeleportHome(BotFieldAI* pAI);
     static Position GetPositionFromGroup(Player* pCenterPlayer, ObjectGuid self, Group* pGroup);

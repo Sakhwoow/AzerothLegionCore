@@ -26,6 +26,7 @@
 #include "GridNotifiers.h"
 #include <mutex>
 
+class Item;
 class Player;
 class BotBGAIMovement;
 
@@ -63,6 +64,12 @@ public:
 	virtual void OnLevelUp(uint32 talentType) {}
 	void SearchCreatureListFromRange(Unit* center, NearCreatureVec& nearCreatures, float range, bool selfFaction);
 
+	// Phase 9 (gear scoring): BotGroupAI already had this (for whisper-notification tracking);
+	// BotFieldAI never had an equivalent at all, so purely autonomous (non-grouped) bots never
+	// got a chance to auto-upgrade gear even once AutoGearEnabled exists. No tracking member
+	// here (BotFieldAI never had BotAILootedItems to begin with) - just the upgrade check.
+	void OnLootedItem(Item* item);
+
 protected:
 	bool ProcessGroupInvite();
 	bool TryUpMount();
@@ -75,6 +82,10 @@ protected:
 
 	virtual void UpEnergy() {}
 	Unit* GetCombatTarget(float range = BOTAI_SEARCH_RANGE);
+	// Mirrors AC mod-playerbots' GrindTargetValue::needForQuest, adapted to this engine's modern
+	// QuestObjective API (no legacy RequiredNpcOrGo[] array here) - only the monster-kill
+	// objective case, matching what GetCombatTarget actually needs it for.
+	bool NeedForQuest(Unit* target);
 	bool CanSelectPlayerEnemy(Player* player);
 	bool NonCombatProcess();
 	bool DoFaceToTarget(Unit* pTarget);

@@ -1385,39 +1385,46 @@ uint32 PlayerBotSetting::FindPlayerTalentType(Player* player)
 {
 	if (!player)
 		return 0;
-	uint32 spec = player->GetSpecializationId();
-	uint32 cls = player->getClass();
-	uint32 pageTalents[3] = { 0 };
-	for (uint32 page = 0; page < 3; page++)
-	{
-		BotTalentPage& botPage = classesTalents[cls][page];
-		for (BotTalentPage::iterator itPage = botPage.begin();
-			itPage != botPage.end();
-			itPage++)
-		{
-			const TalentEntry* botTEntry = (*itPage).talentEntry;
-			if (!botTEntry) continue;
-			//for (int8 rank = MAX_TALENT_RANK - 1; rank >= 0; --rank)
-			//{
-			//	if (botTEntry->RankID[rank] == 0)
-			//		continue;
-			//	if (player->HasTalent(botTEntry->RankID[rank], spec))
-			//		++pageTalents[page];
-			//}
-		}
-	}
 
-	uint32 maxPageIndex = 0;
-	uint32 maxPagePoint = 0;
-	for (uint32 page = 0; page < 3; page++)
+	// Found while answering a user question about role/rotation selection, not guessed at: this
+	// function's entire loop body (the only code that could ever increment pageTalents[]) was
+	// commented out, so pageTalents stayed {0,0,0} forever and this unconditionally returned 0 -
+	// every bot, every class. Worse, every normal level-up/regen pass re-triggers this: every
+	// ResetPlayerToLevel() call site outside ToolSocket passes talent=3 ("auto"), and
+	// UpdateTalentType() re-resolves "auto" through this function - so an admin who explicitly
+	// set a bot to tank/healer via the external tool would see it silently revert to branch 0
+	// (DPS/weapon-style for every class) the very next level-up.
+	//
+	// The original approach (count spent talent points per classic-era "page") doesn't even
+	// conceptually apply to Legion's talent system (one choice per tier, not points poured into
+	// one of 3 trees) - rebuilt using the bot's actual current spec role instead
+	// (Player::GetRoleForGroup(), backed by ChrSpecializationEntry::Role - the same data LFG/
+	// group-finder role checks already use elsewhere in the engine), mapped through each class's
+	// own IsTankBotAI()/IsHealerBotAI() branch numbering (verified against each class's actual
+	// override, not assumed uniform - Warrior's tank branch is 2, Paladin's is 1, DK's is 1;
+	// Paladin's healer branch is 0, Priest's is {0,1}, Shaman/Druid's is 2).
+	uint32 role = player->GetRoleForGroup();
+	switch (player->getClass())
 	{
-		if (pageTalents[page] > maxPagePoint)
-		{
-			maxPageIndex = page;
-			maxPagePoint = pageTalents[page];
-		}
+	case Classes::CLASS_WARRIOR:
+		return (role == ROLE_TANK) ? 2 : 0;
+	case Classes::CLASS_DEATH_KNIGHT:
+		return (role == ROLE_TANK) ? 1 : 0;
+	case Classes::CLASS_PALADIN:
+		if (role == ROLE_HEALER)
+			return 0;
+		return (role == ROLE_TANK) ? 1 : 2;
+	case Classes::CLASS_PRIEST:
+		return (role == ROLE_HEALER) ? 0 : 2;
+	case Classes::CLASS_SHAMAN:
+	case Classes::CLASS_DRUID:
+		return (role == ROLE_HEALER) ? 2 : 0;
+	default:
+		// Hunter/Rogue/Mage/Warlock have no tank/healer branch at all (confirmed - neither
+		// IsTankBotAI nor IsHealerBotAI is overridden for any of them) - branch 0 is just a
+		// playstyle default here, not a role mismatch risk.
+		return 0;
 	}
-	return maxPageIndex;
 }
 
 uint32 PlayerBotSetting::RandomMountByLevel(uint32 level)
@@ -1774,6 +1781,7 @@ void PlayerBotSetting::UpdateReset()
 	// everything in memory and save once at the end.
 	m_Player->ResetTalents(true);
 	LearnTalents();
+	LearnPvpTalents();
 	RemoveSpells();
 	LearnCommonSpells();
 	LearnSpells();
@@ -1806,7 +1814,67 @@ void PlayerBotSetting::UpdateReset()
 
 void PlayerBotSetting::LearnTalents()
 {
-	
+	// Phase 9g bug hunt: this function was a completely empty stub - confirmed by reading it -
+	// even though it's called (ScheduleDelayedLevelup, right here) immediately after
+	// `m_Player->ResetTalents(true)` clears every talent slot. That means bots got ZERO talents,
+	// ever, on every single level-up/regen pass - a meaningful chunk of a WotLK-class character's
+	// power (passives, keystone talents affecting the rotation) was simply never there.
+	//
+	// Picks the first (column 0) talent choice for every tier of the bot's current spec - NOT a
+	// theorycrafted build (that would need real per-spec knowledge across 30+ class/spec
+	// combinations, a separate content-authoring task), just a deliberately simple baseline that
+	// grants *something* instead of nothing. Uses the exact same sDB2Manager::GetTalentsByPosition
+	// lookup Player::LearnTalent itself uses internally to resolve "the right variant of this
+	// slot for my current spec" (some tiers have a spec-specific entry instead of one shared
+	// across all specs) - not reinventing that resolution logic. LearnTalent safely rejects a
+	// tier not yet unlocked at the bot's level (checks PLAYER_FIELD_MAX_TALENT_TIERS internally),
+	// so trying every tier unconditionally is safe, same "try it, let the engine reject what's
+	// invalid" pattern used throughout this session's bot work.
+	uint8 cls = m_Player->getClass();
+	if (cls <= 0 || cls >= 12 || cls == 10)
+		return;
+
+	if (!m_Player->GetUInt32Value(PLAYER_FIELD_CURRENT_SPEC_ID))
+		return; // no spec chosen yet - nothing to pick talents for
+
+	for (uint32 tier = 0; tier < 7; ++tier)
+	{
+		std::vector<TalentEntry const*> const& candidates = sDB2Manager.GetTalentsByPosition(cls, tier, 0);
+		if (candidates.empty())
+			continue;
+
+		int32 spellOnCooldown = 0;
+		m_Player->LearnTalent(candidates[0]->ID, &spellOnCooldown);
+	}
+}
+
+void PlayerBotSetting::LearnPvpTalents()
+{
+	// AC-parity gap confirmed this session by grepping AI/PlayerAI for any PvP-talent selection -
+	// zero hits - even though bots already autonomously populate BGs/arenas (warfare_size,
+	// AddNewPlayerBotToBG). Same "try column 0 of every tier, let the engine reject what isn't
+	// unlocked" pattern as LearnTalents() above, but Player::ResetTalents() never touches PvP
+	// talents at all (confirmed by reading it - only iterates sTalentStore), and
+	// LearnPvpTalent() already refuses a second talent in an already-filled tier on its own, so
+	// unlike normal talents this never needs a reset first - calling it every level-up/regen
+	// pass is safe and idempotent, only a newly-unlocked tier (by level/honor level) ever
+	// actually learns something new.
+	uint8 cls = m_Player->getClass();
+	if (cls <= 0 || cls >= 12 || cls == 10)
+		return;
+
+	if (!m_Player->GetUInt32Value(PLAYER_FIELD_CURRENT_SPEC_ID))
+		return; // no spec chosen yet - nothing to pick PvP talents for
+
+	for (uint32 tier = 0; tier < 6; ++tier) // MAX_PVP_TALENT_TIERS, matching LearnTalents()'s own hardcoded tier count above rather than pulling in DBCEnums.h for one constant
+	{
+		std::vector<PvpTalentEntry const*> const& candidates = sDB2Manager.GetPvpTalentsByPosition(cls, tier, 0);
+		if (candidates.empty())
+			continue;
+
+		int32 spellOnCooldown = 0;
+		m_Player->LearnPvpTalent(candidates[0]->ID, &spellOnCooldown);
+	}
 }
 
 void PlayerBotSetting::LearnCommonSpells()

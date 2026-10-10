@@ -18,6 +18,8 @@
 #include "BotFieldAI.h"
 #include "MoveSplineInit.h"
 #include "BotBGAIMovement.h"
+#include "CellImpl.h"
+#include "GridNotifiersImpl.h"
 #include "PlayerBotMgr.h"
 #include "FieldBotMgr.h"
 #include "PlayerBotSession.h"
@@ -31,6 +33,10 @@
 #include "MotionMaster.h"
 #include "CreatureAI.h"
 #include "SpellHistory.h"
+#include "ObjectMgr.h"
+#include "QuestDef.h"
+#include "GameObject.h"
+#include "GuildTaskMgr.h"
 
 BotFieldAI* BotFieldAI::debugFieldAI = NULL;
 
@@ -313,6 +319,12 @@ bool BotFieldAI::IsNotSelect(Unit* pTarget)
 	return false;
 }
 
+void BotFieldAI::OnLootedItem(Item* item)
+{
+	BotUtility::TryAutoEquipUpgrade(me, item);
+	sGuildTaskMgr->OnItemLooted(me, item);
+}
+
 bool BotFieldAI::IsIDLEBot()
 {
 	if (me->HasUnitState(UNIT_STATE_CASTING))
@@ -445,6 +457,31 @@ bool BotFieldAI::CanSelectPlayerEnemy(Player* player)
 	return false;
 }
 
+bool BotFieldAI::NeedForQuest(Unit* target)
+{
+	if (!target)
+		return false;
+
+	for (auto const& entry : me->getQuestStatusMap())
+	{
+		if (me->GetQuestStatus(entry.first) != QUEST_STATUS_INCOMPLETE)
+			continue;
+
+		Quest const* quest = sObjectMgr->GetQuestTemplate(entry.first);
+		if (!quest)
+			continue;
+
+		for (QuestObjective const& objective : quest->GetObjectives())
+		{
+			if (objective.Type != QUEST_OBJECTIVE_MONSTER || objective.ObjectID != int32(target->GetEntry()))
+				continue;
+			if (!me->IsQuestObjectiveComplete(objective))
+				return true;
+		}
+	}
+	return false;
+}
+
 Unit* BotFieldAI::GetCombatTarget(float range)
 {
 	NearUnitVec validTarget;
@@ -470,12 +507,48 @@ Unit* BotFieldAI::GetCombatTarget(float range)
 				if (guid != me->GetGUID())
 					continue;
 			}
+			// Safety filters mirroring AC mod-playerbots' GrindTargetValue::FindTargetForGrinding
+			// (checked against the real source) - this field bot runs solo/ungrouped, so unlike
+			// AC's "can fight elite" flag (set when a geared group can actually handle one),
+			// there's nothing here that could ever make an elite pull survivable; never offer one
+			// as a candidate at all rather than picking it at random alongside normal trash.
+			if (int32(pCreature->getLevel()) - int32(me->getLevel()) > 4)
+				continue;
+			if (CreatureTemplate const* ct = pCreature->GetCreatureTemplate())
+				if (ct->rank > CREATURE_ELITE_NORMAL)
+					continue;
+			if (!me->IsWithinLOSInMap(pCreature))
+				continue;
+			// AC only insists on quest-relevance for mobs outside their own natural aggro range
+			// (minus AC's own "not actively wandering" RPG-wander-state gate - this engine has
+			// no equivalent state machine to check): anything that would aggro the bot anyway is
+			// always fine to engage as normal, a special trip further out is only worth it if
+			// the mob matters for an active quest.
+			float aggroRange = std::min(30.0f, pCreature->GetAggroRange(me) + 10.0f);
+			if (me->GetDistance(pCreature) > aggroRange && !NeedForQuest(pCreature))
+				continue;
 			validTarget.push_back(pCreature);
 		}
 	}
 	if (validTarget.empty())
 		return NULL;
-	return validTarget[urand(0, validTarget.size() - 1)];
+
+	// AC picks the nearest eligible target (GrindTargetValue::FindTargetForGrinding), not a
+	// random one - matched here now that the filters above already narrow the pool down to
+	// things actually worth considering, so "nearest" no longer risks preferring something
+	// silly over something safe.
+	Unit* nearest = validTarget[0];
+	float nearestDist = me->GetDistance(nearest);
+	for (size_t i = 1; i < validTarget.size(); ++i)
+	{
+		float dist = me->GetDistance(validTarget[i]);
+		if (dist < nearestDist)
+		{
+			nearestDist = dist;
+			nearest = validTarget[i];
+		}
+	}
+	return nearest;
 }
 
 bool BotFieldAI::NonCombatProcess()
@@ -491,6 +564,22 @@ bool BotFieldAI::NonCombatProcess()
 		if (m_UseFood.UpdateBotFood(BOTAI_UPDATE_TICK, m_UseMountID))
 			return true;
 		if (m_FindLoot.DoFindLoot(BOTAI_UPDATE_TICK, m_Movement, m_UseMountID))
+			return true;
+		// Phase 9 (professions): no-op entirely while BotUtility::ProfessionEnabled is off.
+		BotUtility::GrantStarterProfessions(me);
+		if (Creature* skinTarget = BotUtility::TryAutoSkin(me, BOTAI_SEARCH_RANGE))
+		{
+			if (me->GetDistance(skinTarget->GetPosition()) > BOTAI_RANGESPELL_DISTANCE)
+				m_Movement->MovementTo(skinTarget->GetPositionX(), skinTarget->GetPositionY(), skinTarget->GetPositionZ(), 0);
+			return true;
+		}
+		if (GameObject* gatherTarget = BotUtility::TryAutoGather(me, BOTAI_SEARCH_RANGE))
+		{
+			if (me->GetDistance(gatherTarget->GetPosition()) > INTERACTION_DISTANCE)
+				m_Movement->MovementTo(gatherTarget->GetPositionX(), gatherTarget->GetPositionY(), gatherTarget->GetPositionZ(), 0);
+			return true;
+		}
+		if (BotUtility::TryAutoCraft(me))
 			return true;
 		//if (ProcessGroupInvite())
 		//	return true;
@@ -1013,7 +1102,11 @@ void BotFieldAI::SearchCreatureListFromRange(Unit* center, NearCreatureVec& near
 	NearCreatureList nearCreature;
 	Trinity::AllWorldObjectsInRange checker(center, range);
 	Trinity::CreatureListSearcher<Trinity::AllWorldObjectsInRange> searcher(center, nearCreature, checker);
-	//center->VisitNearbyGridObject(range, searcher);
+	CellCoord pair(Trinity::ComputeCellCoord(center->GetPositionX(), center->GetPositionY()));
+	Cell cell(pair);
+	cell.SetNoCreate();
+	TypeContainerVisitor<Trinity::CreatureListSearcher<Trinity::AllWorldObjectsInRange>, GridTypeMapContainer> visitor(searcher);
+	cell.Visit(pair, visitor, *center->GetMap(), *center, range);
 	for (Creature* pCreature : nearCreature)
 	{
 		if (!pCreature->IsAlive() || pCreature->IsPet())// || pCreature->IsTotem())

@@ -326,6 +326,18 @@ bool PlayerBotMgr::IsBotAccuntName(std::string name)
     return num > 0;
 }
 
+bool PlayerBotMgr::IsAccountBotAccountName(std::string name)
+{
+    if (name.size() < 11) // "accountbot" (10 chars) + at least one digit
+        return false;
+    std::string head = name.substr(0, 10);
+    if (head != "accountbot")
+        return false;
+    std::string numText = name.substr(10);
+    int num = atoi(numText.c_str());
+    return num > 0;
+}
+
 bool PlayerBotMgr::IsIDLEPlayerBot(Player* player)
 {
     if (!player || player->IsLoading() || !player->IsInWorld())
@@ -1003,6 +1015,51 @@ void PlayerBotMgr::SupplementAccount()
     }
 }
 
+void PlayerBotMgr::SupplementAccountBot()
+{
+    // Off by default (m_AccountBotAmount == 0) - preserves the pre-existing behavior where
+    // AccountBot accounts were only ever provisioned manually via ToolSocket::CmdCreateAccount.
+    if (m_AccountBotAmount == 0)
+        return;
+
+    // m_idAccountBotBase already holds every non-"playerbotN" account by this point (this is
+    // called right after SupplementAccount(), itself called after LoadPlayerBotBaseInfo()'s full
+    // account scan) - filter down to the "accountbotN" subset to count what already exists and
+    // find the next free index, same shape as IsBotAccuntName's own pool does for playerbotN.
+    uint32 existing = 0;
+    uint32 lastIndex = 0;
+    for (auto const& pair : m_idAccountBotBase)
+    {
+        std::string lowerName = boost::algorithm::to_lower_copy(pair.second->username);
+        if (!IsAccountBotAccountName(lowerName))
+            continue;
+        ++existing;
+        uint32 idx = uint32(atoi(lowerName.substr(10).c_str()));
+        if (idx > lastIndex)
+            lastIndex = idx;
+    }
+
+    if (existing >= m_AccountBotAmount)
+        return;
+
+    uint32 needAccount = m_AccountBotAmount - existing;
+    for (uint32 i = 0; i < needAccount; ++i)
+    {
+        ++lastIndex;
+        std::string userName = "accountbot" + std::to_string(lastIndex);
+        std::string password = userName;
+
+        AccountOpResult accRes = sAccountMgr->CreateAccount(userName, password);
+        if (accRes != AccountOpResult::AOR_OK && accRes != AccountOpResult::AOR_NAME_ALREADY_EXIST)
+            continue;
+
+        // Same lookup+registration ToolSocket::CmdCreateAccount already uses for a manually
+        // created account - reused here rather than duplicated, and picks up the
+        // battlenet_account fix made to it above.
+        AddNewAccountBotBaseInfo(userName);
+    }
+}
+
 void PlayerBotMgr::DeleteAllPlayerBotAccounts()
 {
     QueryResult result = LoginDatabase.Query("SELECT id, username, battlenet_account FROM account");
@@ -1068,7 +1125,10 @@ void PlayerBotMgr::DestroyBotMail(uint32 guid)
 void PlayerBotMgr::AddNewAccountBotBaseInfo(std::string name)
 {
     std::string upperName = boost::algorithm::to_upper_copy(name);
-    std::string sql("SELECT id, username, sha_pass_hash FROM account WHERE `username`='"); sql += upperName + "'";
+    // battlenet_account was missing from this SELECT while fields[3] below already read it -
+    // an out-of-bounds Field access on every call (caught while wiring SupplementAccountBot()
+    // into this same lookup).
+    std::string sql("SELECT id, username, sha_pass_hash, battlenet_account FROM account WHERE `username`='"); sql += upperName + "'";
     QueryResult result = LoginDatabase.Query(sql.c_str());
     if (!result)
         return;
@@ -1131,6 +1191,7 @@ void PlayerBotMgr::LoadPlayerBotBaseInfo()
     } while (result->NextRow());
 
     SupplementAccount();
+    SupplementAccountBot();
 
     if (m_idPlayerBotBase.size() > 0 || m_idAccountBotBase.size() > 0)
         LoadCharBaseInfo();

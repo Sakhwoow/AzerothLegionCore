@@ -24,6 +24,14 @@
 class Player;
 class Unit;
 
+// Common relevance bands, mirroring mod-playerbots' ACTION_DEFAULT/ACTION_HIGH/etc. (Strategy.h)
+// closely enough to reuse the same mental model - not an exhaustive set, just the ones Phase 7+
+// actually needs so far. A BotStrategy is free to use any float; these just name the common ones.
+static constexpr float BOT_ACTION_IDLE = 1.0f;
+static constexpr float BOT_ACTION_DEFAULT = 5.0f;
+static constexpr float BOT_ACTION_HIGH = 20.0f;
+static constexpr float BOT_ACTION_EMERGENCY = 90.0f;
+
 // Named action with a priority ("relevance"), the unit a BotEngine executes once its triggers or
 // a BotStrategy's default-action list nominate it for the current tick. Mirrors mod-playerbots'
 // NextAction (Bot/Engine/Action/Action.h) - see the "Legion Bot Architecture" plan, Phase 6.

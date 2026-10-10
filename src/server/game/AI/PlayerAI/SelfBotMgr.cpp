@@ -23,6 +23,8 @@
 #include "ObjectAccessor.h"
 #include "Log.h"
 #include "BotAITool.h"
+#include "BotAiObjectContext.h"
+#include "BotValue.h"
 
 // Defined here, not inline in the header: m_SelfBots holds std::unique_ptr<SelfBotAI>, and its
 // destructor needs SelfBotAI to be a complete type, which it only is once SelfBotAI.h (above)
@@ -113,4 +115,20 @@ void SelfBotMgr::TryAutoAcceptInvite(Player* invitedPlayer)
 
 	if (BotUtility::SelfBotDebug)
 		TC_LOG_INFO("server.loading", ">> SelfBot: %s auto-accepted group invite", invitedPlayer->GetName().c_str());
+}
+
+void SelfBotMgr::TryAutoConfirmReadyCheck(Player* player, Group* group)
+{
+	if (!player || !group || !IsSelfBotActive(player))
+		return;
+
+	SelfBotAI* ai = GetSelfBotAI(player);
+	BotValue<bool>* autoReady = ai->GetContext()->GetValue<bool>("auto ready");
+	if (autoReady && !autoReady->Get())
+		return;
+
+	group->SetMemberReadyCheck(player->GetGUID(), true);
+
+	if (BotUtility::SelfBotDebug)
+		TC_LOG_INFO("server.loading", ">> SelfBot: %s auto-confirmed ready check", player->GetName().c_str());
 }

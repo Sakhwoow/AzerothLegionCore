@@ -185,7 +185,15 @@ bool BotAIQuestDirector::IsQuestWorthDoing(Quest const* quest) const
 		return false;
 	if (quest->GetSuggestedPlayers() > 1)
 		return false;
-	if (quest->IsWorldQuest())
+	// Verified against the live quest_template data before lifting this (not guessed): of 1133
+	// real world-quest rows, only 6/5/0 are also flagged Daily/Weekly/Repeatable, so the
+	// IsDaily/IsWeekly/IsRepeatable exclusion two lines up does NOT already filter these out -
+	// this toggle is the only thing gating them. Off by default even with QuestAIEnabled on -
+	// world quests have a different lifecycle (time-limited) than the static quests this
+	// director was built around; existing safety nets (abandon-on-no-longer-in-log,
+	// UpdateTravelToObjective's timeout) should handle an expired one reasonably, but that's
+	// unverified without a live soak, hence the separate gate.
+	if (!BotUtility::QuestAIWorldQuestEnabled && quest->IsWorldQuest())
 		return false;
 	if (int32(quest->GetQuestLevel()) > int32(me->getLevel()) + 3)
 		return false;

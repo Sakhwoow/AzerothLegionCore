@@ -41,6 +41,12 @@ std::map<std::string, BotAiObjectContext::TriggerCreator>& BotAiObjectContext::S
 	return creators;
 }
 
+std::map<std::string, BotAiObjectContext::ValueCreator>& BotAiObjectContext::SharedValueCreators()
+{
+	static std::map<std::string, ValueCreator> creators;
+	return creators;
+}
+
 void BotAiObjectContext::RegisterStrategy(std::string const& name, StrategyCreator creator)
 {
 	SharedStrategyCreators()[name] = std::move(creator);
@@ -54,6 +60,11 @@ void BotAiObjectContext::RegisterAction(std::string const& name, ActionCreator c
 void BotAiObjectContext::RegisterTrigger(std::string const& name, TriggerCreator creator)
 {
 	SharedTriggerCreators()[name] = std::move(creator);
+}
+
+void BotAiObjectContext::RegisterValue(std::string const& name, ValueCreator creator)
+{
+	SharedValueCreators()[name] = std::move(creator);
 }
 
 BotStrategy* BotAiObjectContext::GetStrategy(std::string const& name)
@@ -84,6 +95,21 @@ BotTrigger* BotAiObjectContext::GetTrigger(std::string const& name)
 	BotTrigger* trigger = creatorItr->second(m_bot);
 	m_triggers.emplace(name, std::unique_ptr<BotTrigger>(trigger));
 	return trigger;
+}
+
+UntypedBotValue* BotAiObjectContext::GetUntypedValue(std::string const& name)
+{
+	auto itr = m_values.find(name);
+	if (itr != m_values.end())
+		return itr->second.get();
+
+	auto creatorItr = SharedValueCreators().find(name);
+	if (creatorItr == SharedValueCreators().end())
+		return nullptr;
+
+	UntypedBotValue* value = creatorItr->second(m_bot);
+	m_values.emplace(name, std::unique_ptr<UntypedBotValue>(value));
+	return value;
 }
 
 BotActionNode* BotAiObjectContext::GetActionNode(std::string const& name)

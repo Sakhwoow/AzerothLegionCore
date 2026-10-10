@@ -163,6 +163,7 @@ protected:
 
 public:
 	bool IsTankBotAI() override;
+	void CommandPetAttack(Unit* pTarget) override { PetAction(pTarget); }
 
 private:
 	uint32 m_BotTalentType;
@@ -301,6 +302,9 @@ protected:
 	bool TargetIsSuppress(Unit* pTarget);
 	bool CheckManaModel();
 	void UpEnergy() override;
+
+public:
+	void CommandPetAttack(Unit* pTarget) override { PetAction(me->GetPet(), pTarget); }
 
 private:
 	uint32 m_BotTalentType;
@@ -460,6 +464,9 @@ protected:
 	void InsureSoulItem();
 	void UpEnergy() override;
 	uint32 TryCastSummonRiteSpell() override;
+
+public:
+	void CommandPetAttack(Unit* pTarget) override { PetAction(me->GetPet(), pTarget); }
 
 private:
 	uint32 m_BotTalentType;

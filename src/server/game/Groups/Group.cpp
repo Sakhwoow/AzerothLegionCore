@@ -1456,11 +1456,11 @@ void Group::CountTheRoll(Rolls::iterator rollI)
                         item->is_looted = true;
                         roll->getLoot()->NotifyItemRemoved(roll->itemSlot);
                         roll->getLoot()->unlootedCount--;
-                        player->StoreNewItem(dest, roll->itemid, true, item->randomPropertyId, item->GetAllowedLooters(), item->context, item->BonusListIDs);
+                        Item* newItem = player->StoreNewItem(dest, roll->itemid, true, item->randomPropertyId, item->GetAllowedLooters(), item->context, item->BonusListIDs);
                         if (player->IsPlayerBot())
                         {
                             if (BotGroupAI* pAI = dynamic_cast<BotGroupAI*>(player->GetAI()))
-                                pAI->OnLootedItem(roll->itemid);
+                                pAI->OnLootedItem(newItem);
                         }
                     }
                     else
@@ -1518,11 +1518,11 @@ void Group::CountTheRoll(Rolls::iterator rollI)
                                 item->is_looted = true;
                                 roll->getLoot()->NotifyItemRemoved(roll->itemSlot);
                                 roll->getLoot()->unlootedCount--;
-                                player->StoreNewItem(dest, roll->itemid, true, item->randomPropertyId, item->GetAllowedLooters(), item->context, item->BonusListIDs);
+                                Item* newItem = player->StoreNewItem(dest, roll->itemid, true, item->randomPropertyId, item->GetAllowedLooters(), item->context, item->BonusListIDs);
                                 if (player->IsPlayerBot())
                                 {
                                     if (BotGroupAI* pAI = dynamic_cast<BotGroupAI*>(player->GetAI()))
-                                        pAI->OnLootedItem(roll->itemid);
+                                        pAI->OnLootedItem(newItem);
                                 }
                             }
                             else

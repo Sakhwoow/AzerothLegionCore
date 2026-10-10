@@ -18,10 +18,14 @@
 #ifndef _SELF_BOT_AI_H_
 #define _SELF_BOT_AI_H_
 
+#include <memory>
 #include <vector>
 
+class Item;
 class Player;
 class Unit;
+class BotAiObjectContext;
+class BotEngine;
 
 // Lets a real, connected player opt into light AI assistance on their OWN character via
 // .selfbot: continue attacking whatever they're already fighting, run a tiny per-class
@@ -30,26 +34,56 @@ class Unit;
 // Driven externally from PlayerScript::OnUpdate (see sc_selfbot.cpp), not from the
 // engine's Unit::SetAI()/UnitAI mechanism, so it never touches IsPlayerBot() or anything
 // gated on it.
+//
+// Phase 7 of the "Legion Bot Architecture" plan: heal/rotation decision-making now runs
+// through m_Engine (BotEngine, see Engine/) instead of a hand-rolled if/else, via the thin
+// RotationSpellAction/HealAllySpellAction adapters in Strategies/SelfBotStrategies.cpp -
+// those adapters call straight back into ResolveCombatVictim()/TryUseRotationSpell()/
+// TryUseHealSpell() below, unchanged, so this is a control-flow migration only, not new game
+// logic. Those three are public for exactly that reason (called from the Action adapters via
+// sSelfBotMgr->GetSelfBotAI(), not meant for anything else to call).
 class TC_GAME_API SelfBotAI
 {
 public:
 	SelfBotAI(Player* self);
-	~SelfBotAI() {}
+	~SelfBotAI();
 
 	bool IsActive() const { return m_Active; }
 	void SetActive(bool active);
 	void Update(uint32 diff);
 
+	// Resolves this tick's combat target the same way Phase 1-4 always did (continue an
+	// existing victim, else the client's current selection, else whatever is attacking us,
+	// else a group member's victim as the lowest-priority fallback - never picks on its own)
+	// and, as a side effect, engages it (Attack/MoveChase) if it wasn't already the active
+	// victim. Returns nullptr if there's nothing to fight. Called by RotationSpellAction, not
+	// Update() directly - see the class comment above.
+	Unit* ResolveCombatVictim();
+	bool TryUseHealSpell();
+	bool TryUseRotationSpell(Unit* target);
+	bool TryUseBuffSpell();
+
+	// Phase 8 (command skeleton): exposes the engine/value registry to cs_selfbot.cpp's
+	// subcommand handlers and to the Action adapters in SelfBotStrategies.cpp, so a command
+	// like ".selfbot stay" can flip a ManualBotValue<bool> the "rotation"/"follow" strategies'
+	// actions read, without SelfBotAI needing a dedicated setter per flag.
+	BotAiObjectContext* GetContext() const { return m_Context.get(); }
+
+	// ".selfbot co dps" removes the "heal" strategy entirely (pure damage, never interrupts to
+	// heal); ".selfbot co heal"/".selfbot co auto" restore it. Simpler than threading a tri-state
+	// value through the engine - the strategy's own presence/absence IS the state here.
+	void SetHealEnabled(bool enabled);
+
 private:
 	bool CanAct() const;
-	void UpdateCombat();
 	Unit* FindGroupAssistTarget() const;
-	bool TryUseHealSpell();
-	void TryUseRotationSpell(Unit* target);
 	bool TryCastFirstKnown(Unit* target, std::vector<uint32> const& spellList);
 	void TryUseSelfPotion();
 	Item* FindOwnedLifePotion() const;
 	Item* FindOwnedManaPotion() const;
+
+	std::unique_ptr<BotAiObjectContext> m_Context;
+	std::unique_ptr<BotEngine> m_Engine;
 
 	Player* me;
 	bool m_Active;
@@ -70,6 +104,12 @@ private:
 	// real group (Phase 3 scope: no solo behavior change) and only when a party member is
 	// actually hurt - see TryUseHealSpell().
 	std::vector<uint32> m_HealSpells;
+
+	// One iconic, long-stable self-buff per class (empty for Rogue - classic rogues have no
+	// real buff spell beyond poisons, which need reagent/weapon handling out of scope here).
+	// Only ever applied out of combat (pre-pull maintenance), lowest-relevance of the default
+	// actions - see TryUseBuffSpell()/BuffSelfAction.
+	std::vector<uint32> m_BuffSpells;
 };
 
 #endif // !_SELF_BOT_AI_H_

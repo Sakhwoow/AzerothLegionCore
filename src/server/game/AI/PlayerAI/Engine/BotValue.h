@@ -22,6 +22,16 @@
 
 class Player;
 
+// Non-template base every BotValue<T> also inherits from (multiple inheritance, same trick as
+// mod-playerbots' UntypedValue/Value<T> split) purely so BotAiObjectContext can store values of
+// different T in one polymorphic map and hand them back out via a dynamic_cast in GetValue<T>()
+// - see BotAiObjectContext::GetValue.
+class TC_GAME_API UntypedBotValue
+{
+public:
+	virtual ~UntypedBotValue() { }
+};
+
 // Typed, named slot a BotStrategy/BotAction/BotTrigger reads. Two flavors, mirroring
 // mod-playerbots' CalculatedValue<T>/ManualSetValue<T> (Bot/Engine/Value/Value.h):
 //   - CalculatedBotValue<T>: memoizes an expensive Calculate() for checkIntervalMs, so e.g.
@@ -39,7 +49,7 @@ public:
 };
 
 template <class T>
-class CalculatedBotValue : public BotValue<T>
+class CalculatedBotValue : public UntypedBotValue, public BotValue<T>
 {
 public:
 	CalculatedBotValue(Player* bot, uint32 checkIntervalMs = 0) :
@@ -71,7 +81,7 @@ protected:
 };
 
 template <class T>
-class ManualBotValue : public BotValue<T>
+class ManualBotValue : public UntypedBotValue, public BotValue<T>
 {
 public:
 	explicit ManualBotValue(T defaultValue) : m_value(defaultValue), m_defaultValue(defaultValue) { }

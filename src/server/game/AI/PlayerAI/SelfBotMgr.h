@@ -22,6 +22,7 @@
 #include <unordered_map>
 #include <memory>
 
+class Group;
 class Player;
 class SelfBotAI;
 
@@ -51,6 +52,13 @@ public:
 	// a real CMSG_PARTY_INVITE_RESPONSE packet and isn't something to fake a packet for. No-op if
 	// the player doesn't have selfbot active, or isn't actually the invited player (defensive).
 	void TryAutoAcceptInvite(Player* invitedPlayer);
+
+	// Phase 8 (".selfbot ready"): auto-confirms a pending raid/party ready check for a player
+	// with selfbot active, unless they've turned the "auto ready" flag off. Called from
+	// GroupHandler.cpp::HandleDoReadyCheckOpcode right after the check is started, mirroring
+	// WorldSession::HandleReadyCheckResponseOpcode's own SetMemberReadyCheck call exactly - no
+	// packet is faked, this just does what that handler would have done for a real click.
+	void TryAutoConfirmReadyCheck(Player* player, Group* group);
 
 private:
 	SelfBotMgr();

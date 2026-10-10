@@ -19,6 +19,8 @@
 #include "BotGroupAI.h"
 #include "MoveSplineInit.h"
 #include "BotBGAIMovement.h"
+#include "CellImpl.h"
+#include "GridNotifiersImpl.h"
 #include "PlayerBotMgr.h"
 #include "PlayerBotSession.h"
 #include "Group.h"
@@ -33,6 +35,9 @@
 #include "MotionMaster.h"
 #include "CreatureAI.h"
 #include "SpellHistory.h"
+#include "GameObject.h"
+#include "GuildTaskMgr.h"
+#include <sstream>
 
 BotGroupAI* BotGroupAI::debugGroupAI = NULL;
 bool BotGroupAI::PVE_MAX_DUNGEON = false;
@@ -393,7 +398,7 @@ void BotGroupAI::ProcessUpequip(Player* srcPlayer, std::string equipLink)
 		if (msg != EQUIP_ERR_OK)
 		{
 			std::string outString;
-			consoleToUtf8(std::string("Ê§°Ü×°±¸"), outString);
+			consoleToUtf8(std::string("Ê§ï¿½ï¿½×°ï¿½ï¿½"), outString);
 			me->Whisper(outString, Language::LANG_COMMON, srcPlayer);
 			return;
 		}
@@ -407,7 +412,7 @@ void BotGroupAI::ProcessUpequip(Player* srcPlayer, std::string equipLink)
 		me->GetSession()->HandleAutoEquipItemOpcode(packet);
 	}
 	std::string outString;
-	consoleToUtf8(std::string("³É¹¦×°±¸"), outString);
+	consoleToUtf8(std::string("ï¿½É¹ï¿½×°ï¿½ï¿½"), outString);
 	me->Whisper(outString, Language::LANG_COMMON, srcPlayer);
 }
 
@@ -446,19 +451,19 @@ void BotGroupAI::ProcessUnequip(Player* srcPlayer, std::string& equipLink)
 		if (msg != EQUIP_ERR_OK)
 		{
 			std::string outString;
-			consoleToUtf8(std::string("È¡ÏÂÊ§°Ü"), outString);
+			consoleToUtf8(std::string("È¡ï¿½ï¿½Ê§ï¿½ï¿½"), outString);
 			me->Whisper(outString, Language::LANG_COMMON, srcPlayer);
 			return;
 		}
 		me->RemoveItem(255, slot, true);
 		me->StoreItem(dest, pItem, true);
 		std::string outString;
-		consoleToUtf8(std::string("³É¹¦È¡ÏÂ"), outString);
+		consoleToUtf8(std::string("ï¿½É¹ï¿½È¡ï¿½ï¿½"), outString);
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer);
 		return;
 	}
 	std::string outString;
-	consoleToUtf8(std::string("È¡ÏÂÊ§°Ü"), outString);
+	consoleToUtf8(std::string("È¡ï¿½ï¿½Ê§ï¿½ï¿½"), outString);
 	me->Whisper(outString, Language::LANG_COMMON, srcPlayer);
 }
 
@@ -477,7 +482,7 @@ void BotGroupAI::ProcessDestroyItem(Player* srcPlayer, std::string& equipLink)
 		return;
 	BotUtility::FindItemFromAllBag(me, entry, true);
 	std::string outString;
-	consoleToUtf8(std::string("³É¹¦¶ªµô"), outString);
+	consoleToUtf8(std::string("ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½"), outString);
 	me->Whisper(outString, Language::LANG_COMMON, srcPlayer);
 }
 
@@ -495,7 +500,7 @@ void BotGroupAI::ProcessTradeItem(Player* srcPlayer, std::string& equipLink)
 	if (entry == 0)
 	{
 		std::string outString;
-		consoleToUtf8(std::string("ÎÒÃ»ÓÐÕâ¸öµÀ¾ß"), outString);
+		consoleToUtf8(std::string("ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"), outString);
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer);
 		return;
 	}
@@ -503,7 +508,7 @@ void BotGroupAI::ProcessTradeItem(Player* srcPlayer, std::string& equipLink)
 	if (!pItem)
 	{
 		std::string outString;
-		consoleToUtf8(std::string("ÎÒÃ»ÓÐÕâ¸öµÀ¾ß"), outString);
+		consoleToUtf8(std::string("ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"), outString);
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer);
 		return;
 	}
@@ -511,7 +516,7 @@ void BotGroupAI::ProcessTradeItem(Player* srcPlayer, std::string& equipLink)
 	if (!pTrade)
 	{
 		std::string outString;
-		consoleToUtf8(std::string("Ã»ÓÐ¿ªÊ¼½»Ò×"), outString);
+		consoleToUtf8(std::string("Ã»ï¿½Ð¿ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½"), outString);
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer);
 		return;
 	}
@@ -519,7 +524,7 @@ void BotGroupAI::ProcessTradeItem(Player* srcPlayer, std::string& equipLink)
 	if (!pTradePlayer)
 	{
 		std::string outString;
-		consoleToUtf8(std::string("Ã»ÓÐ¿ªÊ¼½»Ò×"), outString);
+		consoleToUtf8(std::string("Ã»ï¿½Ð¿ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½"), outString);
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer);
 		return;
 	}
@@ -532,27 +537,27 @@ void BotGroupAI::ProcessTradeItem(Player* srcPlayer, std::string& equipLink)
 	if (pTrade->HasItem(pItem->GetGUID()))
 	{
 		std::string outString;
-		consoleToUtf8(std::string("Õâ¸öµÀ¾ßÒÑ¾­·ÅÉÏÈ¥ÁË"), outString);
+		consoleToUtf8(std::string("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½ï¿½È¥ï¿½ï¿½"), outString);
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer);
 		return;
 	}
 	//if (!pItem->CanBeTraded(false, true))
 	//{
 	//	std::string outString;
-	//	consoleToUtf8(std::string("ÎÞ·¨·ÅÉÏÕâ¸öµÀ¾ß"), outString);
+	//	consoleToUtf8(std::string("ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"), outString);
 	//	me->Whisper(outString, Language::LANG_COMMON, srcPlayer);
 	//	return;
 	//}
 	if (pTrade->SetItemAtNullSlot(pItem, true))
 	{
 		std::string outString;
-		consoleToUtf8(std::string("·ÅÉÏÈ¥ÁË"), outString);
+		consoleToUtf8(std::string("ï¿½ï¿½ï¿½ï¿½È¥ï¿½ï¿½"), outString);
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer);
 	}
 	else
 	{
 		std::string outString;
-		consoleToUtf8(std::string("Ã»·¨ÔÙ·Å¶«Î÷ÁË"), outString);
+		consoleToUtf8(std::string("Ã»ï¿½ï¿½ï¿½Ù·Å¶ï¿½ï¿½ï¿½ï¿½ï¿½"), outString);
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer);
 	}
 }
@@ -578,12 +583,12 @@ void BotGroupAI::ProcessUseItem(Player* srcPlayer, std::string& equipLink)
 	if (!me->CastItemUseSpell(pItem, targets, ObjectGuid::Empty, 0))
 	{
 		std::string outString;
-		consoleToUtf8(std::string("Ê§°ÜÊ¹ÓÃ"), outString);
+		consoleToUtf8(std::string("Ê§ï¿½ï¿½Ê¹ï¿½ï¿½"), outString);
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer);
 		return;
 	}
 	std::string outString;
-	consoleToUtf8(std::string("³É¹¦Ê¹ÓÃ"), outString);
+	consoleToUtf8(std::string("ï¿½É¹ï¿½Ê¹ï¿½ï¿½"), outString);
 	me->Whisper(outString, Language::LANG_COMMON, srcPlayer);
 }
 
@@ -602,7 +607,7 @@ void BotGroupAI::ProcessTalent(Player* srcPlayer, std::string& talentText)
 	m_HasReset = false;
 
 	std::string outString;
-	consoleToUtf8(std::string("ÇÐ»»Ìì¸³Íê³É"), outString);
+	consoleToUtf8(std::string("ï¿½Ð»ï¿½ï¿½ì¸³ï¿½ï¿½ï¿½"), outString);
 	me->Whisper(outString, Language::LANG_COMMON, srcPlayer);
 
 }
@@ -617,7 +622,7 @@ void BotGroupAI::ProcessSummonRiteSpell(Player* srcPlayer)
 	if (!m_MovetoUseGO.CanCastSummonRite())
 	{
 		std::string outString;
-		consoleToUtf8(std::string("Ä¿Ç°ÎÞ·¨¿ªÊ¼ÕÙ»½ÒÇÊ½£¡"), outString);
+		consoleToUtf8(std::string("Ä¿Ç°ï¿½Þ·ï¿½ï¿½ï¿½Ê¼ï¿½Ù»ï¿½ï¿½ï¿½Ê½ï¿½ï¿½"), outString);
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer);
 		return;
 	}
@@ -626,109 +631,283 @@ void BotGroupAI::ProcessSummonRiteSpell(Player* srcPlayer)
 	{
 		m_MovetoUseGO.StartSummonRite(castSpellID);
 		std::string outString;
-		consoleToUtf8(std::string("ÕÙ»½ÒÇÊ½Æô¶¯£¡"), outString);
+		consoleToUtf8(std::string("ï¿½Ù»ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"), outString);
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer);
 	}
 	else
 	{
 		std::string outString;
-		consoleToUtf8(std::string("Ä¿Ç°ÎÞ·¨¿ªÊ¼ÕÙ»½ÒÇÊ½£¡"), outString);
+		consoleToUtf8(std::string("Ä¿Ç°ï¿½Þ·ï¿½ï¿½ï¿½Ê¼ï¿½Ù»ï¿½ï¿½ï¿½Ê½ï¿½ï¿½"), outString);
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer);
 	}
+}
+
+void BotGroupAI::ProcessStatsCommand(Player* srcPlayer)
+{
+	if (!srcPlayer)
+		return;
+
+	std::ostringstream out;
+	out << me->GetName() << ": STR " << uint32(me->GetStat(STAT_STRENGTH))
+		<< ", AGI " << uint32(me->GetStat(STAT_AGILITY))
+		<< ", STA " << uint32(me->GetStat(STAT_STAMINA))
+		<< ", INT " << uint32(me->GetStat(STAT_INTELLECT))
+		<< ", Armor " << me->GetArmor();
+	me->Whisper(out.str(), Language::LANG_COMMON, srcPlayer);
+}
+
+void BotGroupAI::ProcessSpellsCommand(Player* srcPlayer)
+{
+	if (!srcPlayer)
+		return;
+
+	// Capped to keep the whisper readable - a fully-leveled bot can know 50+ spells, most of
+	// them passive/legacy ranks nobody whispering ".spells" actually cares about.
+	uint32 const maxListed = 25;
+	std::ostringstream out;
+	out << me->GetName() << " knows: ";
+	uint32 shown = 0;
+	uint32 total = 0;
+	for (auto const& pair : me->GetSpellMap())
+	{
+		++total;
+		if (shown >= maxListed)
+			continue;
+		SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(pair.first);
+		if (!spellInfo || !spellInfo->SpellName)
+			continue;
+		if (shown > 0)
+			out << ", ";
+		out << spellInfo->SpellName->Str[LOCALE_enUS];
+		++shown;
+	}
+	if (total > shown)
+		out << " (+" << (total - shown) << " more)";
+	me->Whisper(out.str(), Language::LANG_COMMON, srcPlayer);
+}
+
+void BotGroupAI::ProcessPositionCommand(Player* srcPlayer)
+{
+	if (!srcPlayer)
+		return;
+
+	std::ostringstream out;
+	out << me->GetName() << ": map " << me->GetMapId() << " (" << me->GetPositionX()
+		<< ", " << me->GetPositionY() << ", " << me->GetPositionZ() << ")";
+	me->Whisper(out.str(), Language::LANG_COMMON, srcPlayer);
+}
+
+void BotGroupAI::ProcessRangeCommand(Player* srcPlayer)
+{
+	if (!srcPlayer)
+		return;
+
+	Unit* target = me->GetVictim();
+	if (!target)
+		target = me->GetSelectedUnit();
+
+	std::ostringstream out;
+	if (!target)
+		out << me->GetName() << ": no target.";
+	else
+		out << me->GetName() << ": " << me->GetDistance(target) << " yards to " << target->GetName();
+	me->Whisper(out.str(), Language::LANG_COMMON, srcPlayer);
+}
+
+void BotGroupAI::ProcessRepairCommand(Player* srcPlayer)
+{
+	if (!srcPlayer)
+		return;
+
+	// cost=true: paid for out of the bot's own money, same as a real player repairing at a
+	// vendor - not a free handout. No actual vendor NPC/distance check, matching this codebase's
+	// existing convention for other auto-managed bot conveniences (BotAIUsePotion, BotAITrade).
+	uint32 cost = me->DurabilityRepairAll(true, 1.0f, false);
+
+	std::ostringstream out;
+	out << me->GetName() << ": repaired for " << (cost / GOLD) << "g " << ((cost % GOLD) / SILVER) << "s "
+		<< ((cost % GOLD) % SILVER) << "c.";
+	me->Whisper(out.str(), Language::LANG_COMMON, srcPlayer);
+}
+
+void BotGroupAI::ProcessSellCommand(Player* srcPlayer)
+{
+	if (!srcPlayer)
+		return;
+
+	// Same two-phase collect-then-destroy shape BotUtility::FindItemFromAllBag/
+	// DestroyItemFromAllBag already use elsewhere - never mutate bags while walking them.
+	std::vector<Item*> junkItems;
+	uint64 totalGold = 0;
+
+	auto considerItem = [&](Item* item)
+	{
+		if (!item)
+			return;
+		ItemTemplate const* proto = item->GetTemplate();
+		if (!proto || proto->GetQuality() != ITEM_QUALITY_POOR || proto->GetSellPrice() == 0)
+			return;
+		junkItems.push_back(item);
+		totalGold += uint64(proto->GetSellPrice()) * item->GetCount();
+	};
+
+	for (uint8 slot = InventoryPackSlots::INVENTORY_SLOT_ITEM_START; slot < InventoryPackSlots::INVENTORY_SLOT_ITEM_END; ++slot)
+		considerItem(me->GetItemByPos(255, slot));
+	for (uint8 i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; ++i)
+		if (Bag* pBag = me->GetBagByPos(i))
+			for (uint32 j = 0; j < pBag->GetBagSize(); ++j)
+				considerItem(pBag->GetItemByPos(uint8(j)));
+
+	if (junkItems.empty())
+	{
+		me->Whisper(me->GetName() + ": nothing to sell.", Language::LANG_COMMON, srcPlayer);
+		return;
+	}
+
+	for (Item* item : junkItems)
+		BotUtility::DestroyItemFromAllBag(me, item);
+	me->ModifyMoney(int64(totalGold));
+
+	std::ostringstream out;
+	out << me->GetName() << ": sold " << junkItems.size() << " junk item(s) for " << (totalGold / GOLD) << "g "
+		<< ((totalGold % GOLD) / SILVER) << "s " << ((totalGold % GOLD) % SILVER) << "c.";
+	me->Whisper(out.str(), Language::LANG_COMMON, srcPlayer);
+}
+
+void BotGroupAI::ProcessPetAttackCommand(Player* srcPlayer)
+{
+	if (!srcPlayer)
+		return;
+
+	Unit* target = srcPlayer->GetSelectedUnit();
+	if (!target || !target->IsAlive() || !me->IsValidAttackTarget(target))
+		return;
+
+	CommandPetAttack(target);
+}
+
+std::unordered_map<std::string, BotGroupAI::CommandHandler> const& BotGroupAI::GetCommandDispatchTable()
+{
+	static std::unordered_map<std::string, CommandHandler> const table =
+	{
+		{ "summon", [](BotGroupAI* ai, Player*, std::string const&) { ai->ProcessSummonCommand(); } },
+		{ "attack", [](BotGroupAI* ai, Player*, std::string const&) { ai->ProcessAttackCommand(); } },
+		{ "follow", [](BotGroupAI* ai, Player*, std::string const&)
+			{
+				ai->me->SetSelection(ObjectGuid::Empty);
+				ai->m_ForceFlee = false;
+				ai->m_StopFollow = false;
+			} },
+		{ "flee", [](BotGroupAI* ai, Player*, std::string const&) { ai->ProcessFleeCommand(); } },
+		{ "stop", [](BotGroupAI* ai, Player*, std::string const&) { ai->ProcessStopCommand(); } },
+		{ "stay", [](BotGroupAI* ai, Player*, std::string const&) { ai->ProcessStopCommand(); } },
+		{ "setting", [](BotGroupAI* ai, Player*, std::string const&) { ai->ProcessSetting(); } },
+		{ "c", [](BotGroupAI* ai, Player* srcPlayer, std::string const&) { ai->ProcessListEquip(srcPlayer); } },
+		{ "e", [](BotGroupAI* ai, Player* srcPlayer, std::string const& param)
+			{ ai->ProcessUpequip(srcPlayer, param); } },
+		{ "ue", [](BotGroupAI* ai, Player* srcPlayer, std::string const& param)
+			{ std::string p = param; ai->ProcessUnequip(srcPlayer, p); } },
+		{ "destroy", [](BotGroupAI* ai, Player* srcPlayer, std::string const& param)
+			{ std::string p = param; ai->ProcessDestroyItem(srcPlayer, p); } },
+		{ "s", [](BotGroupAI* ai, Player* srcPlayer, std::string const& param)
+			{ std::string p = param; ai->ProcessTradeItem(srcPlayer, p); } },
+		{ "u", [](BotGroupAI* ai, Player* srcPlayer, std::string const& param)
+			{ std::string p = param; ai->ProcessUseItem(srcPlayer, p); } },
+		{ "talent", [](BotGroupAI* ai, Player* srcPlayer, std::string const& param)
+			{ std::string p = param; ai->ProcessTalent(srcPlayer, p); } },
+		{ "rite", [](BotGroupAI* ai, Player* srcPlayer, std::string const&) { ai->ProcessSummonRiteSpell(srcPlayer); } },
+		// New (Phase 9): hooks the existing public ResetBotAI() up as a whisper command - the
+		// method already existed for other callers, it just had no command pointing at it yet.
+		{ "reset", [](BotGroupAI* ai, Player*, std::string const&) { ai->ResetBotAI(); } },
+		// New (Phase 9): read-only/low-risk commands closing part of the gap with AC's ~138-
+		// command surface - picked ones that reuse engine data/methods already on hand (stats,
+		// spell list, position, target range, a self-funded repair) rather than needing a new
+		// subsystem, same spirit as "reset" above.
+		{ "stats", [](BotGroupAI* ai, Player* srcPlayer, std::string const&) { ai->ProcessStatsCommand(srcPlayer); } },
+		{ "spells", [](BotGroupAI* ai, Player* srcPlayer, std::string const&) { ai->ProcessSpellsCommand(srcPlayer); } },
+		{ "position", [](BotGroupAI* ai, Player* srcPlayer, std::string const&) { ai->ProcessPositionCommand(srcPlayer); } },
+		{ "range", [](BotGroupAI* ai, Player* srcPlayer, std::string const&) { ai->ProcessRangeCommand(srcPlayer); } },
+		{ "repair", [](BotGroupAI* ai, Player* srcPlayer, std::string const&) { ai->ProcessRepairCommand(srcPlayer); } },
+		// New: confirmed-missing gaps vs AC's whisper surface (verified by grepping the tree for
+		// any existing vendor-sell/pet-command logic first - neither existed anywhere before this).
+		{ "sell", [](BotGroupAI* ai, Player* srcPlayer, std::string const&) { ai->ProcessSellCommand(srcPlayer); } },
+		{ "pet attack", [](BotGroupAI* ai, Player* srcPlayer, std::string const&) { ai->ProcessPetAttackCommand(srcPlayer); } },
+		// Lists every registered command name - added last since it needs the table to already
+		// contain everything else; safe to self-reference, the static table is fully built by
+		// the time any lambda actually runs.
+		{ "help", [](BotGroupAI* ai, Player* srcPlayer, std::string const&)
+			{
+				std::ostringstream out;
+				out << ai->me->GetName() << ": ";
+				bool first = true;
+				for (auto const& entry : BotGroupAI::GetCommandDispatchTable())
+				{
+					if (!first)
+						out << ", ";
+					out << entry.first;
+					first = false;
+				}
+				ai->me->Whisper(out.str(), Language::LANG_COMMON, srcPlayer);
+			} },
+	};
+	return table;
 }
 
 void BotGroupAI::ProcessBotCommand(Player* srcPlayer, std::string cmd)
 {
 	if (!m_MasterPlayer || !srcPlayer)
 		return;
+
+	// Mirrors the core of AC mod-playerbots' PlayerbotSecurity::LevelFor() (checked against the
+	// real source, not guessed): a whispered command only ever gets real (ALLOW_ALL-equivalent)
+	// access from the bot's own master or the current group's leader - anyone else whispering
+	// "stop"/"flee" to someone else's bot gets refused there, not executed. Party/raid-say is
+	// already gated to the leader one level up (Group::ProcessGroupBotCommand's IsLeader check),
+	// so this specifically closes the direct-whisper path, which had no such check at all before.
+	if (srcPlayer != m_MasterPlayer)
+	{
+		Group* group = me->GetGroup();
+		if (!group || group->GetLeaderGUID() != srcPlayer->GetGUID())
+			return;
+	}
+
 	std::string param;
 	if (!CanReciveCommand(cmd, param))
-    	return;
-	if (cmd == "summon")
-		ProcessSummonCommand();
-	else if (cmd == "attack")
-		ProcessAttackCommand();
-	else if (cmd == "follow")
+		return;
+
+	std::unordered_map<std::string, CommandHandler> const& table = GetCommandDispatchTable();
+	auto itr = table.find(cmd);
+	if (itr != table.end())
 	{
-		me->SetSelection(ObjectGuid::Empty);
-		m_ForceFlee = false;
-		m_StopFollow = false;
+		itr->second(this, srcPlayer, param);
+		return;
 	}
-	else if (cmd == "flee")
-		ProcessFleeCommand();
-	else if (cmd == "stop" || cmd == "stay")
-		ProcessStopCommand();
-	else if (cmd == "setting")
-		ProcessSetting();
-	else if (cmd == "c")
-		ProcessListEquip(srcPlayer);
-	else if (cmd == "e")
-		ProcessUpequip(srcPlayer, param);
-	else if (cmd == "ue")
-		ProcessUnequip(srcPlayer, param);
-	else if (cmd == "destroy")
-		ProcessDestroyItem(srcPlayer, param);
-	else if (cmd == "s")
-		ProcessTradeItem(srcPlayer, param);
-	else if (cmd == "u")
-		ProcessUseItem(srcPlayer, param);
-	else if (cmd == "talent")
-		ProcessTalent(srcPlayer, param);
-	else if (cmd == "rite")
-		ProcessSummonRiteSpell(srcPlayer);
-   	else if (cmd !="")
-{
-        
-        uint32 spellId=(int32)atoi(cmd.c_str());
-//TC_LOG_ERROR("botai", "spellid %u ", spellId);
-//if (me->HasSpell(spellID))
-//me->CastSpell(me,spellId , true);
-if (spellId>0 && spellId<=80000 && !me->HasUnitState(UNIT_STATE_CASTING))
-{
-	Unit* ownerTarget = NULL;
-        if (me->GetVictim())
-{
-    //40827
-if (me->HasSpell(spellId))
-{
-    
-    if (TryCastSpell(spellId, me->GetVictim()) == SpellCastResult::SPELL_CAST_OK)
-1==1;
-else    
-{
-    if (ownerTarget = srcPlayer->GetSelectedUnit())
-    TryCastSpell(spellId, ownerTarget);
-}
-//else
-	  //me->CastSpell(me->GetVictim(),spellId , true);
-  //  TryCastSpell(spellId, me->GetVictim());
- }   
 
-}
-else
-{
-    //40733
-    if (me->HasSpell(spellId))
-{
+	if (cmd.empty())
+		return;
 
-if (ownerTarget = srcPlayer->GetSelectedUnit())
-{
-    if (TryCastSpell(spellId, ownerTarget) == SpellCastResult::SPELL_CAST_OK)
-1==1;
-else
-    //if (irand(0,1)==0)
-    TryCastSpell(spellId, me);
-}
-else TryCastSpell(spellId, me);
-    //else
-    //TryCastSpell(spellId, srcPlayer);
-    //me->CastSpell(me,spellId , true);
-    //me->CastSpell(srcPlayer,spellId , true);
-}
-}
-}	
-}	
-		
+	// Fallback kept from before the dispatch table existed: an unrecognized bare word is taken
+	// as a spell id to force-cast on the current victim, or on whatever the master has selected
+	// if that fails/there's no victim, or on self as the last resort. Cleaned up from the
+	// original (duplicated HasSpell() check per branch, stray no-op statements used as
+	// empty-else markers) without changing the actual decision order.
+	uint32 spellId = uint32(atoi(cmd.c_str()));
+	if (spellId == 0 || spellId > 80000 || me->HasUnitState(UNIT_STATE_CASTING) || !me->HasSpell(spellId))
+		return;
+
+	if (Unit* victim = me->GetVictim())
+	{
+		if (TryCastSpell(spellId, victim) != SpellCastResult::SPELL_CAST_OK)
+			if (Unit* masterTarget = srcPlayer->GetSelectedUnit())
+				TryCastSpell(spellId, masterTarget);
+	}
+	else if (Unit* masterTarget = srcPlayer->GetSelectedUnit())
+	{
+		if (TryCastSpell(spellId, masterTarget) != SpellCastResult::SPELL_CAST_OK)
+			TryCastSpell(spellId, me);
+	}
+	else
+		TryCastSpell(spellId, me);
 }
 
 void BotGroupAI::DamageDealt(Unit* victim, uint32& damage, DamageEffectType damageType)
@@ -1101,7 +1280,7 @@ bool BotGroupAI::IsNotSelect(Unit* pTarget)
 {
 	if (!pTarget || !pTarget->IsAlive())
 		return true;
-	if (pTarget->HasAura(27827)) // (27827 ¾ÈÊêÖ®»ê ÉñÄÁËÀÍöºó)
+	if (pTarget->HasAura(27827)) // (27827 ï¿½ï¿½ï¿½ï¿½Ö®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
 		return true;
 	if (pTarget->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE))
 		return true;
@@ -1151,9 +1330,14 @@ void BotGroupAI::OnLevelUp(uint32 talentType)
 	m_WishStore.ClearWishs();
 }
 
-void BotGroupAI::OnLootedItem(uint32 entry)
+void BotGroupAI::OnLootedItem(Item* item)
 {
-	m_LootedItems.AddLootedItem(entry);
+	if (!item)
+		return;
+
+	m_LootedItems.AddLootedItem(item->GetEntry());
+	BotUtility::TryAutoEquipUpgrade(me, item, IsTankBotAI());
+	sGuildTaskMgr->OnItemLooted(me, item);
 }
 
 bool BotGroupAI::TryUpMount()
@@ -1509,6 +1693,22 @@ bool BotGroupAI::NonCombatProcess()
 		if (m_UseFood.UpdateBotFood(BOTAI_UPDATE_TICK, m_UseMountID))
 			return true;
 		if (m_FindLoot.DoFindLoot(BOTAI_UPDATE_TICK, m_Movement, m_UseMountID))
+			return true;
+		// Phase 9 (professions): no-op entirely while BotUtility::ProfessionEnabled is off.
+		BotUtility::GrantStarterProfessions(me);
+		if (Creature* skinTarget = BotUtility::TryAutoSkin(me, BOTAI_SEARCH_RANGE))
+		{
+			if (me->GetDistance(skinTarget->GetPosition()) > BOTAI_RANGESPELL_DISTANCE)
+				m_Movement->MovementTo(skinTarget->GetPositionX(), skinTarget->GetPositionY(), skinTarget->GetPositionZ(), 0);
+			return true;
+		}
+		if (GameObject* gatherTarget = BotUtility::TryAutoGather(me, BOTAI_SEARCH_RANGE))
+		{
+			if (me->GetDistance(gatherTarget->GetPosition()) > INTERACTION_DISTANCE)
+				m_Movement->MovementTo(gatherTarget->GetPositionX(), gatherTarget->GetPositionY(), gatherTarget->GetPositionZ(), 0);
+			return true;
+		}
+		if (BotUtility::TryAutoCraft(me))
 			return true;
 		if (m_MovetoUseGO.ProcessMovetoUseGO(m_Movement))
 			return true;
@@ -2357,7 +2557,11 @@ void BotGroupAI::SearchCreatureListFromRange(Unit* center, NearCreatureVec& near
 	NearCreatureList nearCreature;
 	Trinity::AllWorldObjectsInRange checker(center, range);
 	Trinity::CreatureListSearcher<Trinity::AllWorldObjectsInRange> searcher(center, nearCreature, checker);
-	//center->VisitNearbyGridObject(range, searcher);
+	CellCoord pair(Trinity::ComputeCellCoord(center->GetPositionX(), center->GetPositionY()));
+	Cell cell(pair);
+	cell.SetNoCreate();
+	TypeContainerVisitor<Trinity::CreatureListSearcher<Trinity::AllWorldObjectsInRange>, GridTypeMapContainer> visitor(searcher);
+	cell.Visit(pair, visitor, *center->GetMap(), *center, range);
 	for (Creature* pCreature : nearCreature)
 	{
 		if (!pCreature->IsAlive() || !pCreature->IsVisible() || pCreature->getLevel() <= 1 ||
@@ -3044,11 +3248,11 @@ bool BotGroupAI::TargetIsStealth(Player* pTarget)
 {
 	if (!pTarget)
 		return false;
-	// (1784 µÁÔôÇ±ÐÐ || 5215 µÂÂ³ÒÁÇ±ÐÐ || 66 ·¨Ê¦ÒþÐÎ || 58984 °µÒ¹Òþ¶Ý)
+	// (1784 ï¿½ï¿½ï¿½ï¿½Ç±ï¿½ï¿½ || 5215 ï¿½ï¿½Â³ï¿½ï¿½Ç±ï¿½ï¿½ || 66 ï¿½ï¿½Ê¦ï¿½ï¿½ï¿½ï¿½ || 58984 ï¿½ï¿½Ò¹ï¿½ï¿½ï¿½ï¿½)
 	if (pTarget->HasAura(1784) || pTarget->HasAura(5215) ||
 		pTarget->HasAura(66) || pTarget->HasAura(58984))
 	{
-		if (!me->CanSeeOrDetect(pTarget, false, true)) // Õì²âÇ±ÐÐ
+		if (!me->CanSeeOrDetect(pTarget, false, true)) // ï¿½ï¿½ï¿½Ç±ï¿½ï¿½
 			return true;
 	}
 	return false;

@@ -16,6 +16,8 @@
  */
 
 #include "BotFieldClassAI.h"
+#include "CellImpl.h"
+#include "GridNotifiersImpl.h"
 #include "Totem.h"
 
 void FieldShamanAI::UpdateTalentType()
@@ -371,7 +373,11 @@ bool FieldShamanAI::ExistTotemByType(PlayerTotemType totemType, float range)
 	std::list<Creature*> results;
 	Trinity::AllWorldObjectsInRange checker(me, range);
 	Trinity::CreatureListSearcher<Trinity::AllWorldObjectsInRange> searcher(me, results, checker);
-	//me->VisitNearbyGridObject(range, searcher);
+	CellCoord pair(Trinity::ComputeCellCoord(me->GetPositionX(), me->GetPositionY()));
+	Cell cell(pair);
+	cell.SetNoCreate();
+	TypeContainerVisitor<Trinity::CreatureListSearcher<Trinity::AllWorldObjectsInRange>, GridTypeMapContainer> visitor(searcher);
+	cell.Visit(pair, visitor, *me->GetMap(), *me, range);
 
 	uint32 slotType = SUMMON_SLOT_TOTEM;
 	switch (totemType)

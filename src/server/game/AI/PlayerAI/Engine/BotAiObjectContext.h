@@ -18,6 +18,7 @@
 #ifndef _BOT_AI_OBJECT_CONTEXT_H_
 #define _BOT_AI_OBJECT_CONTEXT_H_
 
+#include "BotValue.h"
 #include <functional>
 #include <map>
 #include <memory>
@@ -41,6 +42,7 @@ public:
 	using StrategyCreator = std::function<BotStrategy*(Player*)>;
 	using ActionCreator = std::function<BotAction*(Player*)>;
 	using TriggerCreator = std::function<BotTrigger*(Player*)>;
+	using ValueCreator = std::function<UntypedBotValue*(Player*)>;
 
 	explicit BotAiObjectContext(Player* bot);
 	~BotAiObjectContext();
@@ -48,9 +50,21 @@ public:
 	static void RegisterStrategy(std::string const& name, StrategyCreator creator);
 	static void RegisterAction(std::string const& name, ActionCreator creator);
 	static void RegisterTrigger(std::string const& name, TriggerCreator creator);
+	static void RegisterValue(std::string const& name, ValueCreator creator);
 
 	BotStrategy* GetStrategy(std::string const& name);
 	BotTrigger* GetTrigger(std::string const& name);
+
+	// Resolves a named, pre-registered value to its typed interface (dynamic_cast against the
+	// requested T) - e.g. GetValue<bool>("stay") for a command-driven flag (Phase 8). Lazily
+	// created and cached per-bot on first request, same as strategies/actions/triggers. Returns
+	// nullptr if nothing was ever registered under this name, or if it was registered with a
+	// different T.
+	template <class T>
+	BotValue<T>* GetValue(std::string const& name)
+	{
+		return dynamic_cast<BotValue<T>*>(GetUntypedValue(name));
+	}
 
 	// Returns a freshly-allocated node the caller owns (BotEngine deletes it right after use -
 	// see BotEngine.cpp); the underlying BotAction* instance itself is cached per-bot and reused
@@ -59,14 +73,18 @@ public:
 	BotActionNode* GetActionNode(std::string const& name);
 
 private:
+	UntypedBotValue* GetUntypedValue(std::string const& name);
+
 	Player* m_bot;
 	std::map<std::string, std::unique_ptr<BotStrategy>> m_strategies;
 	std::map<std::string, std::unique_ptr<BotAction>> m_actions;
 	std::map<std::string, std::unique_ptr<BotTrigger>> m_triggers;
+	std::map<std::string, std::unique_ptr<UntypedBotValue>> m_values;
 
 	static std::map<std::string, StrategyCreator>& SharedStrategyCreators();
 	static std::map<std::string, ActionCreator>& SharedActionCreators();
 	static std::map<std::string, TriggerCreator>& SharedTriggerCreators();
+	static std::map<std::string, ValueCreator>& SharedValueCreators();
 };
 
 #endif // !_BOT_AI_OBJECT_CONTEXT_H_

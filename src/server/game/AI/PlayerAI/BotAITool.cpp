@@ -16,20 +16,29 @@
  */
 
 #include "DB2Structure.h"
+#include "DB2Stores.h"
 #include "BotAITool.h"
 #include "Pet.h"
 #include "PlayerBotSession.h"
 #include "Map.h"
+#include "CellImpl.h"
+#include "GridNotifiersImpl.h"
 #include "Group.h"
 #include "BotBGAIMovement.h"
 #include "Language.h"
 #include "Guild.h"
 #include "SpellAuras.h"
 #include "SpellMgr.h"
+#include "Spell.h"
 #include "WorldSession.h"
 #include "TradeData.h"
 #include "SpellHistory.h"
 #include "Item.h"
+#include "ItemTemplate.h"
+#include "ItemPackets.h"
+#include "DBCEnums.h"
+#include "GameObject.h"
+#include "Log.h"
 #include "Bag.h"
 #include "MotionMaster.h"
 #include <cmath>
@@ -51,8 +60,16 @@ bool BotUtility::QuestAIEnabled = false;
 uint32 BotUtility::QuestAIPercent = 0;
 uint32 BotUtility::QuestAIMaxLevel = 20;
 bool BotUtility::QuestAIDebug = false;
+bool BotUtility::QuestAIWorldQuestEnabled = false;
 uint32 BotUtility::SelfBotLevel = 1;
 bool BotUtility::SelfBotDebug = false;
+bool BotUtility::AutoGearEnabled = false;
+bool BotUtility::AutoGearDebug = false;
+bool BotUtility::GuildTaskEnabled = false;
+uint32 BotUtility::GuildTaskChancePercent = 5;
+bool BotUtility::GuildTaskDebug = false;
+bool BotUtility::ProfessionEnabled = false;
+bool BotUtility::ProfessionDebug = false;
 
 SpellEntry* BotUtility::BuildNewArenaSpellEntry()
 {
@@ -415,6 +432,330 @@ Item* BotUtility::StoreNewItemByEntry(Player* player, uint32 entry, int32 count)
 		return NULL;
 	Item* itemInst = player->StoreNewItem(dest, pTemplate->GetId(), true, GenerateItemRandomPropertyId(pTemplate->GetId()));
 	return itemInst;
+}
+
+namespace
+{
+	// Primary stat each class scales its damage/healing off - the one well-known convention
+	// AC's own scoring tables also key off, re-derived here (not copied) since Legion's
+	// secondary-stat budget is different enough that the rest of AC's weights don't transfer.
+	// Not spec-aware (e.g. enhancement shaman wants agility, not intellect) - a known
+	// simplification for this first version, see EvaluateItemScore's own comment.
+	int32 GetPrimaryStatMod(uint8 cls)
+	{
+		switch (cls)
+		{
+		case CLASS_WARRIOR:
+		case CLASS_DEATH_KNIGHT:
+			return ITEM_MOD_STRENGTH;
+		case CLASS_PALADIN:
+			return ITEM_MOD_STRENGTH;
+		case CLASS_HUNTER:
+		case CLASS_ROGUE:
+		case CLASS_DRUID:
+			return ITEM_MOD_AGILITY;
+		case CLASS_SHAMAN:
+		case CLASS_PRIEST:
+		case CLASS_MAGE:
+		case CLASS_WARLOCK:
+			return ITEM_MOD_INTELLECT;
+		default:
+			return ITEM_MOD_STRENGTH;
+		}
+	}
+}
+
+float BotUtility::EvaluateItemScore(Player* bot, Item const* item, bool isTank)
+{
+	if (!bot || !item)
+		return 0.0f;
+
+	ItemTemplate const* proto = item->GetTemplate();
+	if (!proto)
+		return 0.0f;
+
+	float score = 0.0f;
+	int32 primaryMod = GetPrimaryStatMod(bot->getClass());
+	// Tanks want dodge/parry/block/extra-armor as a real priority, closer to stamina than to a
+	// throwaway secondary stat; everyone else only wants it as a mild tiebreaker (still non-zero -
+	// off-tanking/soloing is common enough on this fork that zeroing it outright would be wrong).
+	float defensiveWeight = isTank ? 1.2f : 0.1f;
+
+	for (uint32 i = 0; i < MAX_ITEM_PROTO_STATS; ++i)
+	{
+		int32 type = proto->GetItemStatType(i);
+		int32 value = proto->GetItemStatValue(i);
+		if (value == 0)
+			continue;
+
+		float weight;
+		if (type == primaryMod)
+			weight = 3.0f;
+		else if (type == ITEM_MOD_STAMINA)
+			weight = 1.5f;
+		else if (type == ITEM_MOD_CRIT_RATING || type == ITEM_MOD_HASTE_RATING ||
+			type == ITEM_MOD_MASTERY_RATING || type == ITEM_MOD_VERSATILITY)
+			weight = 1.0f;
+		else if (type == ITEM_MOD_ATTACK_POWER || type == ITEM_MOD_SPELL_POWER)
+			weight = 1.0f;
+		else if (type == ITEM_MOD_DODGE_RATING || type == ITEM_MOD_PARRY_RATING ||
+			type == ITEM_MOD_BLOCK_RATING || type == ITEM_MOD_BLOCK_VALUE || type == ITEM_MOD_EXTRA_ARMOR)
+			weight = defensiveWeight;
+		else
+			weight = 0.0f; // dead on Legion: legacy WotLK hit/expertise/resilience, WoD CR_* bonus stats
+
+		score += float(value) * weight;
+	}
+
+	// Item::GetItemLevel() resolves the real, bonus-ID-scaled level (warforged/titanforged-style
+	// upgrades) instead of the template's flat base level - a looted item with a higher
+	// bonus-scaled level than what's currently equipped previously scored identically to its
+	// unscaled base, making AutoGear blind to exactly the kind of upgrade those bonuses exist to
+	// represent. Stat values above still come from the template directly (bonus IDs can also
+	// scale those on Legion, but replicating that is a separate, bigger task - this only closes
+	// the armor/weapon-damage half of the gap).
+	uint32 itemLevel = item->GetItemLevel(bot);
+	score += float(proto->GetArmor(itemLevel)) * (isTank ? 0.35f : 0.2f);
+
+	if (proto->GetClass() == ITEM_CLASS_WEAPON)
+	{
+		float minDamage, maxDamage;
+		proto->GetDamage(itemLevel, minDamage, maxDamage);
+		score += ((minDamage + maxDamage) / 2.0f) * 2.0f;
+	}
+
+	return score;
+}
+
+bool BotUtility::TryAutoEquipUpgrade(Player* bot, Item* item, bool isTank)
+{
+	if (!AutoGearEnabled || !bot || !item || bot->IsInCombat())
+		return false;
+
+	ItemTemplate const* proto = item->GetTemplate();
+	if (!proto)
+		return false;
+
+	uint8 slot = bot->FindEquipSlot(proto, NULL_SLOT, false);
+	if (slot == NULL_SLOT)
+		return false; // not equippable gear - a consumable/trade good/quest item looted alongside real gear
+
+	Item* equipped = bot->GetEquippedItem(EquipmentSlots(slot));
+	float newScore = EvaluateItemScore(bot, item, isTank);
+	float equippedScore = equipped ? EvaluateItemScore(bot, equipped, isTank) : 0.0f;
+
+	if (AutoGearDebug)
+		TC_LOG_INFO("server.loading", ">> AutoGear: %s slot=%u new=%.1f(%u) equipped=%.1f(%u)",
+			bot->GetName().c_str(), slot, newScore, proto->GetId(), equippedScore, equipped ? equipped->GetEntry() : 0);
+
+	if (newScore <= equippedScore)
+		return false;
+
+	uint16 dest;
+	InventoryResult msg = bot->CanEquipItem(NULL_SLOT, dest, item, !item->IsBag());
+	if (msg != EQUIP_ERR_OK)
+		return false;
+
+	// Same mechanism ProcessUpequip already uses for master-commanded equips (simulate the
+	// real client packet rather than reimplement the slot/swap logic): HandleAutoEquipItemOpcode
+	// finds `item` by (bag, slot) in the bot's own inventory and performs the actual equip,
+	// including moving whatever was previously equipped there into a free bag slot.
+	WorldPacket opcode(CMSG_AUTO_EQUIP_ITEM);
+	WorldPackets::Item::AutoEquipItem packet(std::move(opcode));
+	packet.PackSlot = item->GetBagSlot();
+	packet.Slot = item->GetSlot();
+	WorldPackets::Item::InvUpdate::InvItem inv{ item->GetBagSlot(), item->GetSlot() };
+	packet.Inv.Items.resize(1);
+	packet.Inv.Items.push_back(inv);
+	bot->GetSession()->HandleAutoEquipItemOpcode(packet);
+	return true;
+}
+
+namespace
+{
+	// Builds the Spell directly and checks the real SpellCastResult explicitly, same reasoning
+	// as SelfBotAI::TryCastFirstKnown: Unit::CastSpell(...)'s bool-returning overload inverts
+	// success/failure on this exact codebase (SPELL_CAST_OK == 0 converts to false), so it must
+	// never be used for anything that branches on the result.
+	bool CastSpellChecked(Player* caster, uint32 spellId, Unit* target)
+	{
+		SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(spellId);
+		if (!spellInfo)
+			return false;
+
+		Spell* spell = new Spell(caster, spellInfo, TriggerCastFlags::TRIGGERED_NONE, ObjectGuid::Empty);
+		SpellCastTargets targets;
+		if (target)
+			targets.SetUnitTarget(target);
+		return spell->prepare(&targets, nullptr) == SPELL_CAST_OK;
+	}
+
+	uint32 const SKINNING_SPELL_ID = 8613; // universal Skinning cast, unchanged since Classic
+
+	// Real players open a gathering node through a spell with an open-lock effect, whose
+	// validation (Spell::CanOpenLock, Spell.cpp) already enforces this exact skill check before
+	// the lock ever opens. TryAutoGather skips straight to Player::SendLoot instead of casting
+	// anything (see its own comment for why), so that check never runs for bots - this mirrors
+	// just the skill-gate half of CanOpenLock's LOCK_KEY_SKILL case, not the whole function
+	// (item-key locks/reagent-cost checks don't apply to gathering nodes in practice).
+	bool HasRequiredGatherSkill(Player* bot, GameObjectTemplate const* proto)
+	{
+		LockEntry const* lockInfo = sLockStore.LookupEntry(proto->GetLockId());
+		if (!lockInfo)
+			return true; // "some locks not have reqs" - same fallback CanOpenLock uses
+
+		for (uint8 j = 0; j < MAX_LOCK_CASE; ++j)
+		{
+			if (lockInfo->Type[j] != LOCK_KEY_SKILL)
+				continue;
+
+			SkillType skillId = SkillByLockType(LockType(lockInfo->Index[j]));
+			if (skillId == SKILL_NONE)
+				continue;
+
+			return bot->GetSkillValue(skillId) >= lockInfo->Skill[j];
+		}
+		return true; // no LOCK_KEY_SKILL case in this lock at all
+	}
+}
+
+void BotUtility::GrantStarterProfessions(Player* bot)
+{
+	if (!ProfessionEnabled || !bot || bot->HasSkill(SKILL_SKINNING))
+		return;
+
+	// Rough skill-follows-level curve, capped at the WotLK-era skill cap - good enough for a
+	// first version; SetSkill's own engine logic (Player::LearnSkillRewardedSpells, called
+	// internally) auto-learns every recipe/ability SkillLineAbility data gates at that value,
+	// so this never needs to name a single spell id itself.
+	uint16 value = uint16(std::min<uint32>(uint32(bot->getLevel()) * 5, 450));
+	bot->SetSkill(SKILL_SKINNING, 1, value, value);
+	bot->SetSkill(SKILL_LEATHERWORKING, 1, value, value);
+	// Granting all four rather than modeling the real 2-profession choice a player makes -
+	// harmless for an autonomous bot (more things it can passively do if it happens across
+	// them), and avoids needing a profession-choice subsystem for this first version.
+	bot->SetSkill(SKILL_MINING, 1, value, value);
+	bot->SetSkill(SKILL_HERBALISM, 1, value, value);
+
+	if (ProfessionDebug)
+		TC_LOG_INFO("server.loading", ">> Profession: %s granted Skinning+Leatherworking+Mining+Herbalism at %u",
+			bot->GetName().c_str(), uint32(value));
+}
+
+Creature* BotUtility::TryAutoSkin(Player* bot, float range)
+{
+	if (!ProfessionEnabled || !bot || !bot->HasSkill(SKILL_SKINNING) || bot->HasUnitState(UNIT_STATE_CASTING))
+		return nullptr;
+
+	// WorldObject::FindAllCreaturesInRange (Object.cpp) does the real grid Cell::Visit call.
+	std::list<Creature*> nearCreature = bot->FindAllCreaturesInRange(range);
+
+	Creature* nearest = nullptr;
+	float nearestDist = 9999.0f;
+	for (Creature* creature : nearCreature)
+	{
+		if (!creature->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE))
+			continue;
+
+		float dist = bot->GetDistance(creature->GetPosition());
+		if (!nearest || dist < nearestDist)
+		{
+			nearestDist = dist;
+			nearest = creature;
+		}
+	}
+
+	if (!nearest)
+		return nullptr;
+
+	if (nearestDist > BOTAI_RANGESPELL_DISTANCE)
+		return nearest; // caller walks to it first, same two-phase shape as DoFindLoot
+
+	if (CastSpellChecked(bot, SKINNING_SPELL_ID, nearest))
+	{
+		if (ProfessionDebug)
+			TC_LOG_INFO("server.loading", ">> Profession: %s skinning %s", bot->GetName().c_str(), nearest->GetName().c_str());
+	}
+	return nearest;
+}
+
+GameObject* BotUtility::TryAutoGather(Player* bot, float range)
+{
+	if (!ProfessionEnabled || !bot || bot->HasUnitState(UNIT_STATE_CASTING))
+		return nullptr;
+	if (!bot->HasSkill(SKILL_MINING) && !bot->HasSkill(SKILL_HERBALISM))
+		return nullptr;
+
+	GameObject* node = bot->FindNearestGameObjectOfType(GAMEOBJECT_TYPE_GATHERING_NODE, range);
+	if (!node || node->getLootState() != GO_READY)
+		return nullptr;
+
+	// Skip this tick rather than walk up to a node the bot can't actually open - same
+	// "opportunistic, not a dedicated goal" shape as the rest of this idle-tick profession
+	// check, the bot's other movement will naturally carry it toward a different, eligible node
+	// over time rather than getting stuck fixating on the nearest ineligible one.
+	if (!HasRequiredGatherSkill(bot, node->GetGOInfo()))
+		return nullptr;
+
+	if (bot->GetDistance(node->GetPosition()) > INTERACTION_DISTANCE)
+		return node; // caller walks to it first, same two-phase shape as TryAutoSkin
+
+	// Player::SendLoot is the real generic primitive (fills loot from GetGOInfo()->GetLootId(),
+	// opens the loot window) regardless of GO type - see this method's header comment for why
+	// this sidesteps GameObject::Use() entirely instead of trying to replicate it.
+	bot->SendLoot(node->GetGUID(), LOOT_NONE);
+
+	if (ProfessionDebug)
+		TC_LOG_INFO("server.loading", ">> Profession: %s gathering node entry=%u", bot->GetName().c_str(), node->GetEntry());
+	return node;
+}
+
+bool BotUtility::TryAutoCraft(Player* bot)
+{
+	if (!ProfessionEnabled || !bot || bot->IsInCombat() || bot->HasUnitState(UNIT_STATE_CASTING))
+		return false;
+
+	for (auto const& pair : bot->GetSpellMap())
+	{
+		SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(pair.first);
+		if (!spellInfo)
+			continue;
+
+		bool isRecipe = false;
+		for (SpellEffectInfo const* effect : spellInfo->GetEffectsForDifficulty(DIFFICULTY_NONE))
+		{
+			if (effect && effect->Effect == SPELL_EFFECT_CREATE_ITEM)
+			{
+				isRecipe = true;
+				break;
+			}
+		}
+		if (!isRecipe)
+			continue;
+
+		bool hasReagents = true;
+		for (uint8 i = 0; i < MAX_SPELL_REAGENTS; ++i)
+		{
+			if (spellInfo->Reagent[i] <= 0 || spellInfo->ReagentCount[i] == 0)
+				continue;
+			if (!bot->HasItemCount(uint32(spellInfo->Reagent[i]), spellInfo->ReagentCount[i]))
+			{
+				hasReagents = false;
+				break;
+			}
+		}
+		if (!hasReagents)
+			continue;
+
+		if (CastSpellChecked(bot, spellInfo->Id, nullptr))
+		{
+			if (ProfessionDebug)
+				TC_LOG_INFO("server.loading", ">> Profession: %s crafting via spell %u", bot->GetName().c_str(), spellInfo->Id);
+			return true;
+		}
+	}
+
+	return false;
 }
 
 uint32 BotUtility::FindMaxRankSpellByExist(Player* player, uint32 spellID)
@@ -1601,7 +1942,11 @@ bool BotAIFastAid::CanFastAidByTarget(Player* target)
 	NearCreatureList nearCreature;
 	Trinity::AllWorldObjectsInRange checker(target, BOTAI_RANGESPELL_DISTANCE);
 	Trinity::CreatureListSearcher<Trinity::AllWorldObjectsInRange> searcher(target, nearCreature, checker);
-	//target->VisitNearbyGridObject(BOTAI_RANGESPELL_DISTANCE, searcher);
+	CellCoord pair(Trinity::ComputeCellCoord(target->GetPositionX(), target->GetPositionY()));
+	Cell cell(pair);
+	cell.SetNoCreate();
+	TypeContainerVisitor<Trinity::CreatureListSearcher<Trinity::AllWorldObjectsInRange>, GridTypeMapContainer> visitor(searcher);
+	cell.Visit(pair, visitor, *target->GetMap(), *target, BOTAI_RANGESPELL_DISTANCE);
 	for (Creature* pCreature : nearCreature)
 	{
 		if (pCreature->IsTotem())
@@ -1700,7 +2045,7 @@ Creature* BotAIFindNearLoot::FindLootCreature(float range)
     std::list<Creature*> nearCreature;
     Trinity::AllWorldObjectsInRange checker(me, range);
     Trinity::CreatureListSearcher<Trinity::AllWorldObjectsInRange> searcher(me, nearCreature, checker);
-    //Cell::VisitAllObjects(me, searcher, range);
+    Cell::VisitAllObjects(me, searcher, range);
 
     float nearDistance = 9999;
     Creature* pNearCreature = NULL;
@@ -2341,7 +2686,11 @@ void BotAIFlee::SearchCreatureListFromRange(Position centerPos, std::list<Creatu
 	std::list<Creature*> nearCreature;
 	Trinity::AllWorldObjectsInRange checker(me, BOTAI_RANGESPELL_DISTANCE + range);
 	Trinity::CreatureListSearcher<Trinity::AllWorldObjectsInRange> searcher(me, nearCreature, checker);
-	//me->VisitNearbyGridObject(range, searcher);
+	CellCoord pair(Trinity::ComputeCellCoord(me->GetPositionX(), me->GetPositionY()));
+	Cell cell(pair);
+	cell.SetNoCreate();
+	TypeContainerVisitor<Trinity::CreatureListSearcher<Trinity::AllWorldObjectsInRange>, GridTypeMapContainer> visitor(searcher);
+	cell.Visit(pair, visitor, *me->GetMap(), *me, BOTAI_RANGESPELL_DISTANCE + range);
 	for (Creature* pCreature : nearCreature)
 	{
 		if (pCreature->IsPet() || pCreature->IsTotem() || pCreature->getLevel() <= 1)

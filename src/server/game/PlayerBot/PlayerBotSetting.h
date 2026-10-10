@@ -122,6 +122,10 @@ public:
 	void UpdateReset();
 	void LearnSpells();
 	void LearnTalents();
+	// Confirmed AC-parity gap (grep across AI/PlayerAI for PvP-talent selection came back empty) -
+	// bots fight in BGs/arenas (warfare_size/AddNewPlayerBotToBG population) with zero PvP
+	// talents ever picked. Same shape as LearnTalents() above.
+	void LearnPvpTalents();
 	bool EquipItem(Item* pItem);
 
 private:

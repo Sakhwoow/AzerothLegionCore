@@ -16,6 +16,8 @@
  */
 
 #include "BotAI.h"
+#include "CellImpl.h"
+#include "GridNotifiersImpl.h"
 #include "PathfindingMgr.h"
 #include "WorldSession.h"
 #include "Player.h"
@@ -719,7 +721,15 @@ void BotBGAI::SearchCreatureListFromRange(Unit* center, NearCreatureVec& nearCre
     {
         Trinity::AllWorldObjectsInRange checker(center, range);
         Trinity::CreatureListSearcher<Trinity::AllWorldObjectsInRange> searcher(center, nearCreature, checker);
-        //center->VisitNearbyGridObject(range, searcher);
+        // Fix (Phase 9 bug hunt): this call was commented out, meaning nearCreature always
+        // stayed empty - confirmed by reading it, present identically in 16 call sites across
+        // this whole bot AI subsystem. Same working pattern as WorldObject::FindAllCreaturesInRange
+        // (Object.cpp).
+        CellCoord pair(Trinity::ComputeCellCoord(center->GetPositionX(), center->GetPositionY()));
+        Cell cell(pair);
+        cell.SetNoCreate();
+        TypeContainerVisitor<Trinity::CreatureListSearcher<Trinity::AllWorldObjectsInRange>, GridTypeMapContainer> visitor(searcher);
+        cell.Visit(pair, visitor, *center->GetMap(), *center, range);
     }
     for (Creature* pCreature : nearCreature)
     {
@@ -807,7 +817,11 @@ NearObjectList BotBGAI::SearchGameObject(float range)
     Position pos = me->GetPosition();
     Trinity::GameObjectInRangeCheck checker(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), range);
     Trinity::GameObjectListSearcher<Trinity::GameObjectInRangeCheck> searcher(me, results, checker);
-    //me->VisitNearbyGridObject(range, searcher);
+    CellCoord pair(Trinity::ComputeCellCoord(me->GetPositionX(), me->GetPositionY()));
+    Cell cell(pair);
+    cell.SetNoCreate();
+    TypeContainerVisitor<Trinity::GameObjectListSearcher<Trinity::GameObjectInRangeCheck>, GridTypeMapContainer> visitor(searcher);
+    cell.Visit(pair, visitor, *me->GetMap(), *me, range);
     return results;
 }
 
@@ -2623,7 +2637,11 @@ void BotBGAI::QueryNearCreatureList(float range, NearCreatureList& creatureList)
     NearCreatureList& nearCreature = m_RangeCreatureLists[range];
     Trinity::AllWorldObjectsInRange checker(me, range);
     Trinity::CreatureListSearcher<Trinity::AllWorldObjectsInRange> searcher(me, nearCreature, checker);
-    //me->VisitNearbyGridObject(range, searcher);
+    CellCoord pair(Trinity::ComputeCellCoord(me->GetPositionX(), me->GetPositionY()));
+    Cell cell(pair);
+    cell.SetNoCreate();
+    TypeContainerVisitor<Trinity::CreatureListSearcher<Trinity::AllWorldObjectsInRange>, GridTypeMapContainer> visitor(searcher);
+    cell.Visit(pair, visitor, *me->GetMap(), *me, range);
     creatureList = m_RangeCreatureLists[range];
 }
 

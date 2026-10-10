@@ -599,6 +599,17 @@ void WorldSession::HandleDoReadyCheckOpcode(WorldPackets::Party::DoReadyCheck& p
         if (BotGroupAI* pAI = dynamic_cast<BotGroupAI*>(player->GetAI()))
             pAI->ResetBotAI();
     }
+
+    // Phase 8 selfbot (".selfbot ready"): auto-confirm the ready check for any real player who
+    // has selfbot active and hasn't turned auto-ready off - separate pass from the IsPlayerBot()
+    // loop above since a selfbot player is a real session, not a provisioned bot account.
+    for (Group::MemberSlot const& slot : memList)
+    {
+        Player* player = ObjectAccessor::FindPlayer(slot.guid);
+        if (!player || !player->IsInWorld())
+            continue;
+        sSelfBotMgr->TryAutoConfirmReadyCheck(player, group);
+    }
 }
 
 void WorldSession::HandleReadyCheckResponseOpcode(WorldPackets::Party::ReadyCheckResponseClient& packet)

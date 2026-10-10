@@ -16,6 +16,8 @@
  */
 
 #include "BotDuelAI.h"
+#include "CellImpl.h"
+#include "GridNotifiersImpl.h"
 #include "PathfindingMgr.h"
 #include "WorldSession.h"
 #include "Player.h"
@@ -259,7 +261,11 @@ NearObjectList BotDuelAI::SearchGameObject(float range)
 	Position pos = me->GetPosition();
 	Trinity::GameObjectInRangeCheck checker(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), range);
 	Trinity::GameObjectListSearcher<Trinity::GameObjectInRangeCheck> searcher(me, results, checker);
-	//me->VisitNearbyGridObject(range, searcher);
+	CellCoord pair(Trinity::ComputeCellCoord(pos.GetPositionX(), pos.GetPositionY()));
+	Cell cell(pair);
+	cell.SetNoCreate();
+	TypeContainerVisitor<Trinity::GameObjectListSearcher<Trinity::GameObjectInRangeCheck>, GridTypeMapContainer> visitor(searcher);
+	cell.Visit(pair, visitor, *me->GetMap(), *me, range);
 	return results;
 }
 
@@ -526,7 +532,7 @@ bool BotDuelAI::IsNotSelect(Unit* pTarget)
 		if (pPlayer->GetVehicleKit())
 			return true;
 	}
-	if (pTarget->HasAura(27827)) // (27827 ¾ÈÊêÖ®»ê ÉñÄÁËÀÍöºó)
+	if (pTarget->HasAura(27827)) // (27827 ï¿½ï¿½ï¿½ï¿½Ö®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
 		return true;
 	return false;
 }
@@ -1019,9 +1025,9 @@ bool BotDuelAI::TargetIsStealth(Player* pTarget)
 {
 	if (!pTarget)
 		return false;
-	if (pTarget->HasAura(1784) || pTarget->HasAura(5215) || pTarget->HasAura(66)) // (1784 µÁÔôÇ±ÐÐ || 5215 µÂÂ³ÒÁÇ±ÐÐ || 66 ·¨Ê¦ÒþÐÎ)
+	if (pTarget->HasAura(1784) || pTarget->HasAura(5215) || pTarget->HasAura(66)) // (1784 ï¿½ï¿½ï¿½ï¿½Ç±ï¿½ï¿½ || 5215 ï¿½ï¿½Â³ï¿½ï¿½Ç±ï¿½ï¿½ || 66 ï¿½ï¿½Ê¦ï¿½ï¿½ï¿½ï¿½)
 	{
-		if (!me->CanSeeOrDetect(pTarget, false, true)) // Õì²âÇ±ÐÐ
+		if (!me->CanSeeOrDetect(pTarget, false, true)) // ï¿½ï¿½ï¿½Ç±ï¿½ï¿½
 			return true;
 	}
 	return false;

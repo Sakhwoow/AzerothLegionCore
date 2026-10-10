@@ -17,6 +17,7 @@
  */
 
 #include "WorldSession.h"
+#include "BotFieldAI.h"
 #include "CellImpl.h"
 #include "Common.h"
 #include "Corpse.h"
@@ -550,10 +551,12 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recvData)
 
         if (target->IsPlayerBot())
         {
+            // Phase 9 (gear scoring): field (non-grouped) bots never got a chance to check
+            // this at all before - BotFieldAI had no OnLootedItem until this phase.
             if (BotGroupAI* pAI = dynamic_cast<BotGroupAI*>(target->GetAI()))
-            {
-                pAI->OnLootedItem(newitem->GetEntry());
-            }
+                pAI->OnLootedItem(newitem);
+            else if (BotFieldAI* pFieldAI = dynamic_cast<BotFieldAI*>(target->GetAI()))
+                pFieldAI->OnLootedItem(newitem);
         }
     }
 

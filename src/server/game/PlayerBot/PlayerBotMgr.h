@@ -305,6 +305,7 @@ public:
     TeamId GetTeamIDByPlayerBotGUID(ObjectGuid& guid);
     bool IsPlayerBot(WorldSession* pSession);
     bool IsBotAccuntName(std::string name);
+    bool IsAccountBotAccountName(std::string name);
     bool IsIDLEPlayerBot(Player* player);
     void DestroyBotMail(uint32 guid);
     void LoadPlayerBotBaseInfo();
@@ -360,6 +361,13 @@ public:
     // SupplementAccount() creates m_BotAccountAmount * 2 bot accounts at startup, so the pool
     // has to be sized to at least cover the online cap. Keeps the original 90*2=180 ratio.
     void SetBotAccountAmount(uint32 onlineCap) { m_BotAccountAmount = (onlineCap + 1) / 2; }
+    // AiPlayerbot.AccountBotMaxCount: how many "accountbotN"-named accounts
+    // SupplementAccountBot() auto-creates at startup (0 = feature off, matches the pre-existing
+    // behavior where AccountBot accounts were only ever provisioned manually via ToolSocket).
+    // Unlike SetBotAccountAmount, this is the literal target count, no *2 rotation-buffer ratio -
+    // AccountBot accounts aren't auto-rotated world population, just a pool of accounts waiting
+    // for the external admin tool to puppet.
+    void SetAccountBotAmount(uint32 targetCount) { m_AccountBotAmount = targetCount; }
     // AiPlayerbot.DeleteRandomBotAccounts=1 trigger: deletes every account matching
     // IsBotAccuntName() (and its characters, via AccountMgr::DeleteAccount) plus the
     // orphaned arena teams/battlenet accounts that leaves behind. Caller is responsible
@@ -385,6 +393,7 @@ private:
 
     void ClearBaseInfo();
     void SupplementAccount();
+    void SupplementAccountBot();
     void LoadCharBaseInfo();
     void LoadSessionPermissionsCallback(PreparedQueryResult result);
 
@@ -405,6 +414,7 @@ private:
 
 private:
     uint32 m_BotAccountAmount;
+    uint32 m_AccountBotAmount = 0;
     uint32 m_LastBotAccountIndex;
     uint32 m_LFGSearchTick;
     uint32 m_RandomLoginCheckTime;
