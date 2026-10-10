@@ -453,6 +453,72 @@ INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Te
 (101765, 2, 0, 'ruRU', 'Мы двинемся, когда путь будет свободен. Твоя храбрость стоит больше, чем ты думаешь, друг.'),
 (101765, 3, 0, 'ruRU', 'Это магия помраченных эльфов... но она позвала нас.');
 
+-- Queen's Reprisal Sailor (89290, separate from 89289) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 89290 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(89290, 0, 0, 'ruRU', 'Шторм... сели на мель.'),
+(89290, 1, 0, 'ruRU', 'Капитан... захвачен...'),
+(89290, 3, 0, 'ruRU', 'Корабль разбился... гиблины атаковали нас.');
+
+-- Azurefall Guardian (99859) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 99859 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(99859, 0, 0, 'ruRU', 'Я больше не могу это контролировать. Ты должен$g:на; утонуть!'),
+(99859, 1, 0, 'ruRU', 'Наконец-то свободен! Покончим с этим злом!'),
+(99859, 2, 0, 'ruRU', 'Спасибо тебе, незнакомец. Ярость... порча исчезла. Теперь я должен позаботиться о водах, которые так долго забрасывал.');
+
+-- Duskwatch Defender (102670) - group1 is an empty string in the source (nothing to translate,
+-- left alone); groups 3,4 were English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 102670 AND `Locale` = 'ruRU' AND `GroupID` IN (3,4);
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(102670, 3, 0, 'ruRU', 'Вам нас не ранить!'),
+(102670, 4, 0, 'ruRU', 'За шал''дорай!');
+
+-- High Mage of the Duskwatch (105759) - fully English (groups 1/2 are a literal duplicate line
+-- in the source).
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 105759 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(105759, 0, 0, 'ruRU', 'Кто идёт?!'),
+(105759, 1, 0, 'ruRU', 'Иллюзия! Что ты скрываешь?'),
+(105759, 2, 0, 'ruRU', 'Иллюзия! Что ты скрываешь?'),
+(105759, 3, 0, 'ruRU', 'Никто не смеет бросить нам вызов!'),
+(105759, 4, 0, 'ruRU', 'Я научу тебя повиноваться господам.');
+
+-- Lady Sylvanas Windrunner (97695) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 97695 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(97695, 0, 0, 'ruRU', 'А, мой верный герой.'),
+(97695, 1, 0, 'ruRU', 'Тебе нельзя здесь томиться. Эгида не должна попасть в руки врага!'),
+(97695, 2, 0, 'ruRU', 'Будущее Орды зависит от нас с тобой. Найди путь обратно в Штормхейм — я буду ждать.');
+
+-- Legion Endbringer (99762) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 99762 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(99762, 0, 0, 'ruRU', 'За Легион!'),
+(99762, 1, 0, 'ruRU', 'С тобой легко разобраться.'),
+(99762, 2, 0, 'ruRU', 'Ты смеешь нападать на нас здесь?!');
+
+-- Lasune Starblade (100884) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 100884 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(100884, 0, 0, 'ruRU', 'О, ты ищешь Джабрула.'),
+(100884, 1, 0, 'ruRU', 'Он проходил здесь несколько дней назад. Направился к Жалкой лощине изучать гарпий.'),
+(100884, 2, 0, 'ruRU', 'С тех пор я его не видел$g:а;. Надеюсь, он не поддался той же напасти, что и гарпии.');
+
+-- Delandros Shimmermoon (107392) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 107392 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(107392, 0, 0, 'ruRU', 'Версток был у святилища! Узнай, что там происходит. Я присоединюсь к тебе, как только смогу, $n.'),
+(107392, 1, 0, 'ruRU', 'Отлично сработано! Атака Легиона отбита!'),
+(107392, 2, 0, 'ruRU', 'Что за... Клыки исчезли! Что случилось, $n?');
+
+-- Chronarch Defender (109670) - fully English, same robotic template as Arcane Chronomaton/Sentinel.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 109670 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(109670, 0, 0, 'ruRU', 'Предъявите удостоверение личности. ПОДЧИНИТЕСЬ.'),
+(109670, 1, 0, 'ruRU', 'Сканирование тайной сущности...'),
+(109670, 2, 0, 'ruRU', 'Ожидайте проверки.');
+
 -- Mythandros Irongrove (103569) - groups 0-4 English; group 5 already Russian.
 DELETE FROM `creature_text_locale` WHERE `CreatureID` = 103569 AND `Locale` = 'ruRU' AND `GroupID` IN (0,1,2,3,4);
 INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
