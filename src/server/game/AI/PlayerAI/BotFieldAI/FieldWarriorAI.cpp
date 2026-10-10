@@ -231,9 +231,15 @@ void FieldWarriorAI::ProcessFlee()
 
 void FieldWarriorAI::UpdateWarriorPose()
 {
+	// Stance ids are resolved per-character via FindMaxRankSpellByExist and can legitimately
+	// come back 0 (stance not known yet) - unlike TryCastSpell, this calls Unit::CastSpell
+	// directly, which has no such guard, so an unresolved id used to cast spell 0 every tick
+	// (logged as "CastSpell: unknown spell id 0") for any bot whose talent branch picked a
+	// stance it doesn't actually know - found live once Defensive Stance (branch 2) started
+	// being reached for the first time after the role-detection fix.
 	if (!me->IsInCombat())
 	{
-		if (!me->HasAura(WarriorWeapon_Status))
+		if (WarriorWeapon_Status && me->HasSpell(WarriorWeapon_Status) && !me->HasAura(WarriorWeapon_Status))
 			me->CastSpell(me, WarriorWeapon_Status, true);
 	}
 	else
@@ -241,15 +247,15 @@ void FieldWarriorAI::UpdateWarriorPose()
 		switch (m_BotTalentType)
 		{
 		case 0:
-			if (!me->HasAura(WarriorWeapon_Status))
+			if (WarriorWeapon_Status && me->HasSpell(WarriorWeapon_Status) && !me->HasAura(WarriorWeapon_Status))
 				me->CastSpell(me, WarriorWeapon_Status, true);
 			break;
 		case 1:
-			if (!me->HasAura(WarriorRage_Status))
+			if (WarriorRage_Status && me->HasSpell(WarriorRage_Status) && !me->HasAura(WarriorRage_Status))
 				me->CastSpell(me, WarriorRage_Status, true);
 			break;
 		case 2:
-			if (!me->HasAura(WarriorDefance_Status))
+			if (WarriorDefance_Status && me->HasSpell(WarriorDefance_Status) && !me->HasAura(WarriorDefance_Status))
 				me->CastSpell(me, WarriorDefance_Status, true);
 			break;
 		}

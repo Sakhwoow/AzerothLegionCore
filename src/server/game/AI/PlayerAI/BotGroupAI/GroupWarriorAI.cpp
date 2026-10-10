@@ -298,9 +298,11 @@ void GroupWarriorAI::ProcessFlee()
 
 void GroupWarriorAI::UpdateWarriorPose()
 {
+	// See FieldWarriorAI::UpdateWarriorPose - unresolved (0) stance ids used to be cast
+	// directly without a HasSpell guard, spamming "unknown spell id 0" every tick.
 	if (!me->IsInCombat())
 	{
-		if (!me->HasAura(WarriorWeapon_Status))
+		if (WarriorWeapon_Status && me->HasSpell(WarriorWeapon_Status) && !me->HasAura(WarriorWeapon_Status))
 			me->CastSpell(me, WarriorWeapon_Status, true);
 	}
 	else
@@ -308,15 +310,15 @@ void GroupWarriorAI::UpdateWarriorPose()
 		switch (m_BotTalentType)
 		{
 		case 0:
-			if (!me->HasAura(WarriorWeapon_Status))
+			if (WarriorWeapon_Status && me->HasSpell(WarriorWeapon_Status) && !me->HasAura(WarriorWeapon_Status))
 				me->CastSpell(me, WarriorWeapon_Status, true);
 			break;
 		case 1:
-			if (!me->HasAura(WarriorRage_Status))
+			if (WarriorRage_Status && me->HasSpell(WarriorRage_Status) && !me->HasAura(WarriorRage_Status))
 				me->CastSpell(me, WarriorRage_Status, true);
 			break;
 		case 2:
-			if (!me->HasAura(WarriorDefance_Status))
+			if (WarriorDefance_Status && me->HasSpell(WarriorDefance_Status) && !me->HasAura(WarriorDefance_Status))
 				me->CastSpell(me, WarriorDefance_Status, true);
 			break;
 		}

@@ -316,20 +316,17 @@ void BotBGAIMovement::MovementTo(float x, float y, float z, float offset /* = 0 
 	bool result = path.CalculatePath(posx, posy, posz);
 	if (!result || (path.GetPathType() & PATHFIND_NOPATH))
 	{
+		// Found while diagnosing Legion's quest-bot population standing completely frozen
+		// (QuestAI "timed out travelling to quest objective" on essentially every low-level
+		// bot, confirmed via live position snapshots showing bit-identical coordinates over
+		// 10+ minutes): this branch used to claim findOK=true for every non-BG caller even
+		// though pathfinding just failed, handing ApplyFinishPath an empty/garbage path
+		// instead of the honest failure it already knows how to retry/recover from. BG bots
+		// (m_BGAI set) always reported the failure correctly - only the non-BG (Field/Group/
+		// Duel/quest-travel) path lied.
 		if (m_BGAI)
-		{
-//if (irand(0,3)==1 && !m_Player->IsInCombat()) 
-//	{
-		//m_Player->NearTeleportTo(x, y, z, 0);
-	 //TeleportToValidPosition();
-//	 TC_LOG_ERROR("PFThread::ThreadRun", "Path not find then tele!");
-//	 }
-	 //m_Player->NearTeleportTo(x, y, z, 0);
 			TC_LOG_ERROR("PFThread::ThreadRun", "Path not find1");
-			pathParam->findOK = false;
-		}
-		else
-			pathParam->findOK = true;
+		pathParam->findOK = false;
 	}
 	else
 		pathParam->findOK = true;
@@ -408,13 +405,10 @@ void BotBGAIMovement::MovementTo(ObjectGuid guid, float offset /* = 0 */)
 	bool result = path.CalculatePath(posx, posy, posz);
 	if (!result || (path.GetPathType() & PATHFIND_NOPATH))
 	{
+		// See MovementTo(x,y,z,offset) above - the non-BG branch used to lie findOK=true here too.
 		if (m_BGAI)
-		{
 			TC_LOG_ERROR("PFThread::ThreadRun", "Path not find2.");
-			pathParam->findOK = false;
-		}
-		else
-			pathParam->findOK = true;
+		pathParam->findOK = false;
 	}
 	else
 		pathParam->findOK = true;
@@ -464,13 +458,10 @@ void BotBGAIMovement::MovementToTarget()
 		bool result = path.CalculatePath(posx, posy, posz);
 		if (!result || (path.GetPathType() & PATHFIND_NOPATH))
 		{
+			// See MovementTo(x,y,z,offset) above - the non-BG branch used to lie findOK=true here too.
 			if (m_BGAI)
-			{
 				TC_LOG_ERROR("PFThread::ThreadRun", "Path not find3.");
-				pathParam->findOK = false;
-			}
-			else
-				pathParam->findOK = true;
+			pathParam->findOK = false;
 		}
 		else
 			pathParam->findOK = true;
