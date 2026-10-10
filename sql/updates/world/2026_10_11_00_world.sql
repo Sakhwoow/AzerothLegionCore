@@ -852,6 +852,89 @@ INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Te
 (96465, 0, 0, 'ruRU', 'Дрекирьяры нарушили наш древний договор.'),
 (96465, 1, 0, 'ruRU', 'Пришло время им ответить за последствия.');
 
+-- Aemara (96778) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 96778 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(96778, 0, 0, 'ruRU', 'Скажи мне, если понадобится моя помощь, |3-6($c).'),
+(96778, 3, 0, 'ruRU', 'Рада встрече!');
+
+-- Debbi Moore (97005) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 97005 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(97005, 0, 0, 'ruRU', 'Рада встрече.'),
+(97005, 1, 0, 'ruRU', 'Да, конечно. Вот они, на столе. А что, с ними что-то не так?');
+
+-- Salan Sunthread (97342) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 97342 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(97342, 0, 0, 'ruRU', 'Рад встрече!'),
+(97342, 3, 0, 'ruRU', 'Скажи мне, если понадобится моя помощь, |3-6($c).');
+
+-- Warbrave Oro (97553) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 97553 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(97553, 0, 0, 'ruRU', 'Вовремя, защитник. Мы расчистили путь к Даргрулу. Сюда...'),
+(97553, 1, 0, 'ruRU', 'А-а-а-а!');
+
+-- Vethir (98190, separate from 96465) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 98190 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(98190, 0, 0, 'ruRU', 'Демонические союзники Короля-бога больше не будут угрожать Штормхейму.'),
+(98190, 1, 0, 'ruRU', 'Пришло время преследовать Сковальда в высоких чертогах.');
+
+-- Flotsam (99929) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 99929 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(99929, 0, 0, 'ruRU', 'Почему я ем так много мурлоков?'),
+(99929, 0, 1, 'ruRU', 'Животик слишком урчит...');
+
+-- Feltotem Warmonger (101794) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 101794 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(101794, 0, 0, 'ruRU', 'Я чую кровь в лесу.'),
+(101794, 0, 1, 'ruRU', 'Ты пришёл не туда.');
+
+-- Temple Priestess (105760) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 105760 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(105760, 0, 0, 'ruRU', 'Да, конечно, есть. Немного найдётся вон в том сундуке. Но у нас не так много запасов, так что, пожалуйста, не бери слишком много.'),
+(105760, 1, 0, 'ruRU', 'Плетельщица силовых линий из Сурамара проходила здесь не так давно. Думаю, она направилась на восток, к Лесным водопадам.');
+
+-- Emissary Auldbridge (111109) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 111109 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(111109, 0, 0, 'ruRU', 'Добро пожаловать в Даларан! Буду рад помочь тебе во всём, что понадобится.'),
+(111109, 2, 0, 'ruRU', 'Мне нужно сообщить Совету о твоих новостях. Удачи, $n!');
+
+-- Gor'lok Fleshgrinder (116721) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 116721 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(116721, 0, 0, 'ruRU', 'Я уничтожу тебя!'),
+(116721, 0, 1, 'ruRU', 'Я тебе не по зубам!');
+
+-- Lucian Trias (96782) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 96782 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(96782, 0, 0, 'ruRU', 'Боюсь, мне нечем поделиться. Вино развязывает языки, но иногда людям просто нечего сказать полезного.'),
+(96782, 1, 0, 'ruRU', 'Слушай, не хочешь попробовать влажную азсунийскую фету, раз уж ты здесь? У неё чудесный пикантный вкус!');
+
+-- Skylord Omnuron (98002) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 98002 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(98002, 0, 0, 'ruRU', '$ct расчистил$g:а; нам путь! Теперь — наносим удар! За Азерот!'),
+(98002, 1, 0, 'ruRU', '$ct, наши друзья из Кирин-Тора создали один из своих тайных порталов для удобного доступа в Даларан. Если понадобится, найдёшь его на тропе к югу отсюда.');
+
+-- Runeaxe Initiate (98412) - same flavor lines as Bonespeaker Runeaxe.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 98412 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(98412, 1, 0, 'ruRU', 'Я сокрушу твои кости!'),
+(98412, 2, 0, 'ruRU', 'Я... не повержен...');
+
+-- Dark Tormentor (120896) - only group0 ID4 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 120896 AND `Locale` = 'ruRU' AND `GroupID`=0 AND `ID`=4;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(120896, 0, 4, 'ruRU', 'Я вижу тебя.');
+
 -- Mythandros Irongrove (103569) - groups 0-4 English; group 5 already Russian.
 DELETE FROM `creature_text_locale` WHERE `CreatureID` = 103569 AND `Locale` = 'ruRU' AND `GroupID` IN (0,1,2,3,4);
 INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
