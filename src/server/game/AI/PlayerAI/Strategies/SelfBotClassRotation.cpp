@@ -142,6 +142,115 @@ bool SelfBotWarriorAI::ProcessRageMeleeSpell(SelfBotAI* owner, Player* me, Unit*
 	return false;
 }
 
+uint32 SelfBotPaladinAI::GetManaPowerPer(Player* me)
+{
+	uint32 maxMana = me->GetMaxPower(POWER_MANA);
+	if (!maxMana)
+		return 0;
+	return uint32((float(me->GetPower(POWER_MANA)) / float(maxMana)) * 100);
+}
+
+bool SelfBotPaladinAI::ProcessAura(SelfBotAI* owner, Player* me)
+{
+	uint32 auraSpell;
+	switch (me->GetActiveTalentGroup())
+	{
+	case 0: auraSpell = PaladinIDLE_CastAura; break;
+	case 1: auraSpell = PaladinIDLE_ArmorAura; break;
+	case 2: auraSpell = PaladinIDLE_JudgeAura; break;
+	default: return false;
+	}
+	if (auraSpell && !me->HasAura(auraSpell))
+		return owner->TryCastFirstKnown(me, { auraSpell });
+	return false;
+}
+
+bool SelfBotPaladinAI::ProcessMeleeSpell(SelfBotAI* owner, Player* me, Unit* target)
+{
+	if (!owner || !me || !target)
+		return false;
+
+	uint32 manaPct = GetManaPowerPer(me);
+	uint8 spec = me->GetActiveTalentGroup();
+
+	// FieldPaladinAI's IsInvincible(unit) checks MECHANIC_BANISH as a proxy for "has a bubble/
+	// immunity effect up" - ported as-is, not second-guessed.
+	bool selfInvincible = BotUtility::HasAuraMechanic(me, Mechanics::MECHANIC_BANISH);
+
+	if (!me->HasUnitState(UNIT_STATE_CASTING))
+	{
+		if (spec != 1) // self-preservation applies to Holy(0) and Retribution(2), not Protection
+		{
+			if (!selfInvincible && me->GetHealthPct() < 25 && owner->TryCastFirstKnown(me, { PaladinHeal_BigHoly }))
+				return true;
+			if (selfInvincible && me->GetHealthPct() < 80)
+			{
+				if (manaPct > 25 && owner->TryCastFirstKnown(me, { PaladinHeal_BigHoly }))
+					return true;
+				if (owner->TryCastFirstKnown(me, { PaladinHeal_FastHoly }))
+					return true;
+			}
+		}
+	}
+	else
+		return false;
+
+	if (ProcessAura(owner, me))
+		return true;
+
+	if (manaPct < 20)
+	{
+		if (!me->HasAura(PaladinAssist_ManaStamp) && owner->TryCastFirstKnown(me, { PaladinAssist_ManaStamp }))
+			return true;
+		if (owner->TryCastFirstKnown(target, { PaladinMelee_ManaJudge }))
+			return true;
+	}
+
+	if ((BotUtility::HasAuraMechanic(me, Mechanics::MECHANIC_ROOT) ||
+		BotUtility::HasAuraMechanic(me, Mechanics::MECHANIC_SNARE) ||
+		BotUtility::HasAuraMechanic(me, Mechanics::MECHANIC_DAZE)) && !selfInvincible)
+	{
+		if (owner->TryCastFirstKnown(me, { PaladinGuard_FreeAura }))
+			return true;
+	}
+
+	uint32 attackerCount = uint32(me->getAttackers().size());
+	if (attackerCount > 1 && owner->TryCastFirstKnown(me, { PaladinMelee_AOEOffertory }))
+		return true;
+	if (spec != 1 && me->GetHealthPct() < 20 && manaPct > 25 && me->IsInCombat() &&
+		!selfInvincible && attackerCount > 0 && owner->TryCastFirstKnown(me, { PaladinGuard_Invincible }))
+		return true;
+
+	float meLife = me->GetHealthPct();
+	if (PaladinGuard_UnShield && !me->HasAura(PaladinGuard_UnShield) && owner->TryCastFirstKnown(me, { PaladinGuard_UnShield }))
+		return true;
+	if (spec == 2 && owner->TryCastFirstKnown(me, { PaladinAssist_UpPower }))
+		return true;
+	if (target->GetHealthPct() < 20 && owner->TryCastFirstKnown(target, { PaladinMelee_KillMace }))
+		return true;
+
+	if (spec == 1)
+	{
+		if (owner->TryCastFirstKnown(target, { PaladinMelee_FlyShield }))
+			return true;
+		if (owner->TryCastFirstKnown(target, { PaladinMelee_ShieldAtt }))
+			return true;
+		if (owner->TryCastFirstKnown(target, { PaladinMelee_MaceAtt }))
+			return true;
+	}
+	else if (spec == 2)
+	{
+		if (me->HasAura(PaladinFlag_MomentHoly) && meLife < 90 && owner->TryCastFirstKnown(me, { PaladinHeal_FastHoly }))
+			return true;
+		if (owner->TryCastFirstKnown(target, { PaladinMelee_HolyStrom }))
+			return true;
+		if (owner->TryCastFirstKnown(target, { PaladinMelee_WeaponAtt }))
+			return true;
+	}
+
+	return owner->TryCastFirstKnown(target, { PaladinMelee_LifeJudge });
+}
+
 bool SelfBotWarriorAI::ProcessDefanceMeleeSpell(SelfBotAI* owner, Player* me, Unit* target)
 {
 	uint32 ragePer = GetRagePowerPer(me);

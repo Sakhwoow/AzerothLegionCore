@@ -27,6 +27,7 @@ class Unit;
 class BotAiObjectContext;
 class BotEngine;
 class SelfBotWarriorAI;
+class SelfBotPaladinAI;
 
 // Lets a real, connected player opt into light AI assistance on their OWN character via
 // .selfbot: continue attacking whatever they're already fighting, run a tiny per-class
@@ -135,10 +136,11 @@ private:
 	std::vector<uint32> m_BuffSpells;
 
 	// Pilot of the "real per-class rotation, not the thin m_RotationSpells list" port (see
-	// Strategies/SelfBotClassRotation.h) - null for every class except Warrior until the
-	// remaining classes get the same treatment. TryUseRotationSpell prefers this over
-	// m_RotationSpells when present.
+	// Strategies/SelfBotClassRotation.h) - null except for the one class matching me->getClass()
+	// (if ported yet) until the remaining classes get the same treatment. TryUseRotationSpell
+	// prefers whichever of these is set over m_RotationSpells.
 	std::unique_ptr<SelfBotWarriorAI> m_WarriorRotation;
+	std::unique_ptr<SelfBotPaladinAI> m_PaladinRotation;
 };
 
 #endif // !_SELF_BOT_AI_H_

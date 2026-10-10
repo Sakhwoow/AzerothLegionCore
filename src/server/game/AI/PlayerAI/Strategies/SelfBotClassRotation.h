@@ -74,4 +74,25 @@ private:
 	bool ProcessDefanceMeleeSpell(SelfBotAI* owner, Player* me, Unit* target);
 };
 
+// Same porting approach as SelfBotWarriorAI above - ported from FieldPaladinAI.cpp's
+// ProcessMeleeSpell/ProcessAura. Deliberately leaves out everything that targets OTHER players
+// (ProcessDispel's group-cleanse scan, NeedUseGuardWish/KingWish/WitWish/StrWish's group-blessing
+// maintenance, ProcessHealthSpell's group-heal-search): selfbot already has its own, separate
+// group-aware systems for buffing (TryUseBuffSpell) and healing (TryUseHealSpell) - porting the
+// Field AI's versions too would just be a second, redundant implementation of the same job, not
+// a gap to close. What's ported is the self-contained rotation/self-preservation logic that has
+// no selfbot equivalent yet: the branch-specific melee finisher, Judgement (universal), the
+// aura/stance upkeep, and the "heal myself if critically low mid-fight" safety net (a real
+// Retribution/Holy Paladin ability choice, not something TryUseHealSpell covers solo - that one
+// is group-only by its own original Phase 3 scope).
+class SelfBotPaladinAI : public BotPaladinSpells
+{
+public:
+	bool ProcessMeleeSpell(SelfBotAI* owner, Player* me, Unit* target);
+
+private:
+	uint32 GetManaPowerPer(Player* me);
+	bool ProcessAura(SelfBotAI* owner, Player* me);
+};
+
 #endif // !_SELF_BOT_CLASS_ROTATION_H_

@@ -200,16 +200,22 @@ void SelfBotAI::SetActive(bool active)
 	m_HealSpells.clear();
 	m_BuffSpells.clear();
 	m_WarriorRotation.reset();
+	m_PaladinRotation.reset();
 	if (active)
 	{
 		// Pilot of the real per-class rotation port (Strategies/SelfBotClassRotation.h) -
-		// TryUseRotationSpell prefers this over the thin m_RotationSpells list below when
-		// present. Only Warrior so far; the other classes fall through to the old list until
-		// they get the same treatment.
+		// TryUseRotationSpell prefers these over the thin m_RotationSpells list below when
+		// present. Warrior and Paladin so far; the other classes fall through to the old list
+		// until they get the same treatment.
 		if (me->getClass() == CLASS_WARRIOR)
 		{
 			m_WarriorRotation = std::make_unique<SelfBotWarriorAI>();
 			m_WarriorRotation->InitializeSpells(me);
+		}
+		else if (me->getClass() == CLASS_PALADIN)
+		{
+			m_PaladinRotation = std::make_unique<SelfBotPaladinAI>();
+			m_PaladinRotation->InitializeSpells(me);
 		}
 
 		for (uint32 baseId : GetClassRotationBaseSpells(me->getClass()))
@@ -416,6 +422,8 @@ bool SelfBotAI::TryUseRotationSpell(Unit* target)
 
 	if (m_WarriorRotation)
 		return m_WarriorRotation->ProcessMeleeSpell(this, me, target);
+	if (m_PaladinRotation)
+		return m_PaladinRotation->ProcessMeleeSpell(this, me, target);
 
 	return TryCastFirstKnown(target, m_RotationSpells);
 }
