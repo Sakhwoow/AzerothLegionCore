@@ -999,3 +999,53 @@ INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Te
 DELETE FROM `creature_text_locale` WHERE `CreatureID` = 105525 AND `Locale` = 'ruRU' AND `GroupID`=4;
 INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
 (105525, 4, 0, 'ruRU', 'Я поднесу твой труп Хелии!');
+
+-- Already fully Russian, nothing to do: Imperial Arcbinder (108188), Vengeful Soul (107628).
+
+-- Helmouth Soulflayer (105526) - only group1 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 105526 AND `Locale` = 'ruRU' AND `GroupID`=1;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(105526, 1, 0, 'ruRU', 'Я поднесу твой труп Хелии!');
+
+-- Vanthir (107598) - groups 0,1 English; group 3 already Russian.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 107598 AND `Locale` = 'ruRU' AND `GroupID` IN (0,1);
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(107598, 0, 0, 'ruRU', 'Разумеется. Согласен, всё это дело... неприятно. И всё же, то влияние, которое у тебя будет...'),
+(107598, 1, 0, 'ruRU', 'Это немного, но, пожалуйста, прими это.');
+
+-- Burning Chaplain (107717) - already fully Russian, nothing to do.
+
+-- Sister of the Moon (108600) - only group0(ID1) was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 108600 AND `Locale` = 'ruRU' AND `GroupID`=0 AND `ID`=1;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(108600, 0, 1, 'ruRU', 'Я... я спасена!');
+
+-- Eneas (108807) - groups 0,1 English; group 3 already Russian.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 108807 AND `Locale` = 'ruRU' AND `GroupID` IN (0,1);
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(108807, 0, 0, 'ruRU', 'Выпей, дорогая. Тебе станет легче.'),
+(108807, 1, 0, 'ruRU', 'Мы доживём до завтра. Вантир всегда о нас заботится. Ты же знаешь.');
+
+-- Audric (108811) - groups 0,1 English; group 3 already Russian.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 108811 AND `Locale` = 'ruRU' AND `GroupID` IN (0,1);
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(108811, 0, 0, 'ruRU', 'Это Чародейское вино. Для тебя. Давай, брат.'),
+(108811, 1, 0, 'ruRU', 'Ха! Не торопись! Ещё подавишься.');
+
+-- Bonespeaker Runeaxe (93066) - groups 1,2 English; group 4 already Russian.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93066 AND `Locale` = 'ruRU' AND `GroupID` IN (1,2);
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93066, 1, 0, 'ruRU', 'Я сокрушу твои кости!'),
+(93066, 2, 0, 'ruRU', 'Я... не повержен...');
+
+-- Bonespeaker Carver (93070) - already fully Russian, nothing to do.
+
+-- Bonespeaker Mystic (93071) - only group1 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93071 AND `Locale` = 'ruRU' AND `GroupID`=1;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93071, 1, 0, 'ruRU', 'Я повелеваю божественной силой!');
+
+-- Greywatch Saboteur (109635, separate from 94614) - only group3 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 109635 AND `Locale` = 'ruRU' AND `GroupID`=3;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(109635, 3, 0, 'ruRU', 'Я разорву тебя на куски!');
