@@ -163,6 +163,11 @@ public:
 	void InitializeSpells(Player* player);
 
 protected:
+	// Все 3 ипостаси (Blood/Frost/Unholy Presence) были удалены из игры целиком в
+	// Legion pre-patch 7.0.3 - DK больше не переключает ипостаси вообще, бонусы вшиты в
+	// специализацию. Ни один из трёх ID никогда не резолвится у персонажа на Legion (не
+	// баг с конкретным числом - самого умения больше не существует ни под каким ID).
+	// UpdatePose() ниже - пустой no-op на Legion по той же причине, не трогал.
 	uint32 DKStatus_Frost =50689;// 48263			��˪����
 	uint32 DKStatus_Evil =50689;// 48265			а������
 	uint32 DKStatus_Blood =50689;// 48266			��Ѫ����
@@ -182,7 +187,11 @@ protected:
 	uint32 DKDefense_Contract =48743;// 48743		ɱ��BB��Ѫ40%
 	uint32 DKDefense_IceBody =66023;// 48792		DK��ǽ
 	uint32 DKDefense_IceArmor =132103;// 51271		ͭǽ����(�ṩ���׺�����20��)(����ϵ)
-	uint32 DKDefense_BoneShield =232049;// 49222	�׹�֮��(а��ϵ)
+	// BoneShield держал ID самой АУРЫ Bone Shield (232049) - её нельзя накастовать напрямую,
+	// нужен генератор Marrowrend (195182). Плюс сам чек стоял в ProcessEvilMeleeSpell
+	// (Unholy), а Bone Shield/Marrowrend - эксклюзив Blood-ветки (0) в Legion - перенесено
+	// в ProcessBloodMeleeSpell во всех 3 контекстах (Field/Group/Duel).
+	uint32 DKDefense_BoneShield =195182;// was 232049 (aura id, не кастуется; Marrowrend кастует)
 
 	uint32 DKAssist_RuneLife =59754;// 48982		����������ת������Ϊ����(��Ѫϵ)
 	uint32 DKAssist_BloodBrand =206940;// 49005		��Ѫӡ�ǣ�Ŀ�깥����Ŀ���Ѫ(��Ѫϵ)
@@ -195,16 +204,26 @@ protected:
 	uint32 DKAssist_IceLock=53534;// 45524		��������Ŀ��10�����ƶ��ٶȵ�
 	uint32 DKAssist_DeadRevive =121147;// 49895		�������ƣ�����Ŀ���������ָ�
 	uint32 DKAssist_NonFear =49039;// 49039		���������߿־��Ȼ�(����ϵ)
-	uint32 DKAssist_NextCrit =79092;// 49796		������˪���������ɼ�������˪�������(����ϵ)
+	// NextCrit дублировал EatIce (79092=Hungering Cold, подтверждено верным для EatIce) -
+	// должен быть Deathchill (49796), отдельный баф.
+	uint32 DKAssist_NextCrit =49796;// was 79092 (duplicate of EatIce)
 	uint32 DKAssist_EatIce =79092; //=79092// 49203			����֮��������10�뷶ΧĿ�꣬�Ǽ����˺����(����ϵ)
-	uint32 DKAssist_PetPower =49206;// 63560		ʳʬ������(а��ϵ)
+	// PetPower дублировал SummonFlyAtt (49206=Summon Gargoyle, подтверждено верным для
+	// SummonFlyAtt) - должен быть Ghoul Frenzy (63560), баф на питомца-гуля.
+	uint32 DKAssist_PetPower =63560;// was 49206 (duplicate of SummonFlyAtt)
 	uint32 DKAssist_SummonFlyAtt = 49206;// 49206	�ٻ���ը��(а��ϵ)
 
 	uint32 DKAttack_IceSickness = 52372;// 49909	��˪������������ʱ�߳��
 	uint32 DKAttack_NearAOE =92025;// 49941		��ս��ΧAOE����Ѫ�ͱ������˺�UP
 	uint32 DKAttack_AreaAOE =43265;// 49938		��ή���㣬ָ����ΧAOE
+	// BloodAtt уже был верен здесь (60945=Blood Strike, вернулся в Legion-редизайн Blood
+	// как спендер рун с доп. руной силы) - в .cpp InitializeSpells он был по ошибке
+	// продублирован со значением AreaAOE (43265=Death and Decay) - исправлено в .cpp.
 	uint32 DKAttack_BloodAtt =60945;// 49930		��Ѫ�������м���ʱ�˺�UP
-	uint32 DKAttack_ShadowAtt =50688;// 49921		��Ӱ�����Ѫ����
+	// ShadowAtt держал Plague Strike - умение, которого у Blood-ветки не было НИКОГДА (это
+	// исторически Unholy-эксклюзив, а в Legion Unholy его тоже заменили на Festering
+	// Strike) - должен быть Death Strike (49998), настоящее второе умение Blood в Legion.
+	uint32 DKAttack_ShadowAtt =49998;// was 50688/49921 (Plague Strike, не Blood-умение)
 	uint32 DKAttack_FrostAtt =60951;// 55268		��˪���(����ϵ)
 	uint32 DKAttack_DoDestroy =246593;// 51425		���ɼ��������˺�
 	uint32 DKAttack_RuneAttack =62322;// 56815		���Ĵ��������ѹ��

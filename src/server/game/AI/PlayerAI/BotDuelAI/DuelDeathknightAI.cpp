@@ -117,6 +117,8 @@ void DuelDeathknightAI::ProcessMeleeSpell(Unit* pTarget)
 
 void DuelDeathknightAI::ProcessBloodMeleeSpell(Unit* pTarget)
 {
+	if (DKDefense_BoneShield && !me->HasAura(DKDefense_BoneShield) && TryCastSpell(DKDefense_BoneShield, me) == SpellCastResult::SPELL_CAST_OK)
+		return;
 	if (me->GetHealthPct() < 35)
 	{
 		if (DKAssist_RuneLife && TryCastSpell(DKAssist_RuneLife, me) == SpellCastResult::SPELL_CAST_OK)
@@ -161,8 +163,6 @@ void DuelDeathknightAI::ProcessFrostMeleeSpell(Unit* pTarget)
 void DuelDeathknightAI::ProcessEvilMeleeSpell(Unit* pTarget)
 {
 	if (TryCastSpell(DKAssist_RuneShunt, me) == SpellCastResult::SPELL_CAST_OK)
-		return;
-	if (DKDefense_BoneShield && !me->HasAura(DKDefense_BoneShield) && TryCastSpell(DKDefense_BoneShield, me) == SpellCastResult::SPELL_CAST_OK)
 		return;
 	if (DKAssist_SummonFlyAtt && TryCastSpell(DKAssist_SummonFlyAtt, pTarget) == SpellCastResult::SPELL_CAST_OK)
 		return;

@@ -152,7 +152,7 @@ void BotDeathknightSpells::InitializeSpells(Player* player)
 	DKDefense_Contract = BotUtility::FindMaxRankSpellByExist(player, 48743);
 	DKDefense_IceBody = BotUtility::FindMaxRankSpellByExist(player, 66023);
 	DKDefense_IceArmor = BotUtility::FindMaxRankSpellByExist(player, 132103);
-	DKDefense_BoneShield = BotUtility::FindMaxRankSpellByExist(player, 232049);
+	DKDefense_BoneShield = BotUtility::FindMaxRankSpellByExist(player, 195182);
 
 	DKAssist_RuneLife = BotUtility::FindMaxRankSpellByExist(player, 59754);
 	DKAssist_BloodBrand = BotUtility::FindMaxRankSpellByExist(player, 206940);
@@ -164,17 +164,17 @@ void BotDeathknightSpells::InitializeSpells(Player* player)
 	DKAssist_IceLock = BotUtility::FindMaxRankSpellByExist(player, 53534);
 	DKAssist_DeadRevive = BotUtility::FindMaxRankSpellByExist(player, 121147);
 	DKAssist_NonFear = BotUtility::FindMaxRankSpellByExist(player, 49039);
-	DKAssist_NextCrit = BotUtility::FindMaxRankSpellByExist(player, 79092);
+	DKAssist_NextCrit = BotUtility::FindMaxRankSpellByExist(player, 49796);
 	DKAssist_EatIce = BotUtility::FindMaxRankSpellByExist(player, 79092);
-	DKAssist_PetPower = BotUtility::FindMaxRankSpellByExist(player, 49206);
+	DKAssist_PetPower = BotUtility::FindMaxRankSpellByExist(player, 63560);
 	DKAssist_SummonFlyAtt = BotUtility::FindMaxRankSpellByExist(player, 49206);
 	DKAssist_SummonRuneWeapon = BotUtility::FindMaxRankSpellByExist(player, 49028);
 
 	DKAttack_IceSickness = BotUtility::FindMaxRankSpellByExist(player, 52372);
 	DKAttack_NearAOE = BotUtility::FindMaxRankSpellByExist(player, 92025);
 	DKAttack_AreaAOE = BotUtility::FindMaxRankSpellByExist(player, 43265);
-	DKAttack_BloodAtt = BotUtility::FindMaxRankSpellByExist(player, 43265);
-	DKAttack_ShadowAtt = BotUtility::FindMaxRankSpellByExist(player, 49921);
+	DKAttack_BloodAtt = BotUtility::FindMaxRankSpellByExist(player, 60945);
+	DKAttack_ShadowAtt = BotUtility::FindMaxRankSpellByExist(player, 49998);
 	DKAttack_FrostAtt = BotUtility::FindMaxRankSpellByExist(player, 60951);
 	DKAttack_DoDestroy = BotUtility::FindMaxRankSpellByExist(player, 246593);
 	DKAttack_RuneAttack = BotUtility::FindMaxRankSpellByExist(player, 62322);
