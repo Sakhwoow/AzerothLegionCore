@@ -1134,3 +1134,32 @@ INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Te
 DELETE FROM `creature_text_locale` WHERE `CreatureID` = 111750 AND `Locale` = 'ruRU' AND `GroupID`=1;
 INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
 (111750, 1, 0, 'ruRU', 'Я раздавлю тебя, червь!');
+
+-- Sashj'tar Siren (100999) - already fully Russian, nothing to do.
+
+-- Death Hunter Moorgoth (100633) - group0 is a deliberate French flourish (kept untranslated,
+-- same convention as Lord Jorach Ravenholdt); only group3 needed translation.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 100633 AND `Locale` = 'ruRU' AND `GroupID`=3;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(100633, 3, 0, 'ruRU', 'Берегись теней, ведь именно там я охочусь!');
+
+-- Sashj'tar Sandcrusher (102828) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 102828 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(102828, 0, 0, 'ruRU', 'Повелительница приливов...'),
+(102828, 1, 0, 'ruRU', 'Сашджтар уничтожат тебя!'),
+(102828, 2, 0, 'ruRU', 'Слишком... силён...');
+
+-- Felbound Spirit (116468, separate from 116427) - only group0(ID0) was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 116468 AND `Locale` = 'ruRU' AND `GroupID`=0 AND `ID`=0;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(116468, 0, 0, 'ruRU', 'Покинь это место, $c!');
+
+-- Smolderhide Warrior (91288) - only group1 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 91288 AND `Locale` = 'ruRU' AND `GroupID`=1;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(91288, 1, 0, 'ruRU', 'Я тебя раздавлю!');
+
+-- Dark Ranger Velonara (100452), Gharset the Aimtrue (100534), Huntress Kuzari (100695) -
+-- group0 for each is a deliberate French flourish (same Jorach Ravenholdt convention), and
+-- group3 already has the equivalent Russian line - nothing to add.
