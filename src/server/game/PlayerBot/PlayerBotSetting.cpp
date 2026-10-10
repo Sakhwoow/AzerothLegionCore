@@ -1386,45 +1386,48 @@ uint32 PlayerBotSetting::FindPlayerTalentType(Player* player)
 	if (!player)
 		return 0;
 
-	// Found while answering a user question about role/rotation selection, not guessed at: this
-	// function's entire loop body (the only code that could ever increment pageTalents[]) was
-	// commented out, so pageTalents stayed {0,0,0} forever and this unconditionally returned 0 -
-	// every bot, every class. Worse, every normal level-up/regen pass re-triggers this: every
-	// ResetPlayerToLevel() call site outside ToolSocket passes talent=3 ("auto"), and
-	// UpdateTalentType() re-resolves "auto" through this function - so an admin who explicitly
-	// set a bot to tank/healer via the external tool would see it silently revert to branch 0
-	// (DPS/weapon-style for every class) the very next level-up.
+	// v2 of this fix (first version found and fixed an always-returns-0 bug - see git history -
+	// using GetRoleForGroup()/IsTankBotAI()/IsHealerBotAI() to map role to a per-class branch
+	// number by hand). That approach only ever distinguished tank/healer/else, collapsing every
+	// class's *other* specs (e.g. Hunter's BM/MM/Survival, all role=DAMAGE) onto the same branch
+	// 0 - the gap the user asked about directly ("Hunter rotation ветки уже различают по спеку в
+	// коде, но никогда не выбираются"). The real fix: Player::GetActiveTalentGroup() already *is*
+	// the bot's actual chosen spec's ChrSpecializationEntry::OrderIndex (0/1/2, 0-3 for Druid's 4
+	// specs) - exactly the same role AC's own `tab` variable plays for WotLK's 3 talent trees
+	// (AiFactory::GetPlayerSpecTab) - set correctly by BotUtility::AssignRandomSpec's
+	// ActivateTalentGroup() call at bot creation, or by the engine's own login-time
+	// ResetTalentSpecialization() fallback either way. No per-class guessing needed - every
+	// class's branch-specific combat code (BotFieldClassAI/BotGroupClassAI/BotClassAI) already
+	// keys off this exact same branch number, so handing it the real OrderIndex directly (instead
+	// of a role-collapsed approximation) is what actually lets a Hunter's branch 1/2 content
+	// (Marksmanship/Survival-flavored spells, confirmed by reading FieldHunterAI.cpp) ever get
+	// reached at all.
 	//
-	// The original approach (count spent talent points per classic-era "page") doesn't even
-	// conceptually apply to Legion's talent system (one choice per tier, not points poured into
-	// one of 3 trees) - rebuilt using the bot's actual current spec role instead
-	// (Player::GetRoleForGroup(), backed by ChrSpecializationEntry::Role - the same data LFG/
-	// group-finder role checks already use elsewhere in the engine), mapped through each class's
-	// own IsTankBotAI()/IsHealerBotAI() branch numbering (verified against each class's actual
-	// override, not assumed uniform - Warrior's tank branch is 2, Paladin's is 1, DK's is 1;
-	// Paladin's healer branch is 0, Priest's is {0,1}, Shaman/Druid's is 2).
-	uint32 role = player->GetRoleForGroup();
-	switch (player->getClass())
+	// Verified class by class (read each class's own branch-specific spell choices, not assumed
+	// uniform) that content-branch numbering actually matches real OrderIndex for every class
+	// except Druid: Warrior/Paladin/DK/Priest/Shaman/Warlock all line up (e.g. DK's branch 0/1/2
+	// literally call ProcessBloodMeleeSpell/ProcessFrostMeleeSpell/ProcessEvilMeleeSpell - exact
+	// OrderIndex match); Mage has no branch differentiation at all (pre-existing content gap,
+	// unaffected either way). Druid is the one exception: branch 2's content is genuinely
+	// Restoration (DruidStatus_Tree - Tree of Life form, DruidHeal_AOEFerity/MergerLife - real
+	// healer logic), not Guardian, because real Druid OrderIndex is Balance=0/Feral=1/
+	// Guardian=2/Restoration=3 and whoever wrote this content only ever reached branch 2 via the
+	// old role-based "healer" case - there's no Guardian tank content anywhere in this class's
+	// files at all. Remap so the real spec still reaches content that actually exists: real
+	// Restoration(3) -> branch 2 (where the heal logic lives); real Guardian(2), which has no
+	// dedicated content to go to, falls back to branch 1 (Feral - at least a melee playstyle,
+	// closer to how a bear-form tank actually fights than ranged Balance or pure-heal content).
+	if (player->getClass() == Classes::CLASS_DRUID)
 	{
-	case Classes::CLASS_WARRIOR:
-		return (role == ROLE_TANK) ? 2 : 0;
-	case Classes::CLASS_DEATH_KNIGHT:
-		return (role == ROLE_TANK) ? 1 : 0;
-	case Classes::CLASS_PALADIN:
-		if (role == ROLE_HEALER)
-			return 0;
-		return (role == ROLE_TANK) ? 1 : 2;
-	case Classes::CLASS_PRIEST:
-		return (role == ROLE_HEALER) ? 0 : 2;
-	case Classes::CLASS_SHAMAN:
-	case Classes::CLASS_DRUID:
-		return (role == ROLE_HEALER) ? 2 : 0;
-	default:
-		// Hunter/Rogue/Mage/Warlock have no tank/healer branch at all (confirmed - neither
-		// IsTankBotAI nor IsHealerBotAI is overridden for any of them) - branch 0 is just a
-		// playstyle default here, not a role mismatch risk.
-		return 0;
+		uint8 realSpec = player->GetActiveTalentGroup();
+		if (realSpec == 3) // Restoration
+			return 2;
+		if (realSpec == 2) // Guardian - no tank content exists yet, closest fallback
+			return 1;
+		return realSpec; // Balance(0)/Feral(1) already match real OrderIndex as-is
 	}
+
+	return player->GetActiveTalentGroup();
 }
 
 uint32 PlayerBotSetting::RandomMountByLevel(uint32 level)
