@@ -242,10 +242,11 @@ INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Te
 (104799, 6, 0, 'ruRU', 'Когда Малфурион вернулся ко мне, мы снова действовали как единое целое. Будто он никуда и не пропадал. Доводилось ли тебе любить так, как люблю я?'),
 (104799, 7, 0, 'ruRU', 'Теперь Ксавий держит меня за горло. Я должна оставить своего возлюбленного и сразиться с самым прекрасным существом, какое я когда-либо знала.');
 
--- Bitterbrine Venomer (89283) - only group 5 English, rest already Russian.
-DELETE FROM `creature_text_locale` WHERE `CreatureID` = 89283 AND `Locale` = 'ruRU' AND `GroupID`=5;
+-- Bitterbrine Venomer (89283) - only ID 5 (GroupID is always 0 for this NPC - caught and
+-- corrected a GroupID/ID transcription swap here) was English, rest already Russian.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 89283 AND `Locale` = 'ruRU' AND `GroupID`=0 AND `ID`=5;
 INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
-(89283, 5, 0, 'ruRU', 'Я скормлю тебя рыбам!');
+(89283, 0, 5, 'ruRU', 'Я скормлю тебя рыбам!');
 
 -- Lothrius Mooncaller (101768) - fully English.
 DELETE FROM `creature_text_locale` WHERE `CreatureID` = 101768 AND `Locale` = 'ruRU';
@@ -298,14 +299,15 @@ INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Te
 (107126, 5, 0, 'ruRU', 'Без достаточной силы для окончательного созревания оно погибнет.'),
 (107126, 6, 0, 'ruRU', 'Этого недостаточно...');
 
--- Acolyte of Elothir (91149) - groups 1-5 English; group 0 already Russian.
-DELETE FROM `creature_text_locale` WHERE `CreatureID` = 91149 AND `Locale` = 'ruRU' AND `GroupID` IN (1,2,3,4,5);
+-- Acolyte of Elothir (91149) - GroupID is always 0 for this NPC, IDs 1-5 were English; ID 0
+-- already Russian (caught and corrected a GroupID/ID transcription swap here).
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 91149 AND `Locale` = 'ruRU' AND `GroupID`=0 AND `ID` IN (1,2,3,4,5);
 INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
-(91149, 1, 0, 'ruRU', 'Я чувствовал$G :а; , как жизнь покидает меня...'),
-(91149, 2, 0, 'ruRU', 'А-ах, снова дышать!'),
-(91149, 3, 0, 'ruRU', 'Благословляю тебя, незнакомец!'),
-(91149, 4, 0, 'ruRU', 'Я жив$G :а;!'),
-(91149, 5, 0, 'ruRU', 'Ты... ты спас$G :ла; меня!');
+(91149, 0, 1, 'ruRU', 'Я чувствовал$g:а; , как жизнь покидает меня...'),
+(91149, 0, 2, 'ruRU', 'А-ах, снова дышать!'),
+(91149, 0, 3, 'ruRU', 'Благословляю тебя, незнакомец!'),
+(91149, 0, 4, 'ruRU', 'Я жив$g:а;!'),
+(91149, 0, 5, 'ruRU', 'Ты... ты спас$g:ла; меня!');
 
 -- Mythandros Irongrove (103569) - groups 0-4 English; group 5 already Russian.
 DELETE FROM `creature_text_locale` WHERE `CreatureID` = 103569 AND `Locale` = 'ruRU' AND `GroupID` IN (0,1,2,3,4);
