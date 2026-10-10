@@ -828,3 +828,52 @@ INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Te
 (102365, 0, 0, 'ruRU', 'Твоего друга-человека забрали демоны. Дай мне свободу, и я расскажу, куда его увели!'),
 (102365, 1, 0, 'ruRU', 'Твоего друга отвели в ямы охотников Скверны под великим флагманом Пылающего Легиона.'),
 (102365, 2, 0, 'ruRU', 'Увы, для него, скорее всего, уже слишком поздно... не отдавайте глупо свои жизни за мертвеца!');
+
+-- Already fully Russian, nothing to do: Captive Rivermane (95080), Rensar Greathoof (101195),
+-- Rok'nash (103183).
+
+-- Drogbar Manathirster (95866) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 95866 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(95866, 0, 0, 'ruRU', 'Мы — тьма под горой!'),
+(95866, 1, 0, 'ruRU', 'Твоя кровь отлично подойдёт...'),
+(95866, 2, 0, 'ruRU', 'Глупый каркун! Посмотрим, как быстро ты умрёшь!');
+
+-- Darkfiend Tormentor (91044) - only group1 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 91044 AND `Locale` = 'ruRU' AND `GroupID`=1;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(91044, 1, 0, 'ruRU', 'Я отправлю тебя в вечный сон.');
+
+-- Black Rook Spectral Officer (95247) - only group2 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 95247 AND `Locale` = 'ruRU' AND `GroupID`=2;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(95247, 2, 0, 'ruRU', 'Я не предам своего господина!');
+
+-- Felguard Shocktrooper (101943) - only group1 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 101943 AND `Locale` = 'ruRU' AND `GroupID`=1;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(101943, 1, 0, 'ruRU', 'Я изрублю тебя на куски!');
+
+-- Siren Naz'jul (102796) - only group0 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 102796 AND `Locale` = 'ruRU' AND `GroupID`=0;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(102796, 0, 0, 'ruRU', 'Владычица приливов... Я тебя подвела...');
+
+-- Galius Miremoore (104865) - already fully Russian, nothing to do.
+
+-- Perrexx (95318) - only group4 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 95318 AND `Locale` = 'ruRU' AND `GroupID`=4;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(95318, 4, 0, 'ruRU', 'Я ухожу во тьму...');
+
+-- Sashj'tar Myrmidon (100998) - only group1 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 100998 AND `Locale` = 'ruRU' AND `GroupID`=1;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(100998, 1, 0, 'ruRU', 'Я тебя раздавлю!');
+
+-- Wormtalon Matriarch (104646) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 104646 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(104646, 0, 0, 'ruRU', 'Дар для Матери-ведьмы!'),
+(104646, 1, 0, 'ruRU', 'Никто не выживет!'),
+(104646, 2, 0, 'ruRU', 'Сёстры! Отомстите за меня...');
