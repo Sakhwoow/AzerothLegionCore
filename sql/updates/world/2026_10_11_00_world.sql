@@ -1791,3 +1791,21 @@ INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Te
 -- Dark Ranger Velonara (100452), Gharset the Aimtrue (100534), Huntress Kuzari (100695) -
 -- group0 for each is a deliberate French flourish (same Jorach Ravenholdt convention), and
 -- group3 already has the equivalent Russian line - nothing to add.
+
+-- French-flourish convention confirmed for a further batch of NPCs (same style as Jorach
+-- Ravenholdt/Velonara/Gharset/Kuzari) - deliberate flavor text, left untranslated, nothing to
+-- add: Dread Commander Thalanor (93517), Quartermaster Ozorg (93550), smith apprentice at
+-- 97111, Lady Alistra (97136), Shandris Feathermoon (98738), Halduron Brightwing (98739),
+-- Vereesa Windrunner (98740), Death Hunter Moorgoth (100633, group0 only - group3 already
+-- Russian), Beastmaster Tagh (103458), Outfitter Reynolds (103693), Scout Brightspear (100702),
+-- Nimi Brightcastle (100697), Emmarel Shadewarden (102578), Gedrah (110799), Tactician
+-- Tinderfell (103023).
+
+-- Risen Assassin (94046), groups 3 and 11 - fictional Thalassian-style battle cries
+-- ("Tor ilisar'thera'nal!", "Bandu thoribas!") with no existing Cyrillic transliteration
+-- precedent anywhere in this DB (checked) - left untranslated per convention.
+
+-- Zuriwa the Hexxer (119173) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 119173 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(119173, 0, 0, 'ruRU', 'Я отдам тебя на корм коням погибели!');
