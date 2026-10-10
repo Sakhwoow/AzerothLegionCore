@@ -1809,3 +1809,90 @@ INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Te
 DELETE FROM `creature_text_locale` WHERE `CreatureID` = 119173 AND `Locale` = 'ruRU';
 INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
 (119173, 0, 0, 'ruRU', 'Я отдам тебя на корм коням погибели!');
+
+-- Brandolf (99544) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 99544 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(99544, 0, 0, 'ruRU', 'Найди дрова для погребального костра. Я позабочусь о том, чтобы перенести его тело.');
+
+-- Nighteyes (100777) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 100777 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(100777, 0, 0, 'ruRU', 'Ночной Глаз одобрительно ухает тебе в знак благодарности.');
+
+-- Cora'kar, Sashj'tar Jailer (100864) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 100864 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(100864, 0, 0, 'ruRU', 'Мерзкая... ссслизь...');
+
+-- Sashj'tar Lancer (100949) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 100949 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(100949, 0, 0, 'ruRU', 'Безмолвие... глубин... ссс...');
+
+-- Wild Moonfall Hippogryph (102034) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 102034 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(102034, 0, 0, 'ruRU', 'Дикий лунопадный гиппогриф вызывающе бьёт когтями по воздуху, не теряя решительности.');
+
+-- Syrana Starweaver, Moon Guard (103129) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 103129 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(103129, 0, 0, 'ruRU', 'Стражи Луны больше не существуют. Нашу любимую твердыню уже не спасти.');
+
+-- Injured Vrykul (103207, 103212, two separate entries) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 103207 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(103207, 0, 0, 'ruRU', 'Смерть Сашджтарам!');
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 103212 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(103212, 0, 0, 'ruRU', 'Убейте наг!');
+
+-- Val'sharah Refugee (104234, 104235, two separate entries) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 104234 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(104234, 0, 0, 'ruRU', 'Когда мы выходили, нас было больше. Я бы погиб$g:ла;, если бы не подоспела Майруна.');
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 104235 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(104235, 0, 0, 'ruRU', 'Мы обязаны жизнью Мифандросу и его друидам-спутникам. Благодаря ему мы можем называть Сурамар своим домом.');
+
+-- Brytag (104406) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 104406 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(104406, 0, 0, 'ruRU', 'Мои родичи в безопасности, а хранитель морей мёртв. Теперь я вернусь в Джандвик.');
+
+-- Trenchwalker Guardian (104454) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 104454 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(104454, 0, 0, 'ruRU', 'Ты... бесполезный... корм для червей...');
+
+-- Seawarden Largush (104459) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 104459 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(104459, 0, 0, 'ruRU', 'Форгалаш... я был... недостаточно силён...');
+
+-- Kell (104630) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 104630 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(104630, 0, 0, 'ruRU', 'Найди Брайтага... убей наг...');
+
+-- Afflicted Citizen (107601) - fully English. "Nightborne" rendered as the official
+-- localization term "Светлостраж(и)".
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 107601 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(107601, 0, 0, 'ruRU', 'Заражённый житель Светлостража сильно дрожит, невидящим взглядом уставившись в пустоту.');
+
+-- Nightborne Child (107606) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 107606 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(107606, 0, 0, 'ruRU', 'Папа, я хочу пить... можно мне немного маннового сока?');
+
+-- Duskwatch Scion (108096) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 108096 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(108096, 0, 0, 'ruRU', 'За ней!');
+
+-- Felbound Spirit (118294, separate from 116427/116468) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 118294 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(118294, 0, 0, 'ruRU', 'Неужели я наконец свободен?');
