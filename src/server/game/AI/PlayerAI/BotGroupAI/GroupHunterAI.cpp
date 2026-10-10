@@ -71,7 +71,11 @@ void GroupHunterAI::OnLevelUp(uint32 talentType)
 
 uint32 GroupHunterAI::GetManaPowerPer()
 {
-	float per = (float)me->GetPower(POWER_MANA) / (float)me->GetMaxPower(POWER_MANA);
+	// Legion hunters have no mana pool at all - GetMaxPower(POWER_MANA) is 0, so the original
+	// POWER_MANA version of this divided by zero every single call (NaN propagating into every
+	// manaPct > X / < X threshold throughout ProcessRangeSpell). Confirmed live. Hunters use
+	// Focus in Legion; kept the function name to avoid touching every call site in this file.
+	float per = (float)me->GetPower(POWER_FOCUS) / (float)me->GetMaxPower(POWER_FOCUS);
 	return (uint32)(per * 100);
 }
 
