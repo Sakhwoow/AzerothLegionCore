@@ -17,6 +17,7 @@
 
 #include "WorldSession.h"
 #include "AccountMgr.h"
+#include "AltBotMgr.h"
 #include "ArtifactPackets.h"
 #include "AuthenticationPackets.h"
 #include "Battleground.h"
@@ -837,11 +838,26 @@ void WorldSession::HandlePlayerLoginOpcode(WorldPackets::Character::PlayerLogin&
         return;
     }
 
-    if (IsBotSession() && !sPlayerBotMgr->IsCharacterOfBotAccount(GetAccountId(), playerLogin.Guid.GetCounter()))
+    // Also allow a bot session to log into a character that genuinely belongs to its OWN
+    // account id (not just a pre-registered playerbotN/accountbotN character) - this is what
+    // lets AltBotMgr puppet a real player's own other character as a companion bot: that
+    // session is constructed with the real player's own account id specifically so this check
+    // passes, mirroring mod-playerbots' "sameAccount" security line (PlayerbotMgr.cpp) at the
+    // one place it actually needs enforcing.
+    if (IsBotSession() && !sPlayerBotMgr->IsCharacterOfBotAccount(GetAccountId(), playerLogin.Guid.GetCounter())
+        && ObjectMgr::GetPlayerAccountIdByGUID(playerLogin.Guid) != GetAccountId())
     {
         TC_LOG_ERROR("network", "Bot account (%u) tried to login character %s which does not belong to it, skipped.", GetAccountId(), playerLogin.Guid.ToString().c_str());
         return;
     }
+
+    // Mirrors mod-playerbots' PlayerbotsSecureLogin.cpp (that fork has a CanPacketReceive hook
+    // to do this from a ServerScript; this one doesn't, so it's a direct check here instead):
+    // a real login (never a bot session logging itself in) into a guid AltBotMgr is currently
+    // puppeting must force that alt-bot session to yield first, so the owner always wins and
+    // never fights their own bot-controlled puppet for the same character.
+    if (!IsBotSession() && sAltBotMgr->IsActiveAltBotGuid(playerLogin.Guid))
+        sAltBotMgr->RemoveAltBotByGuid(playerLogin.Guid);
 
     m_playerLoading = playerLogin.Guid;
 

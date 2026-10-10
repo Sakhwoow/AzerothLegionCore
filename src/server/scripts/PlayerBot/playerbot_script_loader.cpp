@@ -22,6 +22,8 @@ void AddSC_pbotaccount_commandscript();
 void AddSC_pbotai_commandscript();
 void AddSC_selfbot_commandscript();
 void AddSC_selfbot_script();
+void AddSC_altbot_commandscript();
+void AddSC_altbot_script();
 void AddSC_guildtask_commandscript();
 void AddSC_guildtask_script();
 
@@ -35,6 +37,8 @@ void AddPlayerBotScripts()
     AddSC_pbotai_commandscript();
     AddSC_selfbot_commandscript();
     AddSC_selfbot_script();
+    AddSC_altbot_commandscript();
+    AddSC_altbot_script();
     AddSC_guildtask_commandscript();
     AddSC_guildtask_script();
 }
