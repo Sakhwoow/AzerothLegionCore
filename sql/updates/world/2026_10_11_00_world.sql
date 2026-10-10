@@ -759,3 +759,72 @@ INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Te
 DELETE FROM `creature_text_locale` WHERE `CreatureID` = 113573 AND `Locale` = 'ruRU' AND `GroupID`=0;
 INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
 (113573, 0, 0, 'ruRU', 'Граук... Мать до тебя доберётся...');
+
+-- Nightborne Child (106616, separate from 106617) - groups 0,1,2 English; group 3 already Russian.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 106616 AND `Locale` = 'ruRU' AND `GroupID` IN (0,1,2);
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(106616, 0, 0, 'ruRU', 'Сердца полны жалости...'),
+(106616, 1, 0, 'ruRU', 'Бах! Трах!'),
+(106616, 2, 0, 'ruRU', 'Бах! Трах!');
+
+-- Stellagosa (107995) - groups 1,2,3 English; group 0 already Russian.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 107995 AND `Locale` = 'ruRU' AND `GroupID` IN (1,2,3);
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(107995, 1, 0, 'ruRU', 'Ещё не поздно. Мы просто перескочим через горы, чтобы отрезать им путь, и...'),
+(107995, 2, 0, 'ruRU', 'Нет, нет... они повсюду!'),
+(107995, 3, 0, 'ruRU', 'Держись, $n. Идём на бреющем.');
+
+-- Vineyard Warden (108871) - groups 0,1,2 English; group 3 already Russian.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 108871 AND `Locale` = 'ruRU' AND `GroupID` IN (0,1,2);
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(108871, 0, 0, 'ruRU', 'Я разделаюсь с тобой, простолюдин$g:ка;!'),
+(108871, 1, 0, 'ruRU', 'Шал''дорай... избранные...'),
+(108871, 2, 0, 'ruRU', 'Шал''дорай будут править!');
+
+-- Already fully Russian, nothing to do: Elya Azuremoon (88859), Prince Oceanus (89101),
+-- Shipwrecked Captive (89104).
+
+-- Greywatch Saboteur (94614) - only group1 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 94614 AND `Locale` = 'ruRU' AND `GroupID`=1;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(94614, 1, 0, 'ruRU', 'Я разорву тебя на куски!');
+
+-- Nightborne Enforcer (101825) - only group0 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 101825 AND `Locale` = 'ruRU' AND `GroupID`=0;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(101825, 0, 0, 'ruRU', 'Почувствуй мощь шал''дорай!');
+
+-- Questioner Arev'naal (89673) - only group1 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 89673 AND `Locale` = 'ruRU' AND `GroupID`=1;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(89673, 1, 0, 'ruRU', 'Я тебе ничего не скажу, Пожиратель душ!');
+
+-- Already fully Russian, nothing to do: Hatecoil Slavemaster (90109), Dread-Rider Stalker (94338).
+
+-- Crawliac Skywitch (94983) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 94983 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(94983, 0, 0, 'ruRU', 'У меня для тебя новое заклинание.'),
+(94983, 0, 1, 'ruRU', 'Я сотворю такие чудесные заклинания из твоих костей.'),
+(94983, 0, 2, 'ruRU', 'Небеса принадлежат кроулиакам!');
+
+-- Already fully Russian, nothing to do: Nathanos Blightcaller (91158), Greywatch Infiltrator (94825).
+
+-- Lyrea Windfeather (101767) - groups 0,1,3 English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 101767 AND `Locale` = 'ruRU' AND `GroupID` IN (0,1,3);
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(101767, 0, 0, 'ruRU', 'Я не успела вовремя...'),
+(101767, 1, 0, 'ruRU', 'Не возвращайся за нами. Предательство помраченных эльфов уже обрекло нас.'),
+(101767, 3, 0, 'ruRU', 'У меня не было времени...');
+
+-- Felsoul Inquisitor (101878) - only group0 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 101878 AND `Locale` = 'ruRU' AND `GroupID`=0;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(101878, 0, 0, 'ruRU', 'Тебе от меня не скрыться.');
+
+-- Selthaes Starsong (102365) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 102365 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(102365, 0, 0, 'ruRU', 'Твоего друга-человека забрали демоны. Дай мне свободу, и я расскажу, куда его увели!'),
+(102365, 1, 0, 'ruRU', 'Твоего друга отвели в ямы охотников Скверны под великим флагманом Пылающего Легиона.'),
+(102365, 2, 0, 'ruRU', 'Увы, для него, скорее всего, уже слишком поздно... не отдавайте глупо свои жизни за мертвеца!');
