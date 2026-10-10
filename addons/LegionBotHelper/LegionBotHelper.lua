@@ -1,23 +1,19 @@
 -- Legion Bot Helper - минимальная панель для .selfbot / .altbot.
--- Два способа общения с сервером, как в AC:
---   RunCommand - шлёт dot-команду (SendChatMessage, канал "SAY" - сервер перехватывает текст
---                с "." раньше, чем он улетит в чат). Для действий уровня аккаунта (altbot
---                add/remove), где нет "уже активного бота, которому шепчешь".
---   RunWhisper - шепчет СВОЕМУ ЖЕ персонажу. Все остальные типы ботов на сервере управляются
---                шёпотом голого слова (без точки); селфбот теперь понимает те же слова при
---                шёпоте самому себе - кнопки делают то же самое, что шёпот любому другому боту.
---                Клиентский UI не даёт вписать своё имя в шёпот вручную, но SendChatMessage
---                такого ограничения не имеет.
+-- Каждая кнопка шлёт dot-команду (SendChatMessage, канал "SAY" - сервер перехватывает текст
+-- с "." раньше, чем он улетит в чат, точно так же как при ручном вводе в чат-бокс).
+--
+-- Шёпот себе самому для команд селфботу НЕ используется и не может использоваться: сам клиент
+-- WoW блокирует отправку CHAT_MSG_WHISPER самому себе ещё до того, как пакет уйдёт на сервер -
+-- это ограничение клиента, SendChatMessage его не обходит, подтверждено вживую. Поэтому у
+-- селфбота (который и есть твой текущий персонаж) единственный рабочий канал - dot-команда.
+-- Для альтбота (другое имя персонажа) шёпот в принципе сработал бы, но этой панели он пока не
+-- нужен - "Добавить"/"Убрать" это действия уровня аккаунта, не команды уже подключённому боту.
 local ADDON = "LegionBotHelper"
 
 LegionBotHelperDB = LegionBotHelperDB or {}
 
 local function RunCommand(cmd)
 	SendChatMessage(cmd, "SAY")
-end
-
-local function RunWhisper(cmd)
-	SendChatMessage(cmd, "WHISPER", nil, UnitName("player"))
 end
 
 -- ===== Общие цвета/отступы =====
@@ -104,43 +100,43 @@ local selfHeader = SectionHeader(frame, titleBar, "Селфбот", -(PAD - 4))
 local btnToggle = MakeButton(frame, "Вкл/Выкл", 102, function() RunCommand(".selfbot") end)
 btnToggle:SetPoint("TOPLEFT", selfHeader, "BOTTOMLEFT", 0, -HEADER_GAP)
 
-local btnReady = MakeButton(frame, "Готовность", 102, function() RunWhisper("ready") end)
+local btnReady = MakeButton(frame, "Готовность", 102, function() RunCommand(".selfbot ready") end)
 btnReady:SetPoint("LEFT", btnToggle, "RIGHT", 8, 0)
 
-local btnStay = MakeButton(frame, "Стоять", 102, function() RunWhisper("stay") end)
+local btnStay = MakeButton(frame, "Стоять", 102, function() RunCommand(".selfbot stay") end)
 btnStay:SetPoint("TOPLEFT", btnToggle, "BOTTOMLEFT", 0, -ROW_GAP)
 
-local btnFollow = MakeButton(frame, "Следовать", 102, function() RunWhisper("follow") end)
+local btnFollow = MakeButton(frame, "Следовать", 102, function() RunCommand(".selfbot follow") end)
 btnFollow:SetPoint("LEFT", btnStay, "RIGHT", 8, 0)
 
 -- "Атаковать цель" - явная команда, как кнопка "attack my target" в аддоне на x5: атакует то,
 -- что у тебя сейчас выделено, независимо от того, в бою ты уже или нет.
-local btnAttack = MakeButton(frame, "Атаковать цель", WIDE, function() RunWhisper("attack") end)
+local btnAttack = MakeButton(frame, "Атаковать цель", WIDE, function() RunCommand(".selfbot attack") end)
 btnAttack:SetPoint("TOPLEFT", btnStay, "BOTTOMLEFT", 0, -ROW_GAP)
 
 -- ===== Порядок боя =====
 
 local coHeader = SectionHeader(frame, btnAttack, "Порядок боя", -SECTION_GAP)
 
-local btnCoAuto = MakeButton(frame, "Авто", COL3, function() RunWhisper("co auto") end)
+local btnCoAuto = MakeButton(frame, "Авто", COL3, function() RunCommand(".selfbot co auto") end)
 btnCoAuto:SetPoint("TOPLEFT", coHeader, "BOTTOMLEFT", 0, -HEADER_GAP)
-local btnCoDps = MakeButton(frame, "ДД", COL3, function() RunWhisper("co dps") end)
+local btnCoDps = MakeButton(frame, "ДД", COL3, function() RunCommand(".selfbot co dps") end)
 btnCoDps:SetPoint("LEFT", btnCoAuto, "RIGHT", 7, 0)
-local btnCoHeal = MakeButton(frame, "Лекарь", COL3, function() RunWhisper("co heal") end)
+local btnCoHeal = MakeButton(frame, "Лекарь", COL3, function() RunCommand(".selfbot co heal") end)
 btnCoHeal:SetPoint("LEFT", btnCoDps, "RIGHT", 7, 0)
 
 -- ===== АвтоГир =====
 
 local gearHeader = SectionHeader(frame, btnCoAuto, "Лимит автогира", -SECTION_GAP)
 
-local btnGearGreen = MakeButton(frame, "Зелёное", COL3, function() RunWhisper("autogear green") end)
+local btnGearGreen = MakeButton(frame, "Зелёное", COL3, function() RunCommand(".selfbot autogear green") end)
 btnGearGreen:SetPoint("TOPLEFT", gearHeader, "BOTTOMLEFT", 0, -HEADER_GAP)
-local btnGearBlue = MakeButton(frame, "Синее", COL3, function() RunWhisper("autogear blue") end)
+local btnGearBlue = MakeButton(frame, "Синее", COL3, function() RunCommand(".selfbot autogear blue") end)
 btnGearBlue:SetPoint("LEFT", btnGearGreen, "RIGHT", 7, 0)
-local btnGearEpic = MakeButton(frame, "Эпик", COL3, function() RunWhisper("autogear epic") end)
+local btnGearEpic = MakeButton(frame, "Эпик", COL3, function() RunCommand(".selfbot autogear epic") end)
 btnGearEpic:SetPoint("LEFT", btnGearBlue, "RIGHT", 7, 0)
 
-local btnGearReset = MakeButton(frame, "Сбросить шмот", WIDE, function() RunWhisper("autogear reset") end)
+local btnGearReset = MakeButton(frame, "Сбросить шмот", WIDE, function() RunCommand(".selfbot autogear reset") end)
 btnGearReset:SetPoint("TOPLEFT", btnGearGreen, "BOTTOMLEFT", 0, -ROW_GAP)
 
 -- ===== Альтбот =====
