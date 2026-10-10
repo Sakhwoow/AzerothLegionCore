@@ -247,6 +247,12 @@ public:
 	void ResetBotAI() override;
 	void OnLevelUp(uint32 talentType) override;
 
+	// Legion reworked Survival (branch 2) into a melee spec - BotFieldAI's defaults hardcode
+	// CLASS_HUNTER as always-ranged/never-melee regardless of spec, so without these overrides
+	// ProcessMeleeSpell below would simply never be called for a Survival hunter at all.
+	bool IsRangeBotAI() override { return m_BotTalentType != 2; }
+	bool IsMeleeBotAI() override { return m_BotTalentType == 2; }
+
 protected:
 	uint32 GetManaPowerPer();
 	void UpdateTalentType();

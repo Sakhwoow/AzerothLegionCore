@@ -42,6 +42,11 @@ public:
 
 	void ResetBotAI() override;
 
+	// Legion Survival (branch 2) is melee - see FieldHunterAI's identical override for the
+	// full reasoning (BotBGAI's defaults hardcode CLASS_HUNTER as always-ranged).
+	bool IsRangeBotAI() override { return m_BotTalentType != 2; }
+	bool IsMeleeBotAI() override { return m_BotTalentType == 2; }
+
 protected:
 	uint32 GetManaPowerPer();
 	void InitializeSpells();
@@ -68,54 +73,60 @@ private:
 	bool m_IsSupplemented;
 	bool m_IsReviveManaModel;
 
-	uint32 HunterIDLE_SummonPet;// 883			ÕÙ»½³èÎï
-	uint32 HunterIDLE_RevivePet;// 982			¸´»î³èÎï
-	uint32 HunterIDLE_ManaAura;// 34074			¹¥»÷»ØÀ¶ÊØ»¤
-	uint32 HunterIDLE_DodgeAura;// 13163		ÉÁ¶ãÊØ»¤
-	uint32 HunterIDLE_EagleAura;// 27044		Éä»÷ÊØ»¤
-	uint32 HunterIDLE_DragonAura;// 61847		ÁúÓ¥ÊØ»¤ Éä»÷ºÍÉÁ¶ãÊØ»¤
-	uint32 HunterIDLE_ShotAura;// 19506			Ç¿»÷¹â»·(Éä»÷Ïµ)
+	uint32 HunterIDLE_SummonPet;// 883			ï¿½Ù»ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 HunterIDLE_RevivePet;// 982			ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 HunterIDLE_ManaAura;// 34074			ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø»ï¿½
+	uint32 HunterIDLE_DodgeAura;// 13163		ï¿½ï¿½ï¿½ï¿½ï¿½Ø»ï¿½
+	uint32 HunterIDLE_EagleAura;// 27044		ï¿½ï¿½ï¿½ï¿½Ø»ï¿½
+	uint32 HunterIDLE_DragonAura;// 61847		ï¿½ï¿½Ó¥ï¿½Ø»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø»ï¿½
+	uint32 HunterIDLE_ShotAura;// 19506			Ç¿ï¿½ï¿½ï¿½â»·(ï¿½ï¿½ï¿½Ïµ)
 
-	uint32 HunterTrap_FarFrozen;// 60192		Ô¶³Ì±ù¶³ÏÝÚå
-	uint32 HunterTrap_Frozen;// 14311			±ù¶³ÏÝÚå
-	uint32 HunterTrap_Ice;// 13809				±ùËªÏÝÚå
-	uint32 HunterTrap_Viper;// 34600			¶¾ÉßÏÝÚå
-	uint32 HunterTrap_Explode;// 49067			±¬Õ¨ÏÝÚå
-	uint32 HunterTrap_Fire;// 49056				»ðÑæÏÝÚå
-	uint32 HunterTrap_Shot;// 63672				ºÚ×Ç¼ý(Éú´æÏµ)
+	uint32 HunterTrap_FarFrozen;// 60192		Ô¶ï¿½Ì±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 HunterTrap_Frozen;// 14311			ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 HunterTrap_Ice;// 13809				ï¿½ï¿½Ëªï¿½ï¿½ï¿½ï¿½
+	uint32 HunterTrap_Viper;// 34600			ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 HunterTrap_Explode;// 49067			ï¿½ï¿½Õ¨ï¿½ï¿½ï¿½ï¿½
+	uint32 HunterTrap_Fire;// 49056				ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 HunterTrap_Shot;// 63672				ï¿½ï¿½ï¿½Ç¼ï¿½(ï¿½ï¿½ï¿½ï¿½Ïµ)
 
-	uint32 HunterAssist_ClearRoot;// 53271		ÒÆ³ý¶¨Éí
-	uint32 HunterAssist_PetCommand;// 34026		³èÎïÉ±½Ø
-	uint32 HunterAssist_HealPet;// 48990		³èÎïÖÎÁÆ
-	uint32 HunterAssist_PetStun;// 19577		³èÎï»÷ÔÎÄ¿±ê(Ò°ÊÞÏµ)
-	uint32 HunterAssist_PetRage;// 19574		³èÎïºÍ×Ô¼º¿ñ±©(Ò°ÊÞÏµ)
-	uint32 HunterAssist_Stamp;// 53338			ÁÔÈËÓ¡¼Ç
-	uint32 HunterAssist_FalseDead;// 5384		¼ÙËÀ
-	uint32 HunterAssist_BackJump;// 781			ºóÌø
-	uint32 HunterAssist_FastSpeed;// 3045		¼±ËÙÉä»÷BUF
-	uint32 HunterAssist_ReadyCD;// 23989		×¼±¸¾ÍÐ÷CD(Éä»÷Ïµ)
+	uint32 HunterAssist_ClearRoot;// 53271		ï¿½Æ³ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 HunterAssist_PetCommand;// 34026		ï¿½ï¿½ï¿½ï¿½É±ï¿½ï¿½
+	uint32 HunterAssist_HealPet;// 48990		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 HunterAssist_PetStun;// 19577		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½(Ò°ï¿½ï¿½Ïµ)
+	uint32 HunterAssist_PetRage;// 19574		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½(Ò°ï¿½ï¿½Ïµ)
+	uint32 HunterAssist_Stamp;// 53338			ï¿½ï¿½ï¿½ï¿½Ó¡ï¿½ï¿½
+	uint32 HunterAssist_FalseDead;// 5384		ï¿½ï¿½ï¿½ï¿½
+	uint32 HunterAssist_BackJump;// 781			ï¿½ï¿½ï¿½ï¿½
+	uint32 HunterAssist_FastSpeed;// 3045		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½BUF
+	uint32 HunterAssist_ReadyCD;// 23989		×¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CD(ï¿½ï¿½ï¿½Ïµ)
 
-	uint32 HunterMelee_BackRoot;// 48999		ÕÐ¼Üºó·´»÷¶¨Éí(Éú´æÏµ)
-	uint32 HunterMelee_NoDamage;// 19263		ÍþÉå ÎÞ·¨¹¥»÷
-	uint32 HunterMelee_DecSpeed;// 2974			Ë¤°è ½üÕ½¼õÒÆ¶¯ËÙ
-	uint32 HunterMelee_NextAtt;// 48996			next½üÕ½¹¥»÷¼ÓÇ¿
-	uint32 HunterMelee_MeleeAtt;// 53339		½üÕ½¹¥»÷
+	uint32 HunterMelee_BackRoot;// 48999		ï¿½Ð¼Üºó·´»ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½Ïµ)
+	uint32 HunterMelee_NoDamage;// 19263		ï¿½ï¿½ï¿½ï¿½ ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 HunterMelee_DecSpeed;// 2974			Ë¤ï¿½ï¿½ ï¿½ï¿½Õ½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½ï¿½
+	uint32 HunterMelee_NextAtt;// 48996			nextï¿½ï¿½Õ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¿
+	uint32 HunterMelee_MeleeAtt;// 53339		ï¿½ï¿½Õ½ï¿½ï¿½ï¿½ï¿½ (confirmed: real Mongoose Bite, 190928)
+	uint32 HunterMelee_RaptorStrike;			// Raptor Strike
+	uint32 HunterMelee_Carve;					// Carve (AoE)
+	uint32 HunterMelee_FlankingStrike;			// Flanking Strike - lower confidence, see BotAISpells.h
 
-	uint32 HunterDebug_Damage;// 49001			ÉËº¦¶¤´Ì
-	uint32 HunterDebug_Mana;// 3034				ÎüÀ¶¶¤´Ì
-	uint32 HunterDebug_Sleep;// 49012			³ÁË¯¶¤´Ì(Éú´æÏµ)
+	uint32 HunterDebug_Damage;// 49001			ï¿½Ëºï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 HunterDebug_Mana;// 3034				ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 HunterDebug_Sleep;// 49012			ï¿½ï¿½Ë¯ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½Ïµ)
 
-	uint32 HunterShot_AOEShot;// 58434			AOEÉä»÷
-	uint32 HunterShot_CharmShot;// 19503		´ò¶ÏÉä»÷(Éú´æÏµ)
-	uint32 HunterShot_Explode;// 60053			±¬Õ¨Éä»÷(Éú´æÏµ)
-	uint32 HunterShot_Aim;// 49050				Ãé×¼Éä»÷(Éä»÷Ïµ)
-	uint32 HunterShot_Silence;// 34490			³ÁÄ¬Éä»÷(Éä»÷Ïµ)
-	uint32 HunterShot_Shock;// 5116				Õðµ´Éä»÷
-	uint32 HunterShot_Cast;// 49052				ÎÈ¹ÌÉä»÷ Ê©·¨Ê±¼äµÄÉä»÷
-	uint32 HunterShot_MgcShot;// 49045			°ÂÊõÉä»÷
-	uint32 HunterShot_KillShot;// 61006			»÷É±Éä»÷ Ä¿±ê20%ÒÔÏÂÑªÕ¶É±Ê½Éä»÷
-	uint32 HunterShot_MulShot;// 49048			¶àÖØÉä»÷
-	uint32 HunterShot_QMLShot;// 53209			ÆæÃÀÀ­Éä»÷(Éä»÷Ïµ)
+	uint32 HunterShot_AOEShot;// 58434			AOEï¿½ï¿½ï¿½
+	uint32 HunterShot_CharmShot;// 19503		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½Ïµ)
+	uint32 HunterShot_Explode;// 60053			ï¿½ï¿½Õ¨ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½Ïµ)
+	uint32 HunterShot_Aim;// 49050				ï¿½ï¿½×¼ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½Ïµ)
+	uint32 HunterShot_Silence;// 34490			ï¿½ï¿½Ä¬ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½Ïµ)
+	uint32 HunterShot_Shock;// 5116				ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 HunterShot_Cast;// 49052				ï¿½È¹ï¿½ï¿½ï¿½ï¿½ Ê©ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 HunterShot_MgcShot;// 49045			ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 HunterShot_KillShot;// 61006			ï¿½ï¿½É±ï¿½ï¿½ï¿½ Ä¿ï¿½ï¿½20%ï¿½ï¿½ï¿½ï¿½ÑªÕ¶É±Ê½ï¿½ï¿½ï¿½
+	uint32 HunterShot_MulShot;// 49048			ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 HunterShot_QMLShot;// 53209			ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½Ïµ)
+	uint32 HunterShot_KillCommand;				// Kill Command (BM core)
+	uint32 HunterShot_CobraShot;				// Cobra Shot (BM focus generator)
+	uint32 HunterShot_MarkedShot;				// Marked Shot (MM, during Vulnerable)
 };
 
 #endif // !_BOT_HUNTER_AI_H

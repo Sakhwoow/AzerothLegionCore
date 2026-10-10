@@ -25,8 +25,11 @@ void DuelHunterAI::UpdateTalentType()
 
 void DuelHunterAI::ResetBotAI()
 {
-	BotDuelAI::ResetBotAI();
+	// UpdateTalentType() must run before BotDuelAI::ResetBotAI() - that call caches
+	// m_IsRangeBot/m_IsMeleeBot via the now-spec-aware overrides above, see FieldHunterAI's
+	// identical fix for the full reasoning.
 	UpdateTalentType();
+	BotDuelAI::ResetBotAI();
 	InitializeSpells(me);
 	if (Pet* pet = me->GetPet())
 		pet->SettingAllSpellAutocast(true);
@@ -163,6 +166,16 @@ void DuelHunterAI::ProcessFlee()
 
 void DuelHunterAI::ProcessMeleeSpell(Unit* pTarget)
 {
+	// Real Survival (branch 2) priority - see FieldHunterAI's ProcessMeleeSpell for the full
+	// reasoning (Legion reworked this spec into melee; it now actually reaches this function
+	// thanks to the spec-aware IsRangeBotAI()/IsMeleeBotAI() overrides).
+	if (m_BotTalentType == 2)
+	{
+		if (HunterMelee_FlankingStrike && TryCastSpell(HunterMelee_FlankingStrike, pTarget) == SpellCastResult::SPELL_CAST_OK)
+			return;
+		if (HunterMelee_RaptorStrike && TryCastSpell(HunterMelee_RaptorStrike, pTarget) == SpellCastResult::SPELL_CAST_OK)
+			return;
+	}
 	if (m_BotTalentType == 2 && HunterMelee_BackRoot)
 	{
 		if (TryCastSpell(HunterMelee_BackRoot, pTarget) == SpellCastResult::SPELL_CAST_OK)
@@ -235,36 +248,28 @@ void DuelHunterAI::ProcessRangeSpell(Unit* pTarget)
 		return;
 	if (TryCastSpell(HunterAssist_FastSpeed, me) == SpellCastResult::SPELL_CAST_OK)
 		return;
-	if (pTarget->GetTarget() == me->GetGUID())
+	// Real BM(0)/MM(1) priority - Survival (branch 2) is handled entirely in ProcessMeleeSpell
+	// now, so the old ranged-Explosive-Shot/trap branches for it were dead weight, not ported.
+	if (m_BotTalentType == 0)
 	{
-		if (pTarget->HasAura(HunterShot_Shock) && TryCastSpell(HunterShot_Shock, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		if (HunterAssist_PetRage && TryCastSpell(HunterAssist_PetRage, me) == SpellCastResult::SPELL_CAST_OK)
 			return;
-		if (m_BotTalentType == 1 && HunterShot_Aim && TryCastSpell(HunterShot_Aim, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		if (HunterShot_KillCommand && TryCastSpell(HunterShot_KillCommand, pTarget) == SpellCastResult::SPELL_CAST_OK)
 			return;
-		if (m_BotTalentType == 1 && HunterShot_QMLShot && me->getLevel() == 80 && TryCastSpell(HunterShot_QMLShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
-			return;
-		if (TryCastSpell(HunterShot_MgcShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
-			return;
-		if (m_BotTalentType == 2 && HunterShot_Explode && TryCastSpell(HunterShot_Explode, pTarget) == SpellCastResult::SPELL_CAST_OK)
-			return;
-		if (m_BotTalentType == 2 && HunterTrap_Shot && TryCastSpell(HunterTrap_Shot, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		if (HunterShot_CobraShot && TryCastSpell(HunterShot_CobraShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
 			return;
 	}
-	else
+	else if (m_BotTalentType == 1)
 	{
-		if (m_BotTalentType == 1 && HunterShot_Aim && TryCastSpell(HunterShot_Aim, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		if (HunterShot_Aim && TryCastSpell(HunterShot_Aim, pTarget) == SpellCastResult::SPELL_CAST_OK)
 			return;
-		if (m_BotTalentType == 1 && HunterShot_QMLShot && me->getLevel() == 80 && TryCastSpell(HunterShot_QMLShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
-			return;
-		if (TryCastSpell(HunterShot_MgcShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
-			return;
-		if (m_BotTalentType == 2 && HunterShot_Explode && TryCastSpell(HunterShot_Explode, pTarget) == SpellCastResult::SPELL_CAST_OK)
-			return;
-		if (m_BotTalentType == 2 && HunterTrap_Shot && TryCastSpell(HunterTrap_Shot, pTarget) == SpellCastResult::SPELL_CAST_OK)
-			return;
-		if (TryCastSpell(HunterShot_Cast, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		if (HunterShot_MarkedShot && TryCastSpell(HunterShot_MarkedShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
 			return;
 	}
+	if (TryCastSpell(HunterShot_MgcShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		return;
+	if (pTarget->GetTarget() != me->GetGUID() && TryCastSpell(HunterShot_Cast, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		return;
 }
 
 void DuelHunterAI::PetAction(Pet* pPet, Unit* pTarget)

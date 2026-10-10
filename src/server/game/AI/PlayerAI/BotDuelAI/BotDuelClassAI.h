@@ -226,6 +226,11 @@ public:
 
 	void ResetBotAI() override;
 
+	// Legion Survival (branch 2) is melee - see FieldHunterAI's identical override for the
+	// full reasoning (BotDuelAI's defaults hardcode CLASS_HUNTER as always-ranged).
+	bool IsRangeBotAI() override { return m_BotTalentType != 2; }
+	bool IsMeleeBotAI() override { return m_BotTalentType == 2; }
+
 protected:
 	uint32 GetManaPowerPer();
 	void UpdateTalentType();

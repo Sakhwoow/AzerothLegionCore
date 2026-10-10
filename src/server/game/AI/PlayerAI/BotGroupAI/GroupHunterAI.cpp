@@ -28,10 +28,13 @@ void GroupHunterAI::UpdateTalentType()
 
 void GroupHunterAI::ResetBotAI()
 {
+	// UpdateTalentType() must run before BotGroupAI::ResetBotAI() - that call caches
+	// m_IsRangeBot/m_IsMeleeBot via the now-spec-aware overrides above, see FieldHunterAI's
+	// identical fix for the full reasoning.
+	UpdateTalentType();
 	BotGroupAI::ResetBotAI();
 	m_IsSupplemented = false;
 	m_IsReviveManaModel = false;
-	UpdateTalentType();
 	InitializeSpells(me);
 	//if (Pet* pet = me->GetPet())
 	//{
@@ -458,34 +461,29 @@ bool GroupHunterAI::CastRangeSpell(Unit* pTarget)
 		if (TryCastSpell(HunterShot_Shock, pTarget) == SpellCastResult::SPELL_CAST_OK)
 			return true;
 	}
-	if (pTarget->GetTarget() == me->GetGUID())
+	// Real BM(0)/MM(1) priority - m_BotTalentType == 2 (Survival) is handled entirely in
+	// CastMeleeSpell above now (IsRangeBotAI()/IsMeleeBotAI() route it there), so the old
+	// ranged-Explosive-Shot/trap branches for "Survival" were dead weight, not ported.
+	if (m_BotTalentType == 0)
 	{
-		if (m_BotTalentType == 1 && HunterShot_Aim && TryCastSpell(HunterShot_Aim, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		if (HunterAssist_PetRage && TryCastSpell(HunterAssist_PetRage, me) == SpellCastResult::SPELL_CAST_OK)
 			return true;
-		if (m_BotTalentType == 1 && HunterShot_QMLShot && me->getLevel() == 80 && TryCastSpell(HunterShot_QMLShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		if (HunterShot_KillCommand && TryCastSpell(HunterShot_KillCommand, pTarget) == SpellCastResult::SPELL_CAST_OK)
 			return true;
-		if (m_BotTalentType == 2 && HunterShot_Explode && TryCastSpell(HunterShot_Explode, pTarget) == SpellCastResult::SPELL_CAST_OK)
-			return true;
-		if (TryCastSpell(HunterShot_MgcShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
-			return true;
-		if (m_BotTalentType == 2 && HunterTrap_Shot && TryCastSpell(HunterTrap_Shot, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		if (HunterShot_CobraShot && TryCastSpell(HunterShot_CobraShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
 			return true;
 	}
-	else
+	else if (m_BotTalentType == 1)
 	{
-		if (m_BotTalentType == 1 && HunterShot_Aim && TryCastSpell(HunterShot_Aim, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		if (HunterShot_Aim && TryCastSpell(HunterShot_Aim, pTarget) == SpellCastResult::SPELL_CAST_OK)
 			return true;
-		if (m_BotTalentType == 1 && HunterShot_QMLShot && me->getLevel() == 80 && TryCastSpell(HunterShot_QMLShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
-			return true;
-		if (m_BotTalentType == 2 && HunterShot_Explode && TryCastSpell(HunterShot_Explode, pTarget) == SpellCastResult::SPELL_CAST_OK)
-			return true;
-		if (TryCastSpell(HunterShot_MgcShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
-			return true;
-		if (m_BotTalentType == 2 && HunterTrap_Shot && TryCastSpell(HunterTrap_Shot, pTarget) == SpellCastResult::SPELL_CAST_OK)
-			return true;
-		if (TryCastSpell(HunterShot_Cast, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		if (HunterShot_MarkedShot && TryCastSpell(HunterShot_MarkedShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
 			return true;
 	}
+	if (TryCastSpell(HunterShot_MgcShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		return true;
+	if (pTarget->GetTarget() != me->GetGUID() && TryCastSpell(HunterShot_Cast, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		return true;
 	return false;
 }
 
@@ -493,6 +491,21 @@ bool GroupHunterAI::CastMeleeSpell(Unit* pTarget)
 {
 	if (!pTarget)
 		return false;
+
+	// Real Survival (branch 2) priority, inserted ahead of the old always-ranged-Hunter
+	// "slow + autoattack while something's stuck next to me" fallback below (which stays,
+	// since nothing here actually removes it - Survival just gets a real rotation on top).
+	if (m_BotTalentType == 2)
+	{
+		if (HunterMelee_FlankingStrike && TryCastSpell(HunterMelee_FlankingStrike, pTarget) == SpellCastResult::SPELL_CAST_OK)
+			return true;
+		NearUnitVec meleeTargets = RangeEnemyListByTargetRange(pTarget, NEEDFLEE_CHECKRANGE);
+		if (meleeTargets.size() > 1 && HunterMelee_Carve && TryCastSpell(HunterMelee_Carve, me) == SpellCastResult::SPELL_CAST_OK)
+			return true;
+		if (HunterMelee_RaptorStrike && TryCastSpell(HunterMelee_RaptorStrike, pTarget) == SpellCastResult::SPELL_CAST_OK)
+			return true;
+	}
+
 	if (m_BotTalentType == 2 && HunterDebug_Sleep && me->GetDistance(pTarget->GetPosition()) < 12)
 	{
 		if (!TargetIsSuppress(pTarget) && TryCastSpell(HunterDebug_Sleep, pTarget) == SpellCastResult::SPELL_CAST_OK)

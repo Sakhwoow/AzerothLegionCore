@@ -340,6 +340,9 @@ void BotHunterSpells::InitializeSpells(Player* player)
 	HunterMelee_DecSpeed = BotUtility::FindMaxRankSpellByExist(player, 195645);
 	HunterMelee_NextAtt = BotUtility::FindMaxRankSpellByExist(player, 31566);
 	HunterMelee_MeleeAtt = BotUtility::FindMaxRankSpellByExist(player, 190928);
+	HunterMelee_RaptorStrike = BotUtility::FindMaxRankSpellByExist(player, 186270);
+	HunterMelee_Carve = BotUtility::FindMaxRankSpellByExist(player, 187708);
+	HunterMelee_FlankingStrike = BotUtility::FindMaxRankSpellByExist(player, 269751);
 
 	HunterDebug_Damage = BotUtility::FindMaxRankSpellByExist(player, 160503);
 	HunterDebug_Mana = BotUtility::FindMaxRankSpellByExist(player, 31407);
@@ -348,14 +351,18 @@ void BotHunterSpells::InitializeSpells(Player* player)
 	HunterShot_AOEShot = BotUtility::FindMaxRankSpellByExist(player, 22908);
 	HunterShot_CharmShot = BotUtility::FindMaxRankSpellByExist(player, 23601);
 	HunterShot_Explode = BotUtility::FindMaxRankSpellByExist(player, 15495);
-	HunterShot_Aim = BotUtility::FindMaxRankSpellByExist(player, 48871);
+	HunterShot_Aim = BotUtility::FindMaxRankSpellByExist(player, 19434);
 	HunterShot_Silence = BotUtility::FindMaxRankSpellByExist(player, 248919);
 	HunterShot_Shock = BotUtility::FindMaxRankSpellByExist(player, 5116);
 	HunterShot_Cast = BotUtility::FindMaxRankSpellByExist(player, 65867);
-	HunterShot_MgcShot = BotUtility::FindMaxRankSpellByExist(player, 69989);
-	HunterShot_KillShot = BotUtility::FindMaxRankSpellByExist(player, 69989);
+	HunterShot_MgcShot = BotUtility::FindMaxRankSpellByExist(player, 3044);
+	HunterShot_KillShot = BotUtility::FindMaxRankSpellByExist(player, 53351);
 	HunterShot_MulShot = BotUtility::FindMaxRankSpellByExist(player, 2643);
 	HunterShot_QMLShot = BotUtility::FindMaxRankSpellByExist(player, 53209);
+	HunterShot_KillCommand = BotUtility::FindMaxRankSpellByExist(player, 34026);
+	HunterShot_CobraShot = BotUtility::FindMaxRankSpellByExist(player, 77767);
+	HunterShot_MarkedShot = BotUtility::FindMaxRankSpellByExist(player, 185901);
+	HunterShot_HuntersMark = BotUtility::FindMaxRankSpellByExist(player, 1130);
 }
 
 void BotShamanSpells::InitializeSpells(Player* player)

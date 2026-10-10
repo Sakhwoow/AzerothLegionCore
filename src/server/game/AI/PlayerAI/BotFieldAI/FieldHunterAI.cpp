@@ -27,9 +27,14 @@ void FieldHunterAI::UpdateTalentType()
 
 void FieldHunterAI::ResetBotAI()
 {
+	// UpdateTalentType() must run BEFORE BotFieldAI::ResetBotAI() for this class specifically:
+	// that call is what caches m_IsRangeBot/m_IsMeleeBot (via IsRangeBotAI()/IsMeleeBotAI()
+	// above, both of which read m_BotTalentType now that Survival is spec-aware) - calling it
+	// in the original order left m_BotTalentType at its stale/default value for that one cache
+	// computation, confirmed by reading the base function's body.
+	UpdateTalentType();
 	BotFieldAI::ResetBotAI();
 	m_IsSupplemented = false;
-	UpdateTalentType();
 	InitializeSpells(me);
 	//if (Pet* pet = me->GetPet())
 	//{
@@ -252,6 +257,26 @@ bool FieldHunterAI::ProcessNormalSpell()
 
 void FieldHunterAI::ProcessMeleeSpell(Unit* pTarget)
 {
+	// Built from scratch - Legion's Survival rework made this spec melee (polearm), but this
+	// function was always empty (confirmed by reading it before this change) since the rest of
+	// this class was written around WotLK-era ranged-only Hunter. Only reached for Survival
+	// (m_BotTalentType == 2) now that IsRangeBotAI()/IsMeleeBotAI() are spec-aware - see the
+	// class declaration. Priority: Flanking Strike on cooldown, Carve against 2+ targets,
+	// otherwise alternate Raptor Strike/Mongoose Bite as the two Focus spenders.
+	if (!pTarget)
+		return;
+
+	if (HunterMelee_FlankingStrike && TryCastSpell(HunterMelee_FlankingStrike, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		return;
+
+	NearUnitVec targetRanges = RangeEnemyListByTargetRange(pTarget, NEEDFLEE_CHECKRANGE);
+	if (targetRanges.size() > 1 && HunterMelee_Carve && TryCastSpell(HunterMelee_Carve, me) == SpellCastResult::SPELL_CAST_OK)
+		return;
+
+	if (HunterMelee_MeleeAtt && TryCastSpell(HunterMelee_MeleeAtt, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		return;
+	if (HunterMelee_RaptorStrike && TryCastSpell(HunterMelee_RaptorStrike, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		return;
 }
 
 void FieldHunterAI::ProcessRangeSpell(Unit* pTarget)
@@ -331,28 +356,40 @@ void FieldHunterAI::ProcessRangeSpell(Unit* pTarget)
 		return;
 	if (TryCastSpell(HunterAssist_FastSpeed, me) == SpellCastResult::SPELL_CAST_OK)
 		return;
-	if (pTarget->GetTarget() == me->GetGUID())
+
+	// Real BM(0)/MM(1) priority - m_BotTalentType == 2 (Survival) never reaches this function at
+	// all any more (IsRangeBotAI()/IsMeleeBotAI() above are now spec-aware), so the old
+	// ranged-Explosive-Shot branches for "Survival" were dead weight removed, not ported.
+	if (m_BotTalentType == 0)
 	{
-		if (TryCastSpell(HunterShot_Shock, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		// Beast Mastery: Bestial Wrath on cooldown, Kill Command every time it's up (short
+		// cooldown, reduced further by Cobra Shot), Cobra Shot as the Focus generator/filler.
+		if (HunterAssist_PetRage && TryCastSpell(HunterAssist_PetRage, me) == SpellCastResult::SPELL_CAST_OK)
 			return;
-		if (m_BotTalentType == 1 && HunterShot_Aim && TryCastSpell(HunterShot_Aim, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		if (HunterShot_KillCommand && TryCastSpell(HunterShot_KillCommand, pTarget) == SpellCastResult::SPELL_CAST_OK)
+			return;
+		if (HunterShot_CobraShot && TryCastSpell(HunterShot_CobraShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
 			return;
 		if (TryCastSpell(HunterShot_MgcShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
 			return;
-		if (m_BotTalentType == 2 && HunterShot_Explode && TryCastSpell(HunterShot_Explode, pTarget) == SpellCastResult::SPELL_CAST_OK)
-			return;
 	}
-	else
+	else if (m_BotTalentType == 1)
 	{
-		if (m_BotTalentType == 1 && HunterShot_Aim && TryCastSpell(HunterShot_Aim, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		// Marksmanship: Aimed Shot is the main spender (also applies/refreshes the Vulnerable
+		// debuff this engine doesn't track separately - no aura-check needed, just keep firing
+		// it), Marked Shot as a second big hit, Arcane Shot as filler when both are down.
+		if (HunterShot_Aim && TryCastSpell(HunterShot_Aim, pTarget) == SpellCastResult::SPELL_CAST_OK)
+			return;
+		if (HunterShot_MarkedShot && TryCastSpell(HunterShot_MarkedShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
 			return;
 		if (TryCastSpell(HunterShot_MgcShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
 			return;
-		if (m_BotTalentType == 2 && HunterShot_Explode && TryCastSpell(HunterShot_Explode, pTarget) == SpellCastResult::SPELL_CAST_OK)
-			return;
-		if (TryCastSpell(HunterShot_Cast, pTarget) == SpellCastResult::SPELL_CAST_OK)
-			return;
 	}
+
+	if (TryCastSpell(HunterShot_Shock, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		return;
+	if (TryCastSpell(HunterShot_Cast, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		return;
 }
 
 void FieldHunterAI::PetAction(Pet* pPet, Unit* pTarget)

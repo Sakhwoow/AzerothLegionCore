@@ -381,7 +381,19 @@ protected:
 	uint32 HunterMelee_NoDamage =31567;// 19263		���� �޷�����
 	uint32 HunterMelee_DecSpeed = 195645;// 2974			ˤ�� ��ս���ƶ���
 	uint32 HunterMelee_NextAtt =31566;// 48996			next��ս������ǿ
-	uint32 HunterMelee_MeleeAtt =190928;// 53339		��ս����
+	// HunterMelee_MeleeAtt's old value (190928) already matched real Legion Mongoose Bite - kept
+	// as-is, just renamed in spirit by the new fields around it. Legion's Survival rework made
+	// this spec melee (polearm), which FieldHunterAI::ProcessMeleeSpell never implemented at all
+	// (empty function, confirmed by reading it) - these are new, not fixes of something broken.
+	// Confirmed via multiple sources (Kill Command/Kill Shot/Bestial Wrath/Marked Shot
+	// cross-checked against 2+ independent sites each); Flanking Strike's id is the one field
+	// here with lower confidence - no clean Legion-era-specific source found, used the best
+	// candidate from a Hunter wiki page. FindMaxRankSpellByExist/TryCastFirstKnown already fail
+	// safe (skip to the next ability) if this turns out wrong, so the risk of including it is low.
+	uint32 HunterMelee_MeleeAtt =190928;// 53339		��ս���� (confirmed: real Mongoose Bite)
+	uint32 HunterMelee_RaptorStrike = 186270;			// Raptor Strike
+	uint32 HunterMelee_Carve = 187708;					// Carve (AoE)
+	uint32 HunterMelee_FlankingStrike = 269751;		// Flanking Strike - lower confidence, see above
 
 	uint32 HunterDebug_Damage =160503;// 49001			�˺�����
 	uint32 HunterDebug_Mana =31407;// 3034				��������
@@ -390,14 +402,27 @@ protected:
 	uint32 HunterShot_AOEShot =22908;// 58434			AOE���
 	uint32 HunterShot_CharmShot =23601;// 19503		������(����ϵ)
 	uint32 HunterShot_Explode =15495;// 60053			��ը���(����ϵ)
-	uint32 HunterShot_Aim =48871;// 49050				��׼���(���ϵ)
+	// Aimed Shot/Arcane Shot/Kill Shot were all wrong - confirmed live, zero casts of any
+	// Hunter ranged rotation spell. HunterShot_MgcShot and HunterShot_KillShot both pointed at
+	// the exact same literal id (69989), a copy-paste bug - neither was the real spell either.
+	// Real ids confirmed via Wowhead/wiki cross-reference (see class comment above for sourcing
+	// notes). HunterShot_MulShot (2643, Multi-Shot) was ALREADY correct - left untouched.
+	uint32 HunterShot_Aim = 19434;// was 48871			��׼���(���ϵ) - Aimed Shot
 	uint32 HunterShot_Silence =248919;// 34490			��Ĭ���(���ϵ)
 	uint32 HunterShot_Shock = 5116;// 5116				�����
 	uint32 HunterShot_Cast =65867;// 49052				�ȹ���� ʩ��ʱ������
-	uint32 HunterShot_MgcShot =69989;// 49045			�������
-	uint32 HunterShot_KillShot = 69989;// 61006			��ɱ��� Ŀ��20%����Ѫնɱʽ���
-	uint32 HunterShot_MulShot =2643;// 49048			�������
+	uint32 HunterShot_MgcShot = 3044;// was 69989			������� - Arcane Shot
+	uint32 HunterShot_KillShot = 53351;// was 69989		��ɱ��� Ŀ��20%����Ѫնɱʽ��� - Kill Shot
+	uint32 HunterShot_MulShot =2643;// 49048			ȷ����ȷ - Multi-Shot
 	uint32 HunterShot_QMLShot =53209;// 53209			���������(���ϵ)
+
+	// New fields - no existing slot for these at all before.
+	uint32 HunterShot_KillCommand = 34026;				// Kill Command (BM core)
+	uint32 HunterShot_CobraShot = 77767;				// Cobra Shot (BM focus generator)
+	uint32 HunterShot_MarkedShot = 185901;				// Marked Shot (MM, during Vulnerable)
+	uint32 HunterShot_HuntersMark = 1130;				// Hunter's Mark (MM, classic tracking debuff, maintained as a buff)
+	// Bestial Wrath (BM cooldown) is already correctly 19574 under HunterAssist_PetRage above -
+	// reused as-is rather than duplicating a field with the identical value.
 };
 
 class BotShamanSpells

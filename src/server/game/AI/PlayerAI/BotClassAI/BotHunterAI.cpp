@@ -30,30 +30,39 @@ void BotHunterAI::InitializeSpells()
 	HunterIDLE_DragonAura = FindMaxRankSpellByExist(210752);// 61847		???? ???????
 	HunterIDLE_ShotAura = FindMaxRankSpellByExist(31519);// 19506			????(???)
 
-	uint32 HunterTrap_FarFrozen = FindMaxRankSpellByExist(209789);// 60192		??????
-	uint32 HunterTrap_Frozen = FindMaxRankSpellByExist(43447);// 14311			????
-	uint32 HunterTrap_Ice = FindMaxRankSpellByExist(165769);// 13809				????
-	uint32 HunterTrap_Viper = FindMaxRankSpellByExist(43449);// 34600			????
-	uint32 HunterTrap_Explode = FindMaxRankSpellByExist(43444);// 49067			????
-	uint32 HunterTrap_Fire = FindMaxRankSpellByExist(155623);// 49056				????
-	uint32 HunterTrap_Shot= FindMaxRankSpellByExist(80003);// 63672				???(???)
+	// Was "uint32 X = ..." for every field in this block - a local-variable shadow bug, not an
+	// assignment to the member at all (compare to the correctly-written blocks above/below that
+	// omit the type and assign the real field). Every Trap/Assist/Melee field here stayed at its
+	// default-constructed value (garbage/0) forever for every BG/arena-context Hunter bot -
+	// confirmed by reading it, found while fixing the real rotation that depends on several of
+	// these (HunterAssist_PetRage, HunterMelee_MeleeAtt).
+	HunterTrap_FarFrozen = FindMaxRankSpellByExist(209789);// 60192		??????
+	HunterTrap_Frozen = FindMaxRankSpellByExist(43447);// 14311			????
+	HunterTrap_Ice = FindMaxRankSpellByExist(165769);// 13809				????
+	HunterTrap_Viper = FindMaxRankSpellByExist(43449);// 34600			????
+	HunterTrap_Explode = FindMaxRankSpellByExist(43444);// 49067			????
+	HunterTrap_Fire = FindMaxRankSpellByExist(155623);// 49056				????
+	HunterTrap_Shot= FindMaxRankSpellByExist(80003);// 63672				???(???)
 
-	uint32 HunterAssist_ClearRoot = FindMaxRankSpellByExist(53271);// 53271		????
-	uint32 HunterAssist_PetCommand = FindMaxRankSpellByExist(205440);// 34026		????
-	uint32 HunterAssist_HealPet = FindMaxRankSpellByExist(37381);// 48990		????
-	uint32 HunterAssist_PetStun = FindMaxRankSpellByExist(7093);// 19577		??????(???)
-	uint32 HunterAssist_PetRage = FindMaxRankSpellByExist(19574);// 19574		???????(???)
-	uint32 HunterAssist_Stamp = FindMaxRankSpellByExist(1130);// 53338			????
-	uint32 HunterAssist_FalseDead = FindMaxRankSpellByExist(5384);// 5384		??
-	uint32 HunterAssist_BackJump = FindMaxRankSpellByExist(781);// 781			??
-	uint32 HunterAssist_FastSpeed = FindMaxRankSpellByExist(3045);// 3045		????BUF
-	uint32 HunterAssist_ReadyCD = FindMaxRankSpellByExist(203551);// 23989		????CD(???)
-	
-	uint32 HunterMelee_BackRoot = FindMaxRankSpellByExist(116599);// 48999		???????(???)
-	uint32 HunterMelee_NoDamage = FindMaxRankSpellByExist(31567);// 19263		?? ????
-	uint32 HunterMelee_DecSpeed = FindMaxRankSpellByExist( 195645);// 2974			?? ??????
-	uint32 HunterMelee_NextAtt = FindMaxRankSpellByExist(31566);// 48996			next??????
-	uint32 HunterMelee_MeleeAtt = FindMaxRankSpellByExist(190928);// 53339		????
+	HunterAssist_ClearRoot = FindMaxRankSpellByExist(53271);// 53271		????
+	HunterAssist_PetCommand = FindMaxRankSpellByExist(205440);// 34026		????
+	HunterAssist_HealPet = FindMaxRankSpellByExist(37381);// 48990		????
+	HunterAssist_PetStun = FindMaxRankSpellByExist(7093);// 19577		??????(???)
+	HunterAssist_PetRage = FindMaxRankSpellByExist(19574);// 19574		???????(???)
+	HunterAssist_Stamp = FindMaxRankSpellByExist(1130);// 53338			????
+	HunterAssist_FalseDead = FindMaxRankSpellByExist(5384);// 5384		??
+	HunterAssist_BackJump = FindMaxRankSpellByExist(781);// 781			??
+	HunterAssist_FastSpeed = FindMaxRankSpellByExist(3045);// 3045		????BUF
+	HunterAssist_ReadyCD = FindMaxRankSpellByExist(203551);// 23989		????CD(???)
+
+	HunterMelee_BackRoot = FindMaxRankSpellByExist(116599);// 48999		???????(???)
+	HunterMelee_NoDamage = FindMaxRankSpellByExist(31567);// 19263		?? ????
+	HunterMelee_DecSpeed = FindMaxRankSpellByExist( 195645);// 2974			?? ??????
+	HunterMelee_NextAtt = FindMaxRankSpellByExist(31566);// 48996			next??????
+	HunterMelee_MeleeAtt = FindMaxRankSpellByExist(190928);// 53339		????
+	HunterMelee_RaptorStrike = FindMaxRankSpellByExist(186270);
+	HunterMelee_Carve = FindMaxRankSpellByExist(187708);
+	HunterMelee_FlankingStrike = FindMaxRankSpellByExist(269751);
 
 	HunterDebug_Damage = FindMaxRankSpellByExist(160503);
 	HunterDebug_Mana = FindMaxRankSpellByExist(31407);
@@ -62,14 +71,17 @@ void BotHunterAI::InitializeSpells()
 	HunterShot_AOEShot = FindMaxRankSpellByExist(22908);
 	HunterShot_CharmShot = FindMaxRankSpellByExist(23601);
 	HunterShot_Explode = FindMaxRankSpellByExist(15495);
-	HunterShot_Aim = FindMaxRankSpellByExist(48871);
+	HunterShot_Aim = FindMaxRankSpellByExist(19434);
 	HunterShot_Silence = FindMaxRankSpellByExist(248919);
 	HunterShot_Shock = FindMaxRankSpellByExist(5116);
 	HunterShot_Cast = FindMaxRankSpellByExist(65867);
-	HunterShot_MgcShot = FindMaxRankSpellByExist(69989);
-	HunterShot_KillShot = FindMaxRankSpellByExist(69989);
+	HunterShot_MgcShot = FindMaxRankSpellByExist(3044);
+	HunterShot_KillShot = FindMaxRankSpellByExist(53351);
 	HunterShot_MulShot = FindMaxRankSpellByExist(2643);
 	HunterShot_QMLShot = FindMaxRankSpellByExist(53209);
+	HunterShot_KillCommand = FindMaxRankSpellByExist(34026);
+	HunterShot_CobraShot = FindMaxRankSpellByExist(77767);
+	HunterShot_MarkedShot = FindMaxRankSpellByExist(185901);
 }
 
 void BotHunterAI::UpdateTalentType()
@@ -79,10 +91,13 @@ void BotHunterAI::UpdateTalentType()
 
 void BotHunterAI::ResetBotAI()
 {
+	// UpdateTalentType() must run before BotBGAI::ResetBotAI() - that call caches
+	// m_IsRangeBot/m_IsMeleeBot via the now-spec-aware overrides above, see FieldHunterAI's
+	// identical fix for the full reasoning.
+	UpdateTalentType();
 	BotBGAI::ResetBotAI();
 	m_IsSupplemented = false;
 	m_IsReviveManaModel = false;
-	UpdateTalentType();
 	InitializeSpells();
 	if (Pet* pet = me->GetPet())
 		pet->SettingAllSpellAutocast(true);
@@ -521,34 +536,28 @@ bool BotHunterAI::CastRangeSpell(Unit* pTarget)
 		if (TryCastSpell(HunterShot_Shock, pTarget) == SpellCastResult::SPELL_CAST_OK)
 			return true;
 	}
-	if (pTarget->GetTarget() == me->GetGUID())
+	// Real BM(0)/MM(1) priority - Survival (branch 2) is handled entirely in CastMeleeSpell
+	// below now, so the old ranged-Explosive-Shot/trap branches for it were dead weight.
+	if (m_BotTalentType == 0)
 	{
-		if (m_BotTalentType == 1 && HunterShot_Aim && TryCastSpell(HunterShot_Aim, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		if (HunterAssist_PetRage && TryCastSpell(HunterAssist_PetRage, me) == SpellCastResult::SPELL_CAST_OK)
 			return true;
-		if (m_BotTalentType == 1 && HunterShot_QMLShot && me->getLevel() == 80 && TryCastSpell(HunterShot_QMLShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		if (HunterShot_KillCommand && TryCastSpell(HunterShot_KillCommand, pTarget) == SpellCastResult::SPELL_CAST_OK)
 			return true;
-		if (m_BotTalentType == 2 && HunterShot_Explode && TryCastSpell(HunterShot_Explode, pTarget) == SpellCastResult::SPELL_CAST_OK)
-			return true;
-		if (TryCastSpell(HunterShot_MgcShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
-			return true;
-		if (m_BotTalentType == 2 && HunterTrap_Shot && TryCastSpell(HunterTrap_Shot, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		if (HunterShot_CobraShot && TryCastSpell(HunterShot_CobraShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
 			return true;
 	}
-	else
+	else if (m_BotTalentType == 1)
 	{
-		if (m_BotTalentType == 1 && HunterShot_Aim && TryCastSpell(HunterShot_Aim, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		if (HunterShot_Aim && TryCastSpell(HunterShot_Aim, pTarget) == SpellCastResult::SPELL_CAST_OK)
 			return true;
-		if (m_BotTalentType == 1 && HunterShot_QMLShot && me->getLevel() == 80 && TryCastSpell(HunterShot_QMLShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
-			return true;
-		if (m_BotTalentType == 2 && HunterShot_Explode && TryCastSpell(HunterShot_Explode, pTarget) == SpellCastResult::SPELL_CAST_OK)
-			return true;
-		if (TryCastSpell(HunterShot_MgcShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
-			return true;
-		if (m_BotTalentType == 2 && HunterTrap_Shot && TryCastSpell(HunterTrap_Shot, pTarget) == SpellCastResult::SPELL_CAST_OK)
-			return true;
-		if (TryCastSpell(HunterShot_Cast, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		if (HunterShot_MarkedShot && TryCastSpell(HunterShot_MarkedShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
 			return true;
 	}
+	if (TryCastSpell(HunterShot_MgcShot, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		return true;
+	if (pTarget->GetTarget() != me->GetGUID() && TryCastSpell(HunterShot_Cast, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		return true;
 	return false;
 }
 
@@ -556,6 +565,20 @@ bool BotHunterAI::CastMeleeSpell(Unit* pTarget)
 {
 	if (!pTarget)
 		return false;
+
+	// Real Survival (branch 2) priority - see FieldHunterAI's ProcessMeleeSpell for the full
+	// reasoning (Legion reworked this spec into melee).
+	if (m_BotTalentType == 2)
+	{
+		if (HunterMelee_FlankingStrike && TryCastSpell(HunterMelee_FlankingStrike, pTarget) == SpellCastResult::SPELL_CAST_OK)
+			return true;
+		NearUnitVec meleeTargets = RangeEnemyListByTargetRange(pTarget, NEEDFLEE_CHECKRANGE);
+		if (meleeTargets.size() > 1 && HunterMelee_Carve && TryCastSpell(HunterMelee_Carve, me) == SpellCastResult::SPELL_CAST_OK)
+			return true;
+		if (HunterMelee_RaptorStrike && TryCastSpell(HunterMelee_RaptorStrike, pTarget) == SpellCastResult::SPELL_CAST_OK)
+			return true;
+	}
+
 	if (m_BotTalentType == 2 && HunterDebug_Sleep && TargetIsMelee(pTarget->ToPlayer()) && me->GetDistance(pTarget->GetPosition()) < 12)
 	{
 		if (!TargetIsSuppress(pTarget) && TryCastSpell(HunterDebug_Sleep, pTarget) == SpellCastResult::SPELL_CAST_OK)
