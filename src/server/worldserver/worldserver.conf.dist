@@ -4610,10 +4610,27 @@ selfbot_debug = 0
 #        Description: Верхний потолок itemLevel, который автогир вообще готов надеть,
 #                     независимо от оценки - иначе селфбот (сканирует СВОИ сумки, а не только
 #                     залутанное, в отличие от Field/Group-ботов) мог бы "проапгрейдиться" в
-#                     вещь выше текущей эпохи сервера (трейд/почта/АХ). По умолчанию - потолок
-#                     героик-рейдов Cataclysm (~397, Dragonwrath/heroic 4.3), под текущий
-#                     Expansion сервера.
-#        Default:     397
+#                     вещь выше текущей эпохи сервера (трейд/почта/АХ). Подогнать под текущий
+#                     Expansion сервера (SharedDefines.h, EXPANSION_*) - значения ниже
+#                     приблизительные (по памяти, не сверено с живым Wowhead/DB2), только как
+#                     ориентир для выбора потолка, не как точная цифра.
+#                     Cataclysm (Expansion=3, текущий на сервере):
+#                       T11 Egg/BWD/BoT heroic ~372-378 | T12 Firelands heroic ~391-397
+#                       T13 Dragon Soul LFR ~384 | normal ~397 | heroic ~410-417
+#                     Mists of Pandaria (Expansion=4):
+#                       T14 MSV/HoF/ToES: LFR ~476-483 | normal ~489-496 | heroic ~502-509
+#                       T15 ToT: LFR ~502 | normal ~522-528 | heroic ~535-541
+#                       T16 SoO: LFR ~540-550 | normal ~570-580 | heroic ~590-600 | mythic ~615-625
+#                     Warlords of Draenor (Expansion=5):
+#                       T17 Highmaul/BRF: normal ~655-685 | heroic ~670-700 | mythic ~695-710
+#                       T18 Hellfire Citadel: normal ~700-710 | heroic ~715-725 | mythic ~725-740
+#                     Legion (Expansion=6, клиент 7.3.5):
+#                       T19 Emerald Nightmare: LFR ~835-845 | normal ~850-865 | heroic ~865-880 | mythic ~880-895
+#                       T19.5 Trial of Valor: LFR ~855-865 | normal ~870-885 | heroic ~885-900 | mythic ~900-915
+#                       T20 Nighthold: LFR ~880-890 | normal ~895-910 | heroic ~910-925 | mythic ~925-940
+#                       T21 Tomb of Sargeras: LFR ~900-910 | normal ~915-930 | heroic ~930-945 | mythic ~945-960
+#                       T22 Antorus: LFR ~920-930 | normal ~935-950 | heroic ~950-965 | mythic ~965-985
+#        Default:     397 (Cataclysm heroic-рейд потолок, под Expansion=3)
 #
 #   autogear_max_quality
 #        Description: Независимый от itemLevel потолок по качеству предмета (как
