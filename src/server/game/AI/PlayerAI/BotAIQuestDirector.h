@@ -79,6 +79,14 @@ private:
 	uint32 m_ScanTick;
 	uint8 m_LevelAtLastGearSync;
 
+	// Counts consecutive UpdateIdle scans that found no nearby questgiver. A bot whose own
+	// position is itself unreachable/isolated (confirmed live: random bots saved at literal
+	// (0,0,0), which has nothing in FindQuestgiverNearby's search radius) would otherwise sit
+	// in QD_STATE_IDLE forever - nothing in this director ever moves a bot that isn't already
+	// chasing a giver or an objective. After enough consecutive empty scans this triggers the
+	// same "teleport to a known-valid spot" recovery MovementTo's own pathfind failures use.
+	uint8 m_IdleScansWithNoGiver;
+
 	// Snapshot of where/which zone this bot was in when quest AI armed (SetActive(true)).
 	// Without this, nothing stops a chain of quest turn-ins from walking a bot out of its
 	// starting zone one short hop at a time - each individual giver-scan/objective-travel

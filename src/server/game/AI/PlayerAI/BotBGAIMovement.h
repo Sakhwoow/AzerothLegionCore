@@ -74,9 +74,13 @@ public:
 
 	static uint32 GetTargetFindpathPointCount(Player* self, Unit* pTarget);
 
+	// Public so callers outside the pathfinding-failure path (e.g. BotAIQuestDirector, for a
+	// bot that's isolated at an unreachable position with nothing nearby to even attempt
+	// pathfinding toward) can trigger the same "find a valid nearby spot, or go home" recovery.
+	void TeleportToValidPosition();
+
 private:
 	bool IsNearToPosition(float x, float y, float z, float range);
-	void TeleportToValidPosition();
 
 private:
 	Player* m_Player;
