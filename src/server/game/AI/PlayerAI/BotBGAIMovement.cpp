@@ -22,6 +22,7 @@
 #include "MoveSplineInit.h"
 #include "VMapFactory.h"
 #include "MotionMaster.h"
+#include "ObjectMgr.h"
 
 BotAIVehicleMovement3D::BotAIVehicleMovement3D(Player* player) :
 m_Player(player),
@@ -548,7 +549,13 @@ void BotBGAIMovement::ApplyFinishPath(PathParameter* pathParam)
 
 void BotBGAIMovement::TeleportToValidPosition()
 {
-	if (!m_BGAI || !m_Player->GetMap())
+	// Used to require m_BGAI (only ever set for battleground bots), even though the body
+	// below already dispatches recovery through m_GroupAI/m_ArenaAI/m_DuelAI too - so this
+	// whole "I'm stuck, find/teleport to a valid nearby spot" recovery path was silently
+	// dead for every Field/Group/Duel bot. Combined with the findOK=true lie fixed in
+	// MovementTo/MovementToTarget above, a bot whose position fell outside any navmesh tile
+	// (observed live: random bots saved at literal (0,0,0)) had no way back at all.
+	if (!m_Player->GetMap())
 		return;
 	Position selfPos = m_Player->GetPosition();
 	Position nearPosition;
@@ -599,6 +606,8 @@ void BotBGAIMovement::TeleportToValidPosition()
             Position pos = Position(findPos.x, findPos.y, findPos.z, m_Player->GetOrientation());
 			if (m_BGAI)
 				m_BGAI->SetTeleport(pos);
+			else if (m_FieldAI)
+				m_FieldAI->SetTeleport(m_Player->GetMapId(), pos);
 			else if (m_GroupAI)
 				m_GroupAI->SetTeleport(pos);
 			else if (m_ArenaAI)
@@ -621,6 +630,27 @@ void BotBGAIMovement::TeleportToValidPosition()
 		//NearUnitVec& enemys = RangeEnemyListByTargetIsMe(BOTAI_RANGESPELL_DISTANCE);
 		//for (Unit* enemy : enemys)
 		//	enemy->SetTarget(ObjectGuid::Empty);
+	}
+	else if (!m_BGAI)
+	{
+		// No BG commander (normal open-world map) and the nearby-position search above
+		// found nothing reachable - this is the case that used to leave a bot stranded
+		// forever (e.g. one saved at literal (0,0,0), which has no reachable navmesh tile
+		// nearby for that search loop to ever find). Last resort: send it to its own race/
+		// class starting position, which is always a valid, in-bounds spot.
+		if (PlayerInfo const* info = sObjectMgr->GetPlayerInfo(m_Player->getRace(), m_Player->getClass()))
+		{
+			Position homePos(info->positionX, info->positionY, info->positionZ, info->orientation);
+			m_Player->SetSelection(ObjectGuid::Empty);
+			if (m_FieldAI)
+				m_FieldAI->SetTeleport(info->mapId, homePos);
+			else if (m_GroupAI)
+				m_GroupAI->SetTeleport(homePos);
+			else if (m_ArenaAI)
+				m_ArenaAI->SetTeleport(homePos);
+			else if (m_DuelAI)
+				m_DuelAI->SetTeleport(homePos);
+		}
 	}
 }
 
