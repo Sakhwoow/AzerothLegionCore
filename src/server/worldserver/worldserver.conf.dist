@@ -4606,9 +4606,19 @@ selfbot_debug = 0
 #        Default:     0 - Отключено
 #                     1 - Включено
 #
+#   autogear_max_itemlevel
+#        Description: Верхний потолок itemLevel, который автогир вообще готов надеть,
+#                     независимо от оценки - иначе селфбот (сканирует СВОИ сумки, а не только
+#                     залутанное, в отличие от Field/Group-ботов) мог бы "проапгрейдиться" в
+#                     вещь выше текущей эпохи сервера (трейд/почта/АХ). По умолчанию - потолок
+#                     героик-рейдов Cataclysm (~397, Dragonwrath/heroic 4.3), под текущий
+#                     Expansion сервера.
+#        Default:     397
+#
 
 autogear_enable = 0
 autogear_debug = 0
+autogear_max_itemlevel = 397
 
 #
 # Гильд-таски для ботов (Phase 9, "Legion Bot Architecture")

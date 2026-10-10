@@ -65,6 +65,7 @@ uint32 BotUtility::SelfBotLevel = 1;
 bool BotUtility::SelfBotDebug = false;
 bool BotUtility::AutoGearEnabled = false;
 bool BotUtility::AutoGearDebug = false;
+uint32 BotUtility::AutoGearMaxItemLevel = 397;
 bool BotUtility::GuildTaskEnabled = false;
 uint32 BotUtility::GuildTaskChancePercent = 5;
 bool BotUtility::GuildTaskDebug = false;
@@ -540,6 +541,9 @@ bool BotUtility::TryAutoEquipUpgrade(Player* bot, Item* item, bool isTank)
 	if (slot == NULL_SLOT)
 		return false; // not equippable gear - a consumable/trade good/quest item looted alongside real gear
 
+	if (item->GetItemLevel(bot) > AutoGearMaxItemLevel)
+		return false;
+
 	Item* equipped = bot->GetEquippedItem(EquipmentSlots(slot));
 	float newScore = EvaluateItemScore(bot, item, isTank);
 	float equippedScore = equipped ? EvaluateItemScore(bot, equipped, isTank) : 0.0f;
@@ -569,6 +573,32 @@ bool BotUtility::TryAutoEquipUpgrade(Player* bot, Item* item, bool isTank)
 	packet.Inv.Items.push_back(inv);
 	bot->GetSession()->HandleAutoEquipItemOpcode(packet);
 	return true;
+}
+
+bool BotUtility::TryAutoGearFromBags(Player* bot, bool isTank)
+{
+	if (!AutoGearEnabled || !bot || bot->IsInCombat())
+		return false;
+
+	for (uint8 slot = InventoryPackSlots::INVENTORY_SLOT_ITEM_START; slot < InventoryPackSlots::INVENTORY_SLOT_ITEM_END; slot++)
+	{
+		if (Item* item = bot->GetItemByPos(255, slot))
+			if (TryAutoEquipUpgrade(bot, item, isTank))
+				return true;
+	}
+	for (uint8 i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; ++i)
+	{
+		Bag* bag = bot->GetBagByPos(i);
+		if (!bag)
+			continue;
+		for (uint32 j = 0; j < bag->GetBagSize(); j++)
+		{
+			if (Item* item = bag->GetItemByPos(uint8(j)))
+				if (TryAutoEquipUpgrade(bot, item, isTank))
+					return true;
+		}
+	}
+	return false;
 }
 
 namespace

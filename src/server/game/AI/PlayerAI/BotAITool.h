@@ -107,6 +107,13 @@ public:
     // after a live check, not assumed safe everywhere by default.
     static bool AutoGearEnabled;
     static bool AutoGearDebug;
+    // Caps what AutoGear will ever equip, independent of score - without this, a selfbot
+    // scanning its own bags (unlike the loot-triggered Field/Group path, which only ever sees
+    // whatever the current content actually drops) could pick up something from trade/mail/AH
+    // far above the realm's current expansion tier and "upgrade" into it. Default matches
+    // Cataclysm's heroic-raid ceiling (~397, Dragonwrath/heroic 4.3 BiS) - the realm's current
+    // Expansion config tier as of this writing.
+    static uint32 AutoGearMaxItemLevel;
     // Phase 9 (guild tasks): also off by default, same reasoning as AutoGear above - a new,
     // unvalidated system (see GuildTaskMgr).
     static bool GuildTaskEnabled;
@@ -154,6 +161,13 @@ public:
     // No-op (returns false) while AutoGearEnabled is off, mid-combat, or for anything that isn't
     // equippable gear (consumables/trade goods/quest items flowing through the same loot hook).
     static bool TryAutoEquipUpgrade(Player* bot, Item* item, bool isTank = false);
+    // Scans all of the bot's bags (main pack + equipped bags, same traversal
+    // FindItemFromAllBag uses) and tries TryAutoEquipUpgrade on the first equippable item that
+    // turns out to be a strict upgrade, stopping there - one equip attempt per call, same
+    // "don't do everything in one tick" shape as the rest of this fork's bot maintenance
+    // checks. For SelfBotAI (a real player's own character, no loot hook to piggyback on)
+    // rather than the loot-triggered Field/Group path.
+    static bool TryAutoGearFromBags(Player* bot, bool isTank = false);
     // Phase 9 (professions): grants Skinning+Leatherworking once (SetSkill's own engine logic -
     // Player::LearnSkillRewardedSpells, called internally - auto-learns every skill-appropriate
     // recipe already in SkillLineAbility data; no recipe spell ids are guessed at here at all).

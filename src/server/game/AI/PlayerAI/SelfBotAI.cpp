@@ -71,6 +71,7 @@ m_ActionTick(0)
 	m_Engine->AddStrategy("heal");
 	m_Engine->AddStrategy("rotation");
 	m_Engine->AddStrategy("buff");
+	m_Engine->AddStrategy("autogear");
 	m_Engine->AddStrategy("follow");
 }
 
@@ -421,6 +422,14 @@ bool SelfBotAI::TryUseBuffSpell()
 			return true;
 	}
 	return false;
+}
+
+bool SelfBotAI::TryUseAutoGear()
+{
+	if (me->IsInCombat())
+		return false;
+
+	return BotUtility::TryAutoGearFromBags(me, me->GetRoleForGroup() == ROLE_TANK);
 }
 
 bool SelfBotAI::TryCastFirstKnown(Unit* target, std::vector<uint32> const& spellList)

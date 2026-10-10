@@ -63,6 +63,13 @@ public:
 	bool TryUseRotationSpell(Unit* target);
 	bool TryUseBuffSpell();
 
+	// Thin wrapper over BotUtility::TryAutoGearFromBags, gated the same way buffing is (out of
+	// combat only - TryAutoGearFromBags/TryAutoEquipUpgrade already refuse mid-combat too, this
+	// is just the earliest, cheapest check). Scans the player's own bags rather than hooking a
+	// loot event, since a selfbot has no AI object for LootHandler.cpp to dynamic_cast to - see
+	// AutoGearSelfAction in SelfBotStrategies.cpp for where this is actually called from.
+	bool TryUseAutoGear();
+
 	// Phase 8 (command skeleton): exposes the engine/value registry to cs_selfbot.cpp's
 	// subcommand handlers and to the Action adapters in SelfBotStrategies.cpp, so a command
 	// like ".selfbot stay" can flip a ManualBotValue<bool> the "rotation"/"follow" strategies'

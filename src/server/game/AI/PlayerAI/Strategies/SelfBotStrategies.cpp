@@ -131,6 +131,38 @@ namespace
 		}
 	};
 
+	// Gear upkeep: scans the player's own bags for a strict upgrade (BotUtility::AutoGearEnabled
+	// gates this off entirely by default, same as the Field/Group loot-triggered path). Sits
+	// below "buff" so a fresh buff always wins the tick it's needed, and above "follow" so gear
+	// gets checked before the bot just idles - out of combat only either way.
+	class AutoGearSelfAction : public BotAction
+	{
+	public:
+		AutoGearSelfAction(Player* bot) : BotAction(bot, "autogear self") { }
+
+		bool Execute(Unit* /*target*/) override
+		{
+			SelfBotAI* ai = sSelfBotMgr->GetSelfBotAI(m_bot);
+			if (!ai)
+				return false;
+
+			return ai->TryUseAutoGear();
+		}
+	};
+
+	class SelfBotAutoGearStrategy : public BotStrategy
+	{
+	public:
+		SelfBotAutoGearStrategy(Player* bot) : BotStrategy(bot) { }
+
+		std::string const GetName() override { return "autogear"; }
+
+		std::vector<NextBotAction> GetDefaultActions() override
+		{
+			return { NextBotAction("autogear self", 2.0f) };
+		}
+	};
+
 	// Phase 8 (".selfbot follow"): maintains a standing MoveFollow on the group leader while
 	// out of combat. Lowest relevance of the three default actions (BOT_ACTION_IDLE, below both
 	// "heal ally" and "rotation spell"), so BotEngine only ever reaches this once neither of
@@ -210,6 +242,14 @@ void EnsureSelfBotStrategiesRegistered()
 	BotAiObjectContext::RegisterStrategy("follow", [](Player* bot) -> BotStrategy*
 	{
 		return new SelfBotFollowStrategy(bot);
+	});
+	BotAiObjectContext::RegisterAction("autogear self", [](Player* bot) -> BotAction*
+	{
+		return new AutoGearSelfAction(bot);
+	});
+	BotAiObjectContext::RegisterStrategy("autogear", [](Player* bot) -> BotStrategy*
+	{
+		return new SelfBotAutoGearStrategy(bot);
 	});
 	BotAiObjectContext::RegisterAction("buff self", [](Player* bot) -> BotAction*
 	{
