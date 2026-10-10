@@ -18,6 +18,7 @@
 #include "PlayerBotSetting.h"
 #include "ObjectMgr.h"
 #include "DB2Stores.h"
+#include "Config.h"
 #include "Pet.h"
 #include "WorldSession.h"
 #include "PlayerBotSession.h"
@@ -1837,7 +1838,8 @@ void PlayerBotSetting::LearnTalents()
 	if (cls <= 0 || cls >= 12 || cls == 10)
 		return;
 
-	if (!m_Player->GetUInt32Value(PLAYER_FIELD_CURRENT_SPEC_ID))
+	uint32 specId = m_Player->GetUInt32Value(PLAYER_FIELD_CURRENT_SPEC_ID);
+	if (!specId)
 		return; // no spec chosen yet - nothing to pick talents for
 
 	for (uint32 tier = 0; tier < 7; ++tier)
@@ -1846,8 +1848,37 @@ void PlayerBotSetting::LearnTalents()
 		if (candidates.empty())
 			continue;
 
+		TalentEntry const* chosen = candidates[0];
+
+		// Optional per-spec curated pick - "talent_spell_<specId>_<tier, 1-based>" names the
+		// real spell id of the column we actually want at this tier, mirroring AC's
+		// AiPlayerbot.PremadeSpecLink.<cls>.<spec>.<level> (a human-curated build per spec,
+		// confirmed in modules/mod-playerbots/PlayerbotAIConfig.cpp) - just a direct spell id
+		// instead of a talent-calculator string, since Legion has exactly one choice per tier
+		// instead of WotLK's point investment, so there's no order/level-threshold to parse.
+		// Scans all 3 columns for the one whose resulting spell matches, rather than hardcoding
+		// a column index - self-correcting if this fork's column layout ever differs from the
+		// order a reference guide lists options in. No override configured for this spec/tier,
+		// or the configured id doesn't appear in any column here -> falls back to column 0,
+		// same "something beats nothing" default this function always had.
+		uint32 targetSpell = sConfigMgr->GetIntDefault(("talent_spell_" + std::to_string(specId) + "_" + std::to_string(tier + 1)).c_str(), 0);
+		if (targetSpell)
+		{
+			for (uint32 col = 0; col < 3 && chosen->SpellID != targetSpell; ++col)
+			{
+				for (TalentEntry const* entry : sDB2Manager.GetTalentsByPosition(cls, tier, col))
+				{
+					if (entry->SpellID == targetSpell)
+					{
+						chosen = entry;
+						break;
+					}
+				}
+			}
+		}
+
 		int32 spellOnCooldown = 0;
-		m_Player->LearnTalent(candidates[0]->ID, &spellOnCooldown);
+		m_Player->LearnTalent(chosen->ID, &spellOnCooldown);
 	}
 }
 
