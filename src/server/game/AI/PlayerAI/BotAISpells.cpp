@@ -367,7 +367,7 @@ void BotHunterSpells::InitializeSpells(Player* player)
 
 void BotShamanSpells::InitializeSpells(Player* player)
 {
-	ShamanIDLE_LifeWeapon = BotUtility::FindMaxRankSpellByExist(player, 53209);
+	ShamanIDLE_LifeWeapon = BotUtility::FindMaxRankSpellByExist(player, 51994);
 	ShamanIDLE_IceWeapon = BotUtility::FindMaxRankSpellByExist(player, 78273);
 	ShamanIDLE_FireWeapon = BotUtility::FindMaxRankSpellByExist(player, 160098);
 	ShamanIDLE_PhyWeapon = BotUtility::FindMaxRankSpellByExist(player, 159974);
@@ -409,7 +409,7 @@ void BotShamanSpells::InitializeSpells(Player* player)
 
 	ShamanTotem_Life = BotUtility::FindMaxRankSpellByExist(player, 35199);
 	ShamanTotem_Mana = BotUtility::FindMaxRankSpellByExist(player, 24854);
-	ShamanTotem_BMana = BotUtility::FindMaxRankSpellByExist(player, 24854);
+	ShamanTotem_BMana = BotUtility::FindMaxRankSpellByExist(player, 16190);
 
 	ShamanTotem_SummonFire = BotUtility::FindMaxRankSpellByExist(player, 27623);
 	ShamanTotem_MgcPower = BotUtility::FindMaxRankSpellByExist(player, 31985);
@@ -424,9 +424,9 @@ void BotShamanSpells::InitializeSpells(Player* player)
 
 	ShamanTotem_AbsorbBuff = BotUtility::FindMaxRankSpellByExist(player, 148819);
 	ShamanTotem_AttSpeed = BotUtility::FindMaxRankSpellByExist(player, 27621);
-	ShamanTotem_MgcSpeed = BotUtility::FindMaxRankSpellByExist(player, 27621);
+	ShamanTotem_MgcSpeed = BotUtility::FindMaxRankSpellByExist(player, 3738);
 
-	ShamanFlag_NoHeroic = 27621;
+	ShamanFlag_NoHeroic = 57723;
 }
 
 void BotMageSpells::InitializeSpells(Player* player)

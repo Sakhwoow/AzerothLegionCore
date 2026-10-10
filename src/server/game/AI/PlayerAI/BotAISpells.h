@@ -438,7 +438,10 @@ public:
 	void InitializeSpells(Player* player);
 
 protected:
-	uint32 ShamanIDLE_LifeWeapon =32911;// 51994		��������
+	// LifeWeapon held 32911 (Windfury Weapon, duplicate of FastWeapon below) in the .h default
+	// and 53209 (Chimaera Shot - a Hunter spell) in the actually-used .cpp InitializeSpells -
+	// neither was right. Fixed to Earthliving Weapon (51994), the real Restoration imbue.
+	uint32 ShamanIDLE_LifeWeapon =51994;// was 32911 (duplicate of FastWeapon) / 53209 in .cpp
 	uint32 ShamanIDLE_IceWeapon =78273;// 58796		��˪����
 	uint32 ShamanIDLE_FireWeapon =160098;// 58790		��������
 	uint32 ShamanIDLE_PhyWeapon =159974;// 10399		ʯ������
@@ -480,7 +483,10 @@ protected:
 
 	uint32 ShamanTotem_Life=35199;// 58757			����ͼ��
 	uint32 ShamanTotem_Mana =24854;// 58774			����ͼ��
-	uint32 ShamanTotem_BMana=24854;// 16190			����ͼ��
+	// BMana duplicated Mana's value (Mana Spring Totem) - fixed to its own, stronger totem,
+	// Mana Tide Totem (16190), tried first with Mana Spring as the fallback (ProcessHealthSpell
+	// already tries BMana then Mana in that order, so this was always the intended design).
+	uint32 ShamanTotem_BMana=16190;// was 24854 (duplicate of Mana)
 
 	uint32 ShamanTotem_SummonFire = 27623;// 2894		�ٻ���Ԫ��ͼ��
 	uint32 ShamanTotem_MgcPower = 31985;// 57722		��������ͼ��(Ԫ��ϵ)
@@ -495,9 +501,14 @@ protected:
 
 	uint32 ShamanTotem_AbsorbBuff = 148819;// 8177		�����к�BUFFͼ��
 	uint32 ShamanTotem_AttSpeed =27621;// 8512			��ս�����ٶ�ͼ��
-	uint32 ShamanTotem_MgcSpeed =27621;// 3738			����ʩ���ٶ�ͼ��
+	// MgcSpeed duplicated AttSpeed's value (Windfury Totem) - fixed to its own totem,
+	// Wrath of Air Totem (3738, caster haste).
+	uint32 ShamanTotem_MgcSpeed =3738;// was 27621 (duplicate of AttSpeed)
 
-	uint32 ShamanFlag_NoHeroic = 27621;// 57723			�޷�giveӢ��״̬��ʶ
+	// NoHeroic also duplicated AttSpeed's value (Windfury Totem) - this field is checked as an
+	// aura on OTHER players to gate re-casting Heroism/Bloodlust, so it needs to be the
+	// Exhaustion/Sated debuff (57723), not a totem spell at all.
+	uint32 ShamanFlag_NoHeroic = 57723;// was 27621 (duplicate of AttSpeed, wrong kind of spell)
 };
 
 class BotMageSpells

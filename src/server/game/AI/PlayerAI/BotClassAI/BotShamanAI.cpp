@@ -23,7 +23,7 @@
 
 void BotShamanAI::InitializeSpells()
 {
-	ShamanIDLE_LifeWeapon = FindMaxRankSpellByExist(32911);
+	ShamanIDLE_LifeWeapon = FindMaxRankSpellByExist(51994);
 	ShamanIDLE_IceWeapon = FindMaxRankSpellByExist(78273);
 	ShamanIDLE_FireWeapon = FindMaxRankSpellByExist(160098);
 	ShamanIDLE_PhyWeapon = FindMaxRankSpellByExist(159974);
@@ -63,7 +63,7 @@ void BotShamanAI::InitializeSpells()
 
 	ShamanTotem_Life = FindMaxRankSpellByExist(35199);
 	ShamanTotem_Mana = FindMaxRankSpellByExist(24854);
-	ShamanTotem_BMana = FindMaxRankSpellByExist(24854);
+	ShamanTotem_BMana = FindMaxRankSpellByExist(16190);
 
 	ShamanTotem_SummonFire = FindMaxRankSpellByExist(27623);
 	ShamanTotem_MgcPower = FindMaxRankSpellByExist(31985);
@@ -78,9 +78,9 @@ void BotShamanAI::InitializeSpells()
 
 	ShamanTotem_AbsorbBuff = FindMaxRankSpellByExist(148819);
 	ShamanTotem_AttSpeed = FindMaxRankSpellByExist(27621);
-	ShamanTotem_MgcSpeed = FindMaxRankSpellByExist(27621);
+	ShamanTotem_MgcSpeed = FindMaxRankSpellByExist(3738);
 
-	ShamanFlag_NoHeroic = 27621;
+	ShamanFlag_NoHeroic = 57723;
 }
 
 void BotShamanAI::UpdateTalentType()
