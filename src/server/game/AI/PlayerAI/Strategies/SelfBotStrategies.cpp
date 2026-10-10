@@ -131,10 +131,14 @@ namespace
 		}
 	};
 
-	// Gear upkeep: scans the player's own bags for a strict upgrade (BotUtility::AutoGearEnabled
-	// gates this off entirely by default, same as the Field/Group loot-triggered path). Sits
-	// below "buff" so a fresh buff always wins the tick it's needed, and above "follow" so gear
-	// gets checked before the bot just idles - out of combat only either way.
+	// Gear upkeep: scans the player's own bags for a strict upgrade. Gated by two independent
+	// switches: BotUtility::AutoGearEnabled (realm-wide, off by default - also covers the
+	// Field/Group loot-triggered path) must be on AND the player must have opted in themselves
+	// via ".selfbot autogear" (default off, same as "stay"/"follow" - a real player might not
+	// want their own gear choices overridden just because the realm has AutoGear turned on for
+	// its bot population). Sits below "buff" so a fresh buff always wins the tick it's needed,
+	// and above "follow" so gear gets checked before the bot just idles - out of combat only
+	// either way.
 	class AutoGearSelfAction : public BotAction
 	{
 	public:
@@ -144,6 +148,10 @@ namespace
 		{
 			SelfBotAI* ai = sSelfBotMgr->GetSelfBotAI(m_bot);
 			if (!ai)
+				return false;
+
+			BotValue<bool>* enabled = ai->GetContext()->GetValue<bool>("autogear");
+			if (!enabled || !enabled->Get())
 				return false;
 
 			return ai->TryUseAutoGear();
@@ -275,5 +283,9 @@ void EnsureSelfBotStrategiesRegistered()
 	BotAiObjectContext::RegisterValue("auto ready", [](Player*) -> UntypedBotValue*
 	{
 		return new ManualBotValue<bool>(true);
+	});
+	BotAiObjectContext::RegisterValue("autogear", [](Player*) -> UntypedBotValue*
+	{
+		return new ManualBotValue<bool>(false);
 	});
 }

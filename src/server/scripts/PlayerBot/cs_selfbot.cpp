@@ -90,7 +90,23 @@ namespace
 			return true;
 		}
 
-		handler->SendSysMessage("Unknown selfbot subcommand. Known: stay, follow, co <auto|dps|heal>, ready.");
+		if (sub == "autogear")
+		{
+			if (!BotUtility::AutoGearEnabled)
+			{
+				handler->SendSysMessage("AutoGear is disabled on this server (admin needs autogear_enable=1).");
+				return true;
+			}
+			BotValue<bool>* autoGear = ai->GetContext()->GetValue<bool>("autogear");
+			if (!autoGear)
+				return true;
+			autoGear->Set(!autoGear->Get());
+			handler->PSendSysMessage("Selfbot: autogear (up to itemLevel %u) %s.", BotUtility::AutoGearMaxItemLevel,
+				autoGear->Get() ? "enabled" : "disabled");
+			return true;
+		}
+
+		handler->SendSysMessage("Unknown selfbot subcommand. Known: stay, follow, co <auto|dps|heal>, ready, autogear.");
 		return true;
 	}
 }
