@@ -877,3 +877,56 @@ INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Te
 (104646, 0, 0, 'ruRU', 'Дар для Матери-ведьмы!'),
 (104646, 1, 0, 'ruRU', 'Никто не выживет!'),
 (104646, 2, 0, 'ruRU', 'Сёстры! Отомстите за меня...');
+
+-- Moonclaw Druid (95617) - already fully Russian, nothing to do.
+
+-- Timofey Oshenko (92194) - groups 0,1 English; group 3 already Russian.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 92194 AND `Locale` = 'ruRU' AND `GroupID` IN (0,1);
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(92194, 0, 0, 'ruRU', 'Дешифратор данных 3000 возможно сможет расшифровать это ядро. Скрести пальцы, чтобы оно не взорвалось в процессе.'),
+(92194, 1, 0, 'ruRU', 'Это ядро содержит текст на древнем диалекте высокорожденных, который я прочитать не могу. Профессор Паллин в Святилище писцов, возможно, сумеет его перевести.');
+
+-- Thaon Moonclaw (95399) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 95399 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(95399, 0, 0, 'ruRU', 'Кошмар поглотит тебя!'),
+(95399, 1, 0, 'ruRU', 'Жалкое создание! Это проклятие сделало меня сильнее древних!'),
+(95399, 6, 0, 'ruRU', 'Никто не устоит перед Повелителем Кошмара!');
+
+-- Nightborne Steward (105372) - only group1 was English; group3 ("Anath'ashar!") is the same
+-- fictional phrase kept untranslated elsewhere.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 105372 AND `Locale` = 'ruRU' AND `GroupID`=1;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(105372, 1, 0, 'ruRU', 'Я научу тебя повиноваться господам.');
+
+-- Barm Stonebreaker (92242) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 92242 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(92242, 0, 0, 'ruRU', 'Ответственный кузнец не разбрасывается материалом. Можешь использовать любой металлолом, который найдёшь в нашем лагере.'),
+(92242, 1, 1, 'ruRU', 'Эй, вы там! Если нужна быстрая встряска — налетай на Снадобье Речной Гривы!'),
+(92242, 2, 2, 'ruRU', 'Тыквенную грядку найдёшь в лагере клана Речной Гривы. Выбирай самые спелые — для сока.');
+
+-- Muirn Ironhorn (92243) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 92243 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(92243, 0, 0, 'ruRU', 'Это всё, на что ты способен? Придётся постараться получше. Так дело не пойдёт.'),
+(92243, 1, 0, 'ruRU', 'Давай, кузнец! УДАР! БЕЙ ЧТО ЕСТЬ СИЛЫ!'),
+(92243, 2, 0, 'ruRU', 'А теперь ударь по раскалённому металлу молотом изо всех сил, $p.');
+
+-- God-King Skovald (92307) - already fully Russian, nothing to do.
+
+-- Baelbug (100595) - groups 0,1 English; group 3 already Russian.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 100595 AND `Locale` = 'ruRU' AND `GroupID` IN (0,1);
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(100595, 0, 0, 'ruRU', 'Прочь, грязный $c! Бельбуг нашёл клинок и Бельбуг его оставит!'),
+(100595, 1, 0, 'ruRU', 'Ты не забирать боевой клинок!');
+
+-- Wormtalon Huntress (95152) - only group1 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 95152 AND `Locale` = 'ruRU' AND `GroupID`=1;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(95152, 1, 0, 'ruRU', 'Я разорву тебя в клочья!');
+
+-- Skywhisker Loyalist (95277) - only group4 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 95277 AND `Locale` = 'ruRU' AND `GroupID`=4;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(95277, 4, 0, 'ruRU', '%s в панике пытается сбежать!');
