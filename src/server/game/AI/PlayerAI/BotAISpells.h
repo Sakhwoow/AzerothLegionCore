@@ -674,7 +674,9 @@ protected:
 
 	uint32 PriestGuard_ShadowFear =34984;// 64044			����־�(��Ӱϵ)
 	uint32 PriestGuard_AOEFear =8122;// 10890				��ս��ΧȺ�־�
-	uint32 PriestGuard_DefFear =65544;// 6346				���־���
+	// DefFear was a copy-paste duplicate of RecoverMana's value (65544=Dispersion, confirmed
+	// correct for RecoverMana) - fixed to its own intended spell, Fear Ward (6346).
+	uint32 PriestGuard_DefFear =6346;// was 65544 (duplicate of RecoverMana)
 	uint32 PriestGuard_RecoverMana =65544;// 47585			��Ӱ����������(��Ӱϵ)
 	uint32 PriestGuard_DmgAnnul =33206;// 33206			ʹ��ѹ��(����ϵ)
 	uint32 PriestGuard_DefShield =17;// 48066			������ ��
@@ -685,9 +687,13 @@ protected:
 	uint32 PriestAssist_AddHolyPower =10060;// 10060		����ע��targetʩ�����ٺͱ���(����ϵ)
 	uint32 PriestAssist_AllDispel =4526;// 32375			ȫ����ɢħ��
 	uint32 PriestAssist_Dispel =528;// 988				������ɢħ��
-	uint32 PriestAssist_ShadowDemon =10060;// 34433			��Ӱ��ħ
+	// ShadowDemon was a copy-paste duplicate of AddHolyPower's value (10060=Power Infusion,
+	// confirmed correct for AddHolyPower) - fixed to its own intended spell, Shadowfiend (34433).
+	uint32 PriestAssist_ShadowDemon =34433;// was 10060 (duplicate of AddHolyPower)
 	uint32 PriestAssist_Silence =8988;// 15487			��Ӱ��Ĭ(��Ӱϵ)
-	uint32 PriestAssist_AllResMana =64843;// 64901			����ȫ�����
+	// AllResMana was a copy-paste duplicate of AllResLife's value (64843=Divine Hymn, confirmed
+	// correct for AllResLife) - fixed to its own intended spell, Hymn of Hope (64901).
+	uint32 PriestAssist_AllResMana =64901;// was 64843 (duplicate of AllResLife)
 	uint32 PriestAssist_AllResLife =64843;// 64843			����ȫ���Ѫ
 	uint32 PriestAssist_DecIllness =3592;// 552			������ɢ������BUF
 
@@ -698,7 +704,9 @@ protected:
 	uint32 PriestAOE_ShadowExplode =32000;// 53023			��Ӱ��ըAOE(��Ӱϵ)
 	uint32 PriestAOE_HolyNova =20694;// 48078				��ʥ����
 
-	uint32 PriestShadow_ShadowTouch =18152;// 48160			��Ѫ֮��(��Ӱϵ)
+	// ShadowTouch held 18152 ("Draining Touch"), an unrelated NPC spell a Priest can never
+	// know - never resolved. Fixed to the real spell this field is for, Vampiric Touch (34914).
+	uint32 PriestShadow_ShadowTouch =34914;// was 18152 (wrong spell, not a Priest ability)
 	uint32 PriestShadow_Knocking =17194;// 48127			������
 	uint32 PriestShadow_Lech =15407;// 48156				�����̢(��Ӱϵ)
 	uint32 PriestHoly_Smite =585;// 48123				�ͻ�

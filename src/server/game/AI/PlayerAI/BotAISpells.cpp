@@ -569,7 +569,7 @@ void BotPriestSpells::InitializeSpells(Player* player)
 
 	PriestGuard_ShadowFear = BotUtility::FindMaxRankSpellByExist(player, 34984);
 	PriestGuard_AOEFear = BotUtility::FindMaxRankSpellByExist(player, 8122);
-	PriestGuard_DefFear = BotUtility::FindMaxRankSpellByExist(player, 65544);
+	PriestGuard_DefFear = BotUtility::FindMaxRankSpellByExist(player, 6346);
 	PriestGuard_RecoverMana = BotUtility::FindMaxRankSpellByExist(player, 65544);
 	PriestGuard_DmgAnnul = BotUtility::FindMaxRankSpellByExist(player, 33206);
 	PriestGuard_DefShield = BotUtility::FindMaxRankSpellByExist(player, 17);
@@ -580,9 +580,9 @@ void BotPriestSpells::InitializeSpells(Player* player)
 	PriestAssist_AddHolyPower = BotUtility::FindMaxRankSpellByExist(player, 10060);
 	PriestAssist_AllDispel = BotUtility::FindMaxRankSpellByExist(player, 4526);
 	PriestAssist_Dispel = BotUtility::FindMaxRankSpellByExist(player, 528);
-	PriestAssist_ShadowDemon = BotUtility::FindMaxRankSpellByExist(player, 10060);
+	PriestAssist_ShadowDemon = BotUtility::FindMaxRankSpellByExist(player, 34433);
 	PriestAssist_Silence = BotUtility::FindMaxRankSpellByExist(player, 8988);
-	PriestAssist_AllResMana = BotUtility::FindMaxRankSpellByExist(player, 64843);
+	PriestAssist_AllResMana = BotUtility::FindMaxRankSpellByExist(player, 64901);
 	PriestAssist_AllResLife = BotUtility::FindMaxRankSpellByExist(player, 64843);
 	PriestAssist_DecIllness = BotUtility::FindMaxRankSpellByExist(player, 3592);
 
@@ -592,7 +592,7 @@ void BotPriestSpells::InitializeSpells(Player* player)
 	PriestAOE_ShadowExplode = BotUtility::FindMaxRankSpellByExist(player, 32000);
 	PriestAOE_HolyNova = BotUtility::FindMaxRankSpellByExist(player, 20694);
 
-	PriestShadow_ShadowTouch = BotUtility::FindMaxRankSpellByExist(player, 18152);
+	PriestShadow_ShadowTouch = BotUtility::FindMaxRankSpellByExist(player, 34914);
 	PriestShadow_Knocking = BotUtility::FindMaxRankSpellByExist(player, 17194);
 	PriestShadow_Lech = BotUtility::FindMaxRankSpellByExist(player, 15407);
 	PriestHoly_Smite = BotUtility::FindMaxRankSpellByExist(player, 585);

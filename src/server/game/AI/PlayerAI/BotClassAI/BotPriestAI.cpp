@@ -32,7 +32,7 @@ void BotPriestAI::InitializeSpells()
 
 	PriestGuard_ShadowFear = FindMaxRankSpellByExist(34984);
 	PriestGuard_AOEFear = FindMaxRankSpellByExist(8122);
-	PriestGuard_DefFear = FindMaxRankSpellByExist(65544);
+	PriestGuard_DefFear = FindMaxRankSpellByExist(6346);
 	PriestGuard_RecoverMana = FindMaxRankSpellByExist(65544);
 	PriestGuard_DmgAnnul = FindMaxRankSpellByExist(33206);
 	PriestGuard_DefShield = FindMaxRankSpellByExist(17);
@@ -43,18 +43,18 @@ void BotPriestAI::InitializeSpells()
 	PriestAssist_AddHolyPower = FindMaxRankSpellByExist(10060);
 	PriestAssist_AllDispel = FindMaxRankSpellByExist(4526);
 	PriestAssist_Dispel = FindMaxRankSpellByExist(528);
-	PriestAssist_ShadowDemon = FindMaxRankSpellByExist(10060);
+	PriestAssist_ShadowDemon = FindMaxRankSpellByExist(34433);
 	PriestAssist_Silence = FindMaxRankSpellByExist(8988);
-	PriestAssist_AllResMana = FindMaxRankSpellByExist(64843);
+	PriestAssist_AllResMana = FindMaxRankSpellByExist(64901);
 	PriestAssist_AllResLife = FindMaxRankSpellByExist(64843);
 
 	PriestDebuf_Ache = FindMaxRankSpellByExist(11639);
 	PriestDebuf_Drown = FindMaxRankSpellByExist(41375);
 	PriestDebuf_Plague = FindMaxRankSpellByExist(138490);
-	PriestAOE_ShadowExplode = FindMaxRankSpellByExist(138490);
+	PriestAOE_ShadowExplode = FindMaxRankSpellByExist(32000);
 	PriestAOE_HolyNova = FindMaxRankSpellByExist(20694);
 
-	PriestShadow_ShadowTouch = FindMaxRankSpellByExist(18152);
+	PriestShadow_ShadowTouch = FindMaxRankSpellByExist(34914);
 	PriestShadow_Knocking = FindMaxRankSpellByExist(17194);
 	PriestShadow_Lech = FindMaxRankSpellByExist(15407);
 	PriestHoly_Smite = FindMaxRankSpellByExist(585);
