@@ -930,3 +930,72 @@ INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Te
 DELETE FROM `creature_text_locale` WHERE `CreatureID` = 95277 AND `Locale` = 'ruRU' AND `GroupID`=4;
 INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
 (95277, 4, 0, 'ruRU', '%s в панике пытается сбежать!');
+
+-- Calder (102738) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 102738 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(102738, 0, 0, 'ruRU', 'Побеждён... таким слабаком... как ты...'),
+(102738, 2, 0, 'ruRU', 'Я повержен... так ничтожно...'),
+(102738, 3, 0, 'ruRU', 'Яндвик — наша земля! Никто тебя сюда не звал!');
+
+-- Eynar (102739) - groups 0,1 English; group 2 already Russian.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 102739 AND `Locale` = 'ruRU' AND `GroupID` IN (0,1);
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(102739, 0, 0, 'ruRU', 'Жалкий чужак бросает мне вызов?'),
+(102739, 1, 0, 'ruRU', 'Мы ещё встретимся... в Хельхейме...');
+
+-- Commander Raz'jira (102840) - fully English, naga hiss speech.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 102840 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(102840, 0, 0, 'ruRU', 'У нас незваные гости-сс.'),
+(102840, 1, 0, 'ruRU', 'Яндвик будет нашшш...'),
+(102840, 2, 0, 'ruRU', 'Яндвик станет нашим-шш...');
+
+-- Redhoof the Ancient (103546) - groups 0,1 English; group 3 already Russian.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 103546 AND `Locale` = 'ruRU' AND `GroupID` IN (0,1);
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(103546, 0, 0, 'ruRU', 'Краснокопыт осторожно взрыхляет почву копытом.'),
+(103546, 1, 0, 'ruRU', 'Краснокопыт выжидающе смотрит на Митандроса.');
+
+-- Mayor Heathrow (92619) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 92619 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(92619, 0, 0, 'ruRU', 'Пенелопа? Слава богам, ты цела! Я так волновался!'),
+(92619, 1, 0, 'ruRU', 'Лорд Песнь Теней, я ошибался насчёт вас. Все, опустите оружие!'),
+(92619, 2, 0, 'ruRU', '$n, спасибо, что нашёл$g:а; мою дочь. Прошу, тебе здесь всегда рады.');
+
+-- Darkfiend Dreamtwister (92788) - groups 1,2,4 English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 92788 AND `Locale` = 'ruRU' AND `GroupID` IN (1,2,4);
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(92788, 1, 0, 'ruRU', 'Эта земля будет поглощена!'),
+(92788, 2, 0, 'ruRU', 'Глупец... эта земля уже обречена...'),
+(92788, 4, 0, 'ruRU', 'Ты пока не видишь, но увидишь.');
+
+-- Archmage Celindra (96786) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 96786 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(96786, 0, 0, 'ruRU', 'Я не вспоминала об этом с тех пор... ну, с тех пор как старый друг спрашивал об этом незадолго до того, как покинул этот мир.'),
+(96786, 1, 0, 'ruRU', 'После смерти Антонидаса я решила спрятать диск. Не было смысла продолжать исследования.'),
+(96786, 2, 0, 'ruRU', 'Но если ты думаешь, что сможешь закончить то, что начал Антонидас, — он твой. Удачи тебе с ним, архимаг $n.');
+
+-- Duskwatch Moonscythe (106654) - only group3 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 106654 AND `Locale` = 'ruRU' AND `GroupID`=3;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(106654, 3, 0, 'ruRU', 'Я раздавлю тебя, червь!');
+
+-- Commander Jarod Shadowsong (92842) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 92842 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(92842, 0, 0, 'ruRU', 'Всё именно так, как я и опасался. Останки лорда Гребня Ворона исчезли.'),
+(92842, 1, 0, 'ruRU', 'Лорд Гребень Ворона погиб много лет назад, но я всегда буду чтить его как своего наставника.'),
+(92842, 2, 0, 'ruRU', 'Я разберусь со стражей внутри тюрьмы. Возьми ключи и встреть меня у камер.');
+
+-- Lyrathos Darkgrove (92877) - only group3 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 92877 AND `Locale` = 'ruRU' AND `GroupID`=3;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(92877, 3, 0, 'ruRU', 'Я распространю Кошмар по каждому холму и долу!');
+
+-- Helmouth Cursewalker (105525) - only group4 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 105525 AND `Locale` = 'ruRU' AND `GroupID`=4;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(105525, 4, 0, 'ruRU', 'Я поднесу твой труп Хелии!');
