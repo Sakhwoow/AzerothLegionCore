@@ -519,6 +519,102 @@ INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Te
 (109670, 1, 0, 'ruRU', 'Сканирование тайной сущности...'),
 (109670, 2, 0, 'ruRU', 'Ожидайте проверки.');
 
+-- Princess Tess Greymane (94138) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 94138 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(94138, 0, 0, 'ruRU', 'Ванесса…?'),
+(94138, 1, 0, 'ruRU', 'Ох, моя голова... Валира, ты в порядке?');
+
+-- Fleet Admiral Tethys (94159) - group0 is a deliberate French flourish (kept untranslated);
+-- only group1 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 94159 AND `Locale` = 'ruRU' AND `GroupID`=1;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(94159, 1, 0, 'ruRU', 'Что-то не то с этим пивом...');
+
+-- Trenchwalker Scavenger (99304) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 99304 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(99304, 0, 0, 'ruRU', 'Я чту Повелительницу приливов.'),
+(99304, 1, 0, 'ruRU', 'Я возвращаюсь в море...');
+
+-- Katarine (99562) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 99562 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(99562, 0, 0, 'ruRU', 'Вижу, ты не союзник этих наг, $r! Выпусти меня из этой клетки!'),
+(99562, 1, 0, 'ruRU', 'Я должна найти ярла Трондира!');
+
+-- Fjolrik (99563) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 99563 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(99563, 0, 0, 'ruRU', 'Зачем ты меня пнул$g:а;, ты, помесь Фенрира?'),
+(99563, 1, 0, 'ruRU', 'Ты не нага! Где Брандольф?');
+
+-- Stokalfr (99564) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 99564 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(99564, 0, 0, 'ruRU', 'Подойди ближе, если хочешь умереть, нага!'),
+(99564, 1, 0, 'ruRU', 'Брандольф жив! Я должен к нему пойти!');
+
+-- Jandvik Runecaller (100889) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 100889 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(100889, 0, 0, 'ruRU', 'Я повергну тебя!'),
+(100889, 1, 0, 'ruRU', 'Тебя ждёт суд...');
+
+-- Injured Vrykul (103211) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 103211 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(103211, 0, 0, 'ruRU', 'Вот наш шанс!'),
+(103211, 1, 0, 'ruRU', 'Благодарность, незнакомец.');
+
+-- Beastmaster Tagh (103458) - group0 is a deliberate French flourish (kept untranslated); only
+-- group3 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 103458 AND `Locale` = 'ruRU' AND `GroupID`=3;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(103458, 3, 0, 'ruRU', 'Нужно поймать их взгляд. В этом секрет хорошей дрессировки!');
+
+-- Mayruna Moonwing (103568) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 103568 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(103568, 0, 0, 'ruRU', 'Готово!'),
+(103568, 1, 0, 'ruRU', 'Я сбежала из Валь''шары, когда Изера напала на храм. Мне очень повезло, что по пути мы встретили Митандроса.');
+
+-- Tidemistress Sashj'tar (104359) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 104359 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(104359, 0, 0, 'ruRU', 'Яндвик падёт!'),
+(104359, 2, 0, 'ruRU', 'Яндвик падёт!');
+
+-- Deline (107225) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 107225 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(107225, 0, 0, 'ruRU', 'Понятно! Ты и есть тот, кого я ждала. Мне нужна лишь полная лодка, и я отправлюсь в путь.'),
+(107225, 1, 0, 'ruRU', 'А! В этой бочке много чародейского вина. Давай, положи её в гондолу.');
+
+-- Afflicted Citizen (107604) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 107604 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(107604, 0, 0, 'ruRU', 'С-скоро, малыш. Скоро, обещаю.'),
+(107604, 1, 0, 'ruRU', 'Партия прибыла? Пожалуйста, скажи, что там ещё есть... пожалуйста...');
+
+-- Korine (108063) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 108063 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(108063, 0, 0, 'ruRU', 'Мама!'),
+(108063, 1, 0, 'ruRU', 'Они кричали и посадили меня в клетку! Я скучала по тебе...');
+
+-- Gedrah (110799) - group0 is a deliberate French flourish (kept untranslated); only group3
+-- was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 110799 AND `Locale` = 'ruRU' AND `GroupID`=3;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(110799, 3, 0, 'ruRU', 'В Запределье было своё очарование. Но когда я услышал об этом поселении, я должен был увидеть его своими глазами.');
+
+-- Duskwatch Executor (111621) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 111621 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(111621, 0, 0, 'ruRU', 'Наша магия сломит тебя!'),
+(111621, 1, 0, 'ruRU', 'Нет! Ещё не время...');
+
 -- Mythandros Irongrove (103569) - groups 0-4 English; group 5 already Russian.
 DELETE FROM `creature_text_locale` WHERE `CreatureID` = 103569 AND `Locale` = 'ruRU' AND `GroupID` IN (0,1,2,3,4);
 INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
