@@ -89,69 +89,70 @@ private:
 	std::set<uint32> m_JewelEntrys;
 
 
-	uint32 MageIDLE_ManaGem;// 42985		·¨Á¦±¦Ê¯
-	uint32 MageIDLE_ArcaneMagic;// 42995	°ÂÊõÖÇ»Û
-	uint32 MageIDLE_AOEArcaneMagic;// 43002	È«Ìå°ÂÊõÖÇ»Û
-	uint32 MageIDLE_MgcArmor;// 43024		Ä§¼×Êõ
-	uint32 MageIDLE_FrostArmor;// 43008		±ù¼×Êõ
-	uint32 MageIDLE_IceArmor;// 7301		Ëª¼×Êõ
-	uint32 MageIDLE_FireArmor;// 43046		»ðÑæ×°¼×
-	uint32 MageIDLE_MagicAdd;// 43017		Ä§·¨ÔöÐ§
-	uint32 MageIDLE_MagicDec;// 43015		Ä§·¨Ñ¹ÖÆ
-	uint32 MageIDLE_SummonRite;// 58659		ÕÙ»½²Í×À
+	uint32 MageIDLE_ManaGem;// 42985		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¯
+	uint32 MageIDLE_ArcaneMagic;// 42995	ï¿½ï¿½ï¿½ï¿½ï¿½Ç»ï¿½
+	uint32 MageIDLE_AOEArcaneMagic;// 43002	È«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç»ï¿½
+	uint32 MageIDLE_MgcArmor;// 43024		Ä§ï¿½ï¿½ï¿½ï¿½
+	uint32 MageIDLE_FrostArmor;// 43008		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 MageIDLE_IceArmor;// 7301		Ëªï¿½ï¿½ï¿½ï¿½
+	uint32 MageIDLE_FireArmor;// 43046		ï¿½ï¿½ï¿½ï¿½×°ï¿½ï¿½
+	uint32 MageIDLE_MagicAdd;// 43017		Ä§ï¿½ï¿½ï¿½ï¿½Ð§
+	uint32 MageIDLE_MagicDec;// 43015		Ä§ï¿½ï¿½Ñ¹ï¿½ï¿½
+	uint32 MageIDLE_SummonRite;// 58659		ï¿½Ù»ï¿½ï¿½ï¿½ï¿½ï¿½
 
-	uint32 MageGuard_MagicShield;// 43020	·¨Á¦»¤¶Ü
-	uint32 MageGuard_FrostShield;// 43039	º®±ù»¤¶Ü
-	uint32 MageGuard_FrostScherm;// 45438	º®±ùÆÁÕÏ
-	uint32 MageGuard_FrostNova;// 42917		º®±ùÐÂÐÇ
-	uint32 MageGuard_FireBreath;// 42950	ÁúÖ®ÍÂÏ¢
-	uint32 MageGuard_FireNova;// 42945		»ðÑæÐÂÐÇ
+	uint32 MageGuard_MagicShield;// 43020	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 MageGuard_FrostShield;// 43039	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 MageGuard_FrostScherm;// 45438	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 MageGuard_FrostNova;// 42917		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 MageGuard_FireBreath;// 42950	ï¿½ï¿½Ö®ï¿½ï¿½Ï¢
+	uint32 MageGuard_FireNova;// 42945		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-	uint32 MageAssist_Mirror;// 55342		·¨Ê¦¾µÏñ
-	uint32 MageAssist_Rouse;// 12051		»½ÐÑ
-	uint32 MageAssist_Stealth;// 66			ÒþÐÎÊõ
-	uint32 MageAssist_Teleport;// 1953		ÉÁÏÖÊõ
-	uint32 MageAssist_DecCurse;// 475		½â³ý×çÖä
-	uint32 MageAssist_Grace;// 12043		Æø¶¨ÉñÏÐ
-	uint32 MageAssist_ArcanePower;// 12042	°ÂÊõÇ¿»¯
-	uint32 MageAssist_CastSpeed;// 12472	±ùÀäÑªÂö
-	uint32 MageAssist_FastColddown;// 11958	ÖØÖÃ±ùÏµ¼¼ÄÜCD
-	uint32 MageAssist_FrostPet;// 31687		ÕÙ»½Ë®ÔªËØ
-	uint32 MageAssist_FireCritAura;// 11129	Ö÷¶¯3´ÎÔö¼Ó»ðÑæ±©»÷AURA
+	uint32 MageAssist_Mirror;// 55342		ï¿½ï¿½Ê¦ï¿½ï¿½ï¿½ï¿½
+	uint32 MageAssist_Rouse;// 12051		ï¿½ï¿½ï¿½ï¿½
+	uint32 MageAssist_Stealth;// 66			ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 MageAssist_Teleport;// 1953		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 MageAssist_DecCurse;// 475		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 MageAssist_Grace;// 12043		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 MageAssist_ArcanePower;// 12042	ï¿½ï¿½ï¿½ï¿½Ç¿ï¿½ï¿½
+	uint32 MageAssist_CastSpeed;// 12472	ï¿½ï¿½ï¿½ï¿½Ñªï¿½ï¿½
+	uint32 MageAssist_FastColddown;// 11958	ï¿½ï¿½ï¿½Ã±ï¿½Ïµï¿½ï¿½ï¿½ï¿½CD
+	uint32 MageAssist_FrostPet;// 31687		ï¿½Ù»ï¿½Ë®Ôªï¿½ï¿½
+	uint32 MageAssist_FireCritAura;// 11129	ï¿½ï¿½ï¿½ï¿½3ï¿½ï¿½ï¿½ï¿½ï¿½Ó»ï¿½ï¿½æ±©ï¿½ï¿½AURA
 
-	uint32 MageConfine_BreakCast;// 2139	·¨Êõ·´ÖÆ
+	uint32 MageConfine_BreakCast;// 2139	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	uint32 MageConfine_AuraSteal;// 30449	BUFFÍµÈ¡
-	uint32 MageConfine_ArcaneSlow;// 31589	°ÂÊõ»ºËÙ
-	uint32 MageConfine_ToSheep;// 12826		±äÑò
-	uint32 MageConfine_Freeze;// 44572		¶³½á±»±ù¶³µÄÄ¿±ê
+	uint32 MageConfine_ArcaneSlow;// 31589	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 MageConfine_ToSheep;// 12826		ï¿½ï¿½ï¿½ï¿½
+	uint32 MageConfine_Freeze;// 44572		ï¿½ï¿½ï¿½á±»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½
 
-	uint32 MageAOE_ArcaneExplode;// 42921	°ÂÊõ±¬Õ¨
-	uint32 MageAOE_Snowstorm;// 42940		±©·çÑ©
-	uint32 MageAOE_IcePiton;// 42931		±ù×¶Êõ
-	uint32 MageAOE_FireStorm;// 42926		»ðÑæ·ç±©
+	uint32 MageAOE_ArcaneExplode;// 42921	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¨
+	uint32 MageAOE_Snowstorm;// 42940		ï¿½ï¿½ï¿½ï¿½Ñ©
+	uint32 MageAOE_IcePiton;// 42931		ï¿½ï¿½×¶ï¿½ï¿½
+	uint32 MageAOE_FireStorm;// 42926		ï¿½ï¿½ï¿½ï¿½ç±©
 
-	uint32 MageArcane_Barrage;// 44781		°ÂÊõµ¯Ä»
-	uint32 MageArcane_Bullet;// 42846		°ÂÊõ·Éµ¯
-	uint32 MageArcane_ArcaneShock;// 42897	°ÂÊõ³å»÷
+	uint32 MageArcane_Barrage;// 44781		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä»
+	uint32 MageArcane_Bullet;// 42846		ï¿½ï¿½ï¿½ï¿½ï¿½Éµï¿½
+	uint32 MageArcane_Blast;					// Arcane Blast (core generator, new field)
+	uint32 MageArcane_ArcaneShock;// 42897	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-	uint32 MageFrost_IceArrow;// 42842		º®±ù¼ý
-	uint32 MageFrost_IceLance;// 42914		±ùÇ¹
-	uint32 MageFrost_FFArrow;// 47610		Ëª»ð¼ý
+	uint32 MageFrost_IceArrow;// 42842		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 MageFrost_IceLance;// 42914		ï¿½ï¿½Ç¹
+	uint32 MageFrost_FFArrow;// 47610		Ëªï¿½ï¿½ï¿½
 
-	uint32 MageFire_FireArrow;// 42833		»ðÇòÊõ
-	uint32 MageFire_FireShock;// 42873		»ðÑæ³å»÷
-	uint32 MageFire_Firing;// 42859			×ÆÉÕ
-	uint32 MageFire_BigFireBall;// 42891	´ó»ðÇò
-	uint32 MageFire_FireBomb;// 55360		»îÌåÕ¨µ¯
+	uint32 MageFire_FireArrow;// 42833		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 MageFire_FireShock;// 42873		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 MageFire_Firing;// 42859			ï¿½ï¿½ï¿½ï¿½
+	uint32 MageFire_BigFireBall;// 42891	ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 MageFire_FireBomb;// 55360		ï¿½ï¿½ï¿½ï¿½Õ¨ï¿½ï¿½
 
-	uint32 MagePet_FrostNova;// 33395		Ë®±¦±¦º®±ùÐÂÐÇ
+	uint32 MagePet_FrostNova;// 33395		Ë®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-	uint32 MageFlag_FireStun;// 64343		Aura:¿ÉÒÔ»ð³å»èÃÔ
-	uint32 MageFlag_FastFStorm;// 54741		Aura:»ðÑæ·ç±©Ë²·¢
-	uint32 MageFlag_FastBFBall;// 48108		Aura:Ë²·¢´ó»ðÇò
-	uint32 MageFlag_FastFFArrow;// 57761	Aura:Ë²·¢Ëª»ð¼ý
-	uint32 MageFlag_CanFrozen;// 74396		Aura:Ä¿±êµ±³É±»±ù¶³×´Ì¬
-	uint32 MageFlag_Scherm;// 45438			Aura:±ùÏä×´Ì¬ÖÐ
+	uint32 MageFlag_FireStun;// 64343		Aura:ï¿½ï¿½ï¿½Ô»ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 MageFlag_FastFStorm;// 54741		Aura:ï¿½ï¿½ï¿½ï¿½ç±©Ë²ï¿½ï¿½
+	uint32 MageFlag_FastBFBall;// 48108		Aura:Ë²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 MageFlag_FastFFArrow;// 57761	Aura:Ë²ï¿½ï¿½Ëªï¿½ï¿½ï¿½
+	uint32 MageFlag_CanFrozen;// 74396		Aura:Ä¿ï¿½êµ±ï¿½É±ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬
+	uint32 MageFlag_Scherm;// 45438			Aura:ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½
 };
 
 #endif // !_BOT_MAGE_AI_H

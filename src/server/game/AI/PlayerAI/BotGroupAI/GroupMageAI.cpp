@@ -511,6 +511,10 @@ void GroupMageAI::ProcessArcaneRangeSpell(Unit* pTarget)
 		return;
 	//if (RangeEnemyListByTargetIsMe(20).size() <= 0 && TryCastSpell(MageArcane_ArcaneShock, pTarget) == SpellCastResult::SPELL_CAST_OK)
 	//	return;
+	// Arcane Blast is the real core/signature Arcane spender - this branch had no main spell at
+	// all before, only the burst/filler pair below.
+	if (MageArcane_Blast && TryCastSpell(MageArcane_Blast, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		return;
 	if (TryCastSpell(MageArcane_Barrage, pTarget) == SpellCastResult::SPELL_CAST_OK)
 		return;
 	if (TryCastSpell(MageArcane_Bullet, pTarget) == SpellCastResult::SPELL_CAST_OK)

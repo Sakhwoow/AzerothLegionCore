@@ -71,9 +71,10 @@ void BotMageAI::InitializeSpells()
 
 	MageArcane_Barrage = FindMaxRankSpellByExist(44425);
 	MageArcane_Bullet = FindMaxRankSpellByExist(5143);
+	MageArcane_Blast = FindMaxRankSpellByExist(30451);
 	MageArcane_ArcaneShock = FindMaxRankSpellByExist(16067);
-	MageFrost_IceArrow = FindMaxRankSpellByExist(9672);
-	MageFrost_IceLance = FindMaxRankSpellByExist(43571);
+	MageFrost_IceArrow = FindMaxRankSpellByExist(116);
+	MageFrost_IceLance = FindMaxRankSpellByExist(30455);
 	MageFrost_FFArrow = FindMaxRankSpellByExist(70616);
 	MageFire_FireArrow = FindMaxRankSpellByExist(133);
 	MageFire_FireShock = FindMaxRankSpellByExist(15574);
@@ -558,6 +559,10 @@ void BotMageAI::ProcessArcaneRangeSpell(Unit* pTarget)
 		if (RangeEnemyListByTargetIsMe(BOTAI_RANGESPELL_DISTANCE).size() <= 0 && TryCastSpell(MageArcane_ArcaneShock, pTarget) == SpellCastResult::SPELL_CAST_OK)
 			return;
 	}
+	// Arcane Blast is the real core/signature Arcane spender - this branch had no main spell at
+	// all before, only the burst/filler pair below.
+	if (MageArcane_Blast && TryCastSpell(MageArcane_Blast, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		return;
 	if (TryCastSpell(MageArcane_Barrage, pTarget) == SpellCastResult::SPELL_CAST_OK)
 		return;
 	if (TryCastSpell(MageArcane_Bullet, pTarget) == SpellCastResult::SPELL_CAST_OK)

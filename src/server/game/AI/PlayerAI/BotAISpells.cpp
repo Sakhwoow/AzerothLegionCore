@@ -474,9 +474,10 @@ void BotMageSpells::InitializeSpells(Player* player)
 
 	MageArcane_Barrage = BotUtility::FindMaxRankSpellByExist(player, 44425);
 	MageArcane_Bullet = BotUtility::FindMaxRankSpellByExist(player, 5143);
+	MageArcane_Blast = BotUtility::FindMaxRankSpellByExist(player, 30451);
 	MageArcane_ArcaneShock = BotUtility::FindMaxRankSpellByExist(player, 16067);
-	MageFrost_IceArrow = BotUtility::FindMaxRankSpellByExist(player, 9672);
-	MageFrost_IceLance = BotUtility::FindMaxRankSpellByExist(player, 43571);
+	MageFrost_IceArrow = BotUtility::FindMaxRankSpellByExist(player, 116);
+	MageFrost_IceLance = BotUtility::FindMaxRankSpellByExist(player, 30455);
 	MageFrost_FFArrow = BotUtility::FindMaxRankSpellByExist(player, 70616);
 	MageFire_FireArrow = BotUtility::FindMaxRankSpellByExist(player, 133);
 	MageFire_FireShock = BotUtility::FindMaxRankSpellByExist(player, 15574);

@@ -547,12 +547,18 @@ protected:
 	uint32 MageAOE_IcePiton =12557;// 42931		��׶��
 	uint32 MageAOE_FireStorm =13899;// 42926		����籩
 
+	// Confirmed via Wowhead/wiki cross-reference (2+ sources each): MageArcane_Barrage(44425)
+	// and MageArcane_Bullet(5143, Arcane Missiles) were already correct, but Arcane had no main
+	// spender at all - added Arcane Blast, the actual core/signature Arcane ability. Frostbolt
+	// and Ice Lance were both wrong (confirmed live - these are THE two defining Frost spells,
+	// not minor ones).
 	uint32 MageArcane_Barrage =44425;// 44781		������Ļ
 	uint32 MageArcane_Bullet =5143;// 42846		�����ɵ�
 	uint32 MageArcane_ArcaneShock =16067;// 42897	�������
+	uint32 MageArcane_Blast = 30451;			// Arcane Blast (core generator, new field)
 
-	uint32 MageFrost_IceArrow =9672;// 42842		������
-	uint32 MageFrost_IceLance =43571;// 42914		��ǹ
+	uint32 MageFrost_IceArrow = 116;// was 9672			������ (confirmed: real Frostbolt)
+	uint32 MageFrost_IceLance = 30455;// was 43571		��ǹ (confirmed: real Ice Lance)
 	uint32 MageFrost_FFArrow =70616;// 47610		˪���
 
 	uint32 MageFire_FireArrow =133;// 42833		������
