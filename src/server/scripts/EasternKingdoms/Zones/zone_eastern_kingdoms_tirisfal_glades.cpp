@@ -473,11 +473,11 @@ public:
             }
         }
 
-        /*void sQuestAccept(Player* player, Quest const* quest) override
+        void sQuestAccept(Player* player, Quest const* quest) override
         {
             if (quest->GetQuestId() == QUEST_THE_SHADOW_GRAVE)
                 player->CastSpell(player, SPELL_SUMMON_DARNELL);
-        }*/
+        }
     };
 
     CreatureAI* GetAI(Creature* pCreature) const override

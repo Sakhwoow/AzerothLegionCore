@@ -87,6 +87,12 @@ private:
 	// (PickObjectivePosition) are rejected so the bot stays local for this phase.
 	uint32 m_HomeZoneId;
 	Position m_HomePos;
+
+	// Last quest Abandon() gave up on and when - lets TryAcceptQuestsAt skip re-offering the
+	// exact same quest from the same giver for a cooldown, instead of accept/abandon-looping
+	// forever on a quest that can never actually stick (see QD_FAILED_QUEST_RETRY_COOLDOWN).
+	uint32 m_LastFailedQuestId;
+	uint32 m_LastFailedTick;
 };
 
 #endif // !_BOT_AI_QUEST_DIRECTOR_H_

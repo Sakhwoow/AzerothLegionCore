@@ -42,6 +42,15 @@ namespace
 	uint32 const QD_TIMEOUT_OBJECTIVE = 180000;
 	uint8 const QD_GEAR_SYNC_LEVEL_STEP = 3;
 	float const QD_MAX_HOME_DISTANCE = 500.0f;
+	// Found live: quest 28608 ("The Shadow Grave") has real item objectives but its
+	// accept-script (meant to summon the NPC those items drop from) is commented out in
+	// zone_eastern_kingdoms_tirisfal_glades.cpp - a real content bug, not bot-specific, that
+	// leaves the quest unable to ever stick. Without this cooldown, Abandon() clearing
+	// m_CurrentQuestId just let TryAcceptQuestsAt immediately re-offer and re-accept the exact
+	// same broken quest from the same giver, forever (confirmed live: accept/abandon every tick,
+	// spamming the debug log). This is a general defensive net for ANY quest that can't stick
+	// for whatever reason, not a special-case fix for 28608 specifically.
+	uint32 const QD_FAILED_QUEST_RETRY_COOLDOWN = 10 * 60 * 1000;
 	uint32 const QD_AVAILABLE_STATUS_MASK = DIALOG_STATUS_AVAILABLE | DIALOG_STATUS_AVAILABLE_REP |
 		DIALOG_STATUS_LOW_LEVEL_AVAILABLE | DIALOG_STATUS_LOW_LEVEL_AVAILABLE_REP;
 }
@@ -55,7 +64,9 @@ BotAIQuestDirector::BotAIQuestDirector(Player* self) :
 	m_StateTick(0),
 	m_ScanTick(0),
 	m_LevelAtLastGearSync(self ? self->getLevel() : 0),
-	m_HomeZoneId(0)
+	m_HomeZoneId(0),
+	m_LastFailedQuestId(0),
+	m_LastFailedTick(0)
 {
 }
 
@@ -224,6 +235,8 @@ bool BotAIQuestDirector::TryAcceptQuestsAt(WorldObject* questGiver)
 		if (!me->CanTakeQuest(quest, false))
 			continue;
 		if (!IsQuestWorthDoing(quest))
+			continue;
+		if (item.QuestId == m_LastFailedQuestId && getMSTime() - m_LastFailedTick < QD_FAILED_QUEST_RETRY_COOLDOWN)
 			continue;
 
 		me->AddQuestAndCheckCompletion(quest, questGiver);
@@ -459,6 +472,9 @@ void BotAIQuestDirector::Abandon(char const* reason)
 		if (Quest const* quest = sObjectMgr->GetQuestTemplate(m_CurrentQuestId))
 			me->RemoveActiveQuest(quest, false);
 	}
+
+	m_LastFailedQuestId = m_CurrentQuestId;
+	m_LastFailedTick = getMSTime();
 
 	m_CurrentQuestId = 0;
 	m_GiverGUID.Clear();

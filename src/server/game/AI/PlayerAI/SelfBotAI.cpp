@@ -25,9 +25,13 @@
 #include "MotionMaster.h"
 #include "Log.h"
 #include "BotAiObjectContext.h"
+#include "BotValue.h"
 #include "BotEngine.h"
 #include "SelfBotStrategies.h"
 #include "SelfBotClassRotation.h"
+#include <algorithm>
+#include <cctype>
+#include <cstdlib>
 
 namespace
 {
@@ -349,6 +353,152 @@ Unit* SelfBotAI::FindGroupAssistTarget() const
 			return memberVictim;
 	}
 	return nullptr;
+}
+
+std::string SelfBotAI::ProcessWhisperCommand(std::string const& rawCmd)
+{
+	// Whisper-driven command surface, matching how every other bot type on this fork already
+	// works (BotGroupAI::ProcessBotCommand, dispatched from ChatHandler.cpp's CHAT_MSG_WHISPER
+	// handling via receiver->GetAI()) - confirmed against mod-playerbots' real equivalent too
+	// (Playerbots.cpp::OnPlayerCanUseChat intercepts CHAT_MSG_WHISPER and routes to
+	// PlayerbotAI::HandleCommand regardless of whether sender == receiver, which is exactly how
+	// a selfbot can be whispered by its own owner - the client UI doesn't offer your own name in
+	// the whisper box, but a macro/addon calling SendChatMessage(msg, "WHISPER", nil, myName)
+	// isn't restricted that way). This is a second entry point into the same actions
+	// cs_selfbot.cpp's ".selfbot <sub>" dispatch already exposes - not a separate command set,
+	// just a different way to reach the same handful of toggles.
+	std::string cmd = rawCmd;
+	size_t start = cmd.find_first_not_of(" \t");
+	cmd = start == std::string::npos ? "" : cmd.substr(start);
+	size_t sep = cmd.find(' ');
+	std::string sub = sep == std::string::npos ? cmd : cmd.substr(0, sep);
+	std::string rest = sep == std::string::npos ? "" : cmd.substr(sep + 1);
+
+	if (sub == "attack")
+		return TryAttackSelection() ? "attacking your current target." : "no valid target selected.";
+
+	if (sub == "stay")
+	{
+		BotValue<bool>* stay = m_Context->GetValue<bool>("stay");
+		if (!stay)
+			return "";
+		stay->Set(!stay->Get());
+		return stay->Get() ? "stay enabled." : "stay disabled.";
+	}
+
+	if (sub == "follow")
+	{
+		BotValue<bool>* follow = m_Context->GetValue<bool>("follow");
+		if (!follow)
+			return "";
+		follow->Set(!follow->Get());
+		return follow->Get() ? "follow leader enabled." : "follow leader disabled.";
+	}
+
+	if (sub == "ready")
+	{
+		BotValue<bool>* autoReady = m_Context->GetValue<bool>("auto ready");
+		if (!autoReady)
+			return "";
+		autoReady->Set(!autoReady->Get());
+		return autoReady->Get() ? "auto-confirm ready checks enabled." : "auto-confirm ready checks disabled.";
+	}
+
+	if (sub == "co")
+	{
+		if (rest == "dps")
+		{
+			SetHealEnabled(false);
+			return "combat order set to dps (no self-heal).";
+		}
+		if (rest == "heal" || rest == "auto" || rest.empty())
+		{
+			SetHealEnabled(true);
+			return "combat order set to auto (heal, then rotation).";
+		}
+		return "usage: co <auto|dps|heal>";
+	}
+
+	if (sub == "autogear")
+	{
+		if (!BotUtility::AutoGearEnabled)
+			return "AutoGear is disabled on this server.";
+
+		size_t aSep = rest.find(' ');
+		std::string arg1 = aSep == std::string::npos ? rest : rest.substr(0, aSep);
+		std::string arg2 = aSep == std::string::npos ? "" : rest.substr(aSep + 1);
+
+		// Same word-parsing as cs_selfbot.cpp's ApplyAutoGearLimitWord (dot-command path) -
+		// small enough to duplicate rather than thread a shared helper through two otherwise
+		// unrelated files for one function.
+		auto applyLimitWord = [this](std::string const& word) -> bool
+		{
+			uint32 quality = 0;
+			if (BotUtility::ParseGearQualityWord(word, quality))
+			{
+				if (BotValue<uint32>* qualityVal = m_Context->GetValue<uint32>("autogear quality"))
+					qualityVal->Set(std::min(quality, BotUtility::AutoGearMaxQuality));
+				return true;
+			}
+			bool allDigits = !word.empty();
+			for (char c : word)
+				if (!isdigit(static_cast<unsigned char>(c)))
+					allDigits = false;
+			if (allDigits)
+			{
+				uint32 target = uint32(atoi(word.c_str()));
+				if (BotValue<uint32>* ilvlVal = m_Context->GetValue<uint32>("autogear ilvl"))
+					ilvlVal->Set(std::min(target, BotUtility::AutoGearMaxItemLevel));
+				return true;
+			}
+			return false;
+		};
+
+		if (arg1.empty())
+		{
+			BotValue<bool>* autoGear = m_Context->GetValue<bool>("autogear");
+			if (!autoGear)
+				return "";
+			autoGear->Set(!autoGear->Get());
+			return autoGear->Get() ? "autogear enabled." : "autogear disabled.";
+		}
+
+		if (arg1 == "reset")
+		{
+			if (!arg2.empty() && !applyLimitWord(arg2))
+				return "usage: autogear reset [<color>|<itemLevel>]";
+			TryResetAndRegear();
+			return "gear moved to bags and re-geared from whatever qualifies.";
+		}
+
+		if (applyLimitWord(arg1))
+		{
+			TryUseAutoGear();
+			return "autogear limit set to '" + arg1 + "'.";
+		}
+
+		return "usage: autogear [<color>|<itemLevel>|reset [<color>|<itemLevel>]]";
+	}
+
+	return "";
+}
+
+bool SelfBotAI::TryAttackSelection()
+{
+	// ".selfbot attack" - the explicit counterpart to ResolveCombatVictim's implicit
+	// IsInCombat() gate below: that gate stops a bare tab-target from silently starting a
+	// fight, but a real player still needs a deliberate way to say "attack what I've got
+	// selected right now" - same shape as the x5 MultiBot addon's "attack my target" button,
+	// and the same pattern BotGroupAI::ProcessAttackCommand already uses for companion bots
+	// (reads the selection, attacks it, no IsInCombat requirement - the command itself IS the
+	// explicit intent).
+	if (!CanAct())
+		return false;
+	Unit* selected = me->GetSelectedUnit();
+	if (!selected || !selected->IsAlive() || !me->IsValidAttackTarget(selected))
+		return false;
+	me->Attack(selected, true);
+	return true;
 }
 
 Unit* SelfBotAI::ResolveCombatVictim()

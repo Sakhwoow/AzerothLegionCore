@@ -61,6 +61,20 @@ public:
 	// victim. Returns nullptr if there's nothing to fight. Called by RotationSpellAction, not
 	// Update() directly - see the class comment above.
 	Unit* ResolveCombatVictim();
+
+	// ".selfbot attack" - explicit "attack what I have selected right now" command, same
+	// shape as the x5 MultiBot addon's "attack my target" button. Deliberately bypasses the
+	// IsInCombat() gate ResolveCombatVictim's own selection fallback has - an explicit command
+	// IS the intent that gate exists to require, so there's nothing left to guard against here.
+	bool TryAttackSelection();
+
+	// Whisper-command entry point (ChatHandler.cpp, CHAT_MSG_WHISPER, receiver == sender) -
+	// same handful of toggles as ".selfbot <sub>", reached by whispering your own character
+	// instead of typing a dot-command, matching how every other bot type on this fork is
+	// already commanded. Returns the reply text to whisper back (empty = unknown/no-op, caller
+	// sends nothing in that case).
+	std::string ProcessWhisperCommand(std::string const& rawCmd);
+
 	bool TryUseHealSpell();
 	bool TryUseRotationSpell(Unit* target);
 	bool TryUseBuffSpell();

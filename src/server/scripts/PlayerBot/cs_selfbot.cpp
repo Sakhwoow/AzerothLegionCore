@@ -180,7 +180,16 @@ namespace
 		if (sub == "autogear")
 			return HandleSelfBotAutoGear(handler, ai, rest);
 
-		handler->SendSysMessage("Unknown selfbot subcommand. Known: stay, follow, co <auto|dps|heal>, ready, autogear.");
+		if (sub == "attack")
+		{
+			if (ai->TryAttackSelection())
+				handler->SendSysMessage("Selfbot: attacking your current target.");
+			else
+				handler->SendSysMessage("Selfbot: no valid target selected.");
+			return true;
+		}
+
+		handler->SendSysMessage("Unknown selfbot subcommand. Known: stay, follow, co <auto|dps|heal>, ready, autogear, attack.");
 		return true;
 	}
 }

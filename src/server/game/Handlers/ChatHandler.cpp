@@ -35,6 +35,8 @@
 #include "Opcodes.h"
 #include "Player.h"
 #include "ScriptMgr.h"
+#include "SelfBotAI.h"
+#include "SelfBotMgr.h"
 #include "SpellAuraEffects.h"
 #include "Util.h"
 #include "World.h"
@@ -301,6 +303,22 @@ void WorldSession::HandleChatMessage(ChatMsg type, uint32 lang, std::string msg,
                 pGroupAI->ProcessBotCommand(GetPlayer(), msg);
             else if (BotBGAI* pBGAI = dynamic_cast<BotBGAI*>(pUnitAi))
                 pBGAI->ProcessBotCommand(GetPlayer(), msg);
+            else if (receiver == GetPlayer())
+            {
+                // Selfbot can't get a BotGroupAI/BotBGAI UnitAI (deliberately never touches
+                // Unit::SetAI() - see SelfBotAI.h's class comment), so it has no way to be
+                // reached by the dispatch above at all. This is the one case where
+                // receiver == sender actually matters: whispering yourself only means anything
+                // for a selfbot-active character commanding itself, the same way a real player
+                // would whisper any other bot.
+                SelfBotAI* selfAI = sSelfBotMgr->GetSelfBotAI(receiver);
+                if (selfAI && selfAI->IsActive())
+                {
+                    std::string reply = selfAI->ProcessWhisperCommand(msg);
+                    if (!reply.empty())
+                        receiver->Whisper(reply, Language(lang), GetPlayer());
+                }
+            }
 
             if (receiver->IsPlayerBot())
             {

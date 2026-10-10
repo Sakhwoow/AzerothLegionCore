@@ -1,0 +1,8 @@
+## Interface: 70300
+## Title: Legion Bot Helper
+## Notes: Minimal panel for .selfbot / .altbot - sends the same dot-commands you'd type by hand.
+## Author: AzerothLegionCore
+## Version: 1.0
+## SavedVariables: LegionBotHelperDB
+
+LegionBotHelper.lua
