@@ -242,9 +242,24 @@ bool SelfBotPaladinAI::ProcessMeleeSpell(SelfBotAI* owner, Player* me, Unit* tar
 	{
 		if (me->HasAura(PaladinFlag_MomentHoly) && meLife < 90 && owner->TryCastFirstKnown(me, { PaladinHeal_FastHoly }))
 			return true;
-		if (owner->TryCastFirstKnown(target, { PaladinMelee_HolyStrom }))
+		// Real Retribution priority (ru.wowhead-confirmed Legion 7.3.5 guide, spell ids quoted
+		// directly in it): burn Avenging Wrath on cooldown, keep Judgment's debuff up, spend
+		// both Holy Power generators (Blade of Justice + Crusader Strike), then dump into the
+		// matching finisher - Templar's Verdict at 1 target, Divine Storm at 2+.
+		if (owner->TryCastFirstKnown(me, { PaladinMelee_AvengingWrath }))
+			return true;
+		if (owner->TryCastFirstKnown(target, { PaladinMelee_LifeJudge }))
+			return true;
+		if (owner->TryCastFirstKnown(target, { PaladinMelee_BladeJustice }))
 			return true;
 		if (owner->TryCastFirstKnown(target, { PaladinMelee_WeaponAtt }))
+			return true;
+		if (attackerCount > 1)
+		{
+			if (owner->TryCastFirstKnown(target, { PaladinMelee_HolyStrom }))
+				return true;
+		}
+		else if (owner->TryCastFirstKnown(target, { PaladinMelee_TemplarVerdict }))
 			return true;
 	}
 

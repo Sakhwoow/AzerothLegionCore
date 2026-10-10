@@ -118,11 +118,14 @@ void BotPaladinSpells::InitializeSpells(Player* player)
 	PaladinMelee_ShieldAtt = BotUtility::FindMaxRankSpellByExist(player, 53600);
 	PaladinMelee_MaceAtt = BotUtility::FindMaxRankSpellByExist(player, 53595);
 	PaladinMelee_HolyAtt = BotUtility::FindMaxRankSpellByExist(player, 25914);
-	PaladinMelee_LifeJudge = BotUtility::FindMaxRankSpellByExist(player, 31804);
+	PaladinMelee_LifeJudge = BotUtility::FindMaxRankSpellByExist(player, 20271);
 	PaladinMelee_ManaJudge = BotUtility::FindMaxRankSpellByExist(player, 41368);
 	PaladinMelee_FleeJudge = BotUtility::FindMaxRankSpellByExist(player, 201371);
-	PaladinMelee_WeaponAtt = BotUtility::FindMaxRankSpellByExist(player, 213844);
-	PaladinMelee_HolyStrom = BotUtility::FindMaxRankSpellByExist(player, 163888);
+	PaladinMelee_WeaponAtt = BotUtility::FindMaxRankSpellByExist(player, 35395);
+	PaladinMelee_HolyStrom = BotUtility::FindMaxRankSpellByExist(player, 53385);
+	PaladinMelee_BladeJustice = BotUtility::FindMaxRankSpellByExist(player, 184575);
+	PaladinMelee_TemplarVerdict = BotUtility::FindMaxRankSpellByExist(player, 85256);
+	PaladinMelee_AvengingWrath = BotUtility::FindMaxRankSpellByExist(player, 231895);
 
 	PaladinFlag_MomentHoly = 251152;
 	PaladinFlag_Discipline = 25771;

@@ -77,57 +77,60 @@ protected:
 private:
 	uint32 m_BotTalentType;
 
-	uint32 PaladinIDLE_MountAura;// 32223			×øÆïËÙ¶È¹â»·
-	uint32 PaladinIDLE_CastAura;// 19746			Ê©·¨¹â»·
-	uint32 PaladinIDLE_JudgeAura;// 54043			³Í½ä¹â»·
-	uint32 PaladinIDLE_ArmorAura;// 48942			·ÀÓù¹â»·
-	uint32 PaladinIDLE_AOEGuardWish;// 25899			ÈºÌå±Ó»¤×£¸£(·ÀÓùÏµ)
-	uint32 PaladinIDLE_AOEKingWish;// 25898			ÈºÌåÍõÕß×£¸£
-	uint32 PaladinIDLE_AOEWitWish;// 48938			ÈºÌåÖÇ»Û×£¸£
-	uint32 PaladinIDLE_AOEStrWish;// 48934			ÈºÌåÁ¦Á¿×£¸£
-	uint32 PaladinIDLE_JusticeRage;// 25780			ÕýÒåÖ®Å­ ·ÀÆïÊ¹ÓÃ
+	uint32 PaladinIDLE_MountAura;// 32223			ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶È¹â»·
+	uint32 PaladinIDLE_CastAura;// 19746			Ê©ï¿½ï¿½ï¿½â»·
+	uint32 PaladinIDLE_JudgeAura;// 54043			ï¿½Í½ï¿½â»·
+	uint32 PaladinIDLE_ArmorAura;// 48942			ï¿½ï¿½ï¿½ï¿½ï¿½â»·
+	uint32 PaladinIDLE_AOEGuardWish;// 25899			Èºï¿½ï¿½Ó»ï¿½×£ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½Ïµ)
+	uint32 PaladinIDLE_AOEKingWish;// 25898			Èºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×£ï¿½ï¿½
+	uint32 PaladinIDLE_AOEWitWish;// 48938			Èºï¿½ï¿½ï¿½Ç»ï¿½×£ï¿½ï¿½
+	uint32 PaladinIDLE_AOEStrWish;// 48934			Èºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×£ï¿½ï¿½
+	uint32 PaladinIDLE_JusticeRage;// 25780			ï¿½ï¿½ï¿½ï¿½Ö®Å­ ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½
 
-	uint32 PaladinGuard_UnShield;// 53601			³çÊ¥»¤¶Ü
-	uint32 PaladinGuard_FreeAura;// 1044			×ÔÓÉ×£¸£
-	uint32 PaladinGuard_Invincible;// 642			Ê¥¶ÜÊõ ÎÞµÐ
-	uint32 PaladinGuard_Sacrifice;// 6940			ÎþÉüÖ®ÊÖ Ä¿±êÊÜÉË×ªÒÆ
-	uint32 PaladinGuard_AOESacrifice;// 64205		ÉñÊ¥ÎþÉü ÍÅ¶ÓÊÜÉË×ªÒÆ(·ÀÓùÏµ)
-	uint32 PaladinGuard_BlockShield;// 48952			ÉñÊ¥¸ñµ²(·ÀÓùÏµ)
-	uint32 PaladinGuard_PhyImmune;// 10278			Ä¿±êÎïÀíÃâÒß
+	uint32 PaladinGuard_UnShield;// 53601			ï¿½ï¿½Ê¥ï¿½ï¿½ï¿½ï¿½
+	uint32 PaladinGuard_FreeAura;// 1044			ï¿½ï¿½ï¿½ï¿½×£ï¿½ï¿½
+	uint32 PaladinGuard_Invincible;// 642			Ê¥ï¿½ï¿½ï¿½ï¿½ ï¿½Þµï¿½
+	uint32 PaladinGuard_Sacrifice;// 6940			ï¿½ï¿½ï¿½ï¿½Ö®ï¿½ï¿½ Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½
+	uint32 PaladinGuard_AOESacrifice;// 64205		ï¿½ï¿½Ê¥ï¿½ï¿½ï¿½ï¿½ ï¿½Å¶ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½Ïµ)
+	uint32 PaladinGuard_BlockShield;// 48952			ï¿½ï¿½Ê¥ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½Ïµ)
+	uint32 PaladinGuard_PhyImmune;// 10278			Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-	uint32 PaladinAssist_UpPower;// 31884			¿ª³á°ò UPÉËº¦
-	uint32 PaladinAssist_RevengeStamp;// 31801		¸´³ðÊ¥Ó¡ µþ¼Ó5²ãÉËº¦Ìá¸ß
-	uint32 PaladinAssist_LifeStamp;// 20165			¹âÃ÷Ê¥Ó¡ ¹¥»÷»ØÑª
-	uint32 PaladinAssist_ManaStamp;// 20166			ÖÇ»ÛÊ¥Ó¡ ¹¥»÷»ØÀ¶
-	uint32 PaladinAssist_JusticeStamp;// 21084		ÕýÒåÊ¥Ó¡ ¹¥»÷Ìá¸ß
-	uint32 PaladinAssist_StunStamp;// 20164			¹«ÕýÊ¥Ó¡ ¹¥»÷¼¸ÂÊ»èÃÔ
-	uint32 PaladinAssist_ComStamp;// 20375			ÃüÁîÊ¥Ó¡ ¹¥»÷¼ÓÇ¿(³Í½äÏµ)
-	uint32 PaladinAssist_Confession;// 20066			âã»Ú ¿ØÖÆ(³Í½äÏµ)
-	uint32 PaladinAssist_StunMace;// 10308			ÖÆ²ÃÖ®´¸ »èÃÔ
-	uint32 PaladinAssist_ReviveMana;// 54428			»ØÀ¶BUF
-	uint32 PaladinAssist_HealCrit;// 20216			nextÖÎÁÆ±©»÷(ÉñÊ¥Ïµ)
-	uint32 PaladinAssist_LowMana;// 31842			·¨ÊõºÄÀ¶½µµÍ(ÉñÊ¥Ïµ)
-	uint32 PaladinAssist_AuraUP;// 31821			¹â»·Ð§¹û¼ÓÇ¿BUF(ÉñÊ¥Ïµ)
-	uint32 PaladinAssist_Dispel;// 4987				ÇýÉ¢Ä§·¨ÖÐ¶¾
+	uint32 PaladinAssist_UpPower;// 31884			ï¿½ï¿½ï¿½ï¿½ï¿½ UPï¿½Ëºï¿½
+	uint32 PaladinAssist_RevengeStamp;// 31801		ï¿½ï¿½ï¿½ï¿½Ê¥Ó¡ ï¿½ï¿½ï¿½ï¿½5ï¿½ï¿½ï¿½Ëºï¿½ï¿½ï¿½ï¿½
+	uint32 PaladinAssist_LifeStamp;// 20165			ï¿½ï¿½ï¿½ï¿½Ê¥Ó¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñª
+	uint32 PaladinAssist_ManaStamp;// 20166			ï¿½Ç»ï¿½Ê¥Ó¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 PaladinAssist_JusticeStamp;// 21084		ï¿½ï¿½ï¿½ï¿½Ê¥Ó¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 PaladinAssist_StunStamp;// 20164			ï¿½ï¿½ï¿½ï¿½Ê¥Ó¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê»ï¿½ï¿½ï¿½
+	uint32 PaladinAssist_ComStamp;// 20375			ï¿½ï¿½ï¿½ï¿½Ê¥Ó¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¿(ï¿½Í½ï¿½Ïµ)
+	uint32 PaladinAssist_Confession;// 20066			ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½Í½ï¿½Ïµ)
+	uint32 PaladinAssist_StunMace;// 10308			ï¿½Æ²ï¿½Ö®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	uint32 PaladinAssist_ReviveMana;// 54428			ï¿½ï¿½ï¿½ï¿½BUF
+	uint32 PaladinAssist_HealCrit;// 20216			nextï¿½ï¿½ï¿½Æ±ï¿½ï¿½ï¿½(ï¿½ï¿½Ê¥Ïµ)
+	uint32 PaladinAssist_LowMana;// 31842			ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½Ê¥Ïµ)
+	uint32 PaladinAssist_AuraUP;// 31821			ï¿½â»·Ð§ï¿½ï¿½ï¿½ï¿½Ç¿BUF(ï¿½ï¿½Ê¥Ïµ)
+	uint32 PaladinAssist_Dispel;// 4987				ï¿½ï¿½É¢Ä§ï¿½ï¿½ï¿½Ð¶ï¿½
 
-	uint32 PaladinHeal_FastHoly;// 48785			Ê¥¹âÉÁÏÖ
-	uint32 PaladinHeal_BigHoly;// 48782				Ê¥¹âÊõ
-	uint32 PaladinHeal_FullHoly;// 48788			Ê¥ÁÆ
+	uint32 PaladinHeal_FastHoly;// 48785			Ê¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 PaladinHeal_BigHoly;// 48782				Ê¥ï¿½ï¿½ï¿½ï¿½
+	uint32 PaladinHeal_FullHoly;// 48788			Ê¥ï¿½ï¿½
 
-	uint32 PaladinMelee_AOEOffertory;// 48819		·îÏ×
-	uint32 PaladinMelee_KillMace;// 48806			Õ¶É±Ö®´¸ Ä¿±êµÍÓÚ20%Ñª
-	uint32 PaladinMelee_FlyShield;// 48827			µ¯Éä·É¶Ü(·ÀÓùÏµ)
-	uint32 PaladinMelee_ShieldAtt;// 61411			¶ÜÅÆ´ò»÷(·ÀÓùÏµ)
-	uint32 PaladinMelee_MaceAtt;// 53595			ÕýÒåÖ®´¸(·ÀÓùÏµ)
-	uint32 PaladinMelee_HolyAtt;// 48825			ÉñÊ¥Õð»÷(ÉñÊ¥Ïµ)
-	uint32 PaladinMelee_LifeJudge;// 20271			¹âÃ÷ÉóÅÐ
-	uint32 PaladinMelee_ManaJudge;// 53408			ÖÇ»ÛÉóÅÐ
-	uint32 PaladinMelee_FleeJudge;// 53407			¹«ÕýÉóÅÐ
-	uint32 PaladinMelee_WeaponAtt;// 35395			Ê®×Ö¾ü´ò»÷(³Í½äÏµ)
-	uint32 PaladinMelee_HolyStrom;// 53385			ÉñÊ¥·ç±©(³Í½äÏµ)
+	uint32 PaladinMelee_AOEOffertory;// 48819		ï¿½ï¿½ï¿½ï¿½
+	uint32 PaladinMelee_KillMace;// 48806			Õ¶É±Ö®ï¿½ï¿½ Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½20%Ñª
+	uint32 PaladinMelee_FlyShield;// 48827			ï¿½ï¿½ï¿½ï¿½É¶ï¿½(ï¿½ï¿½ï¿½ï¿½Ïµ)
+	uint32 PaladinMelee_ShieldAtt;// 61411			ï¿½ï¿½ï¿½Æ´ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½Ïµ)
+	uint32 PaladinMelee_MaceAtt;// 53595			ï¿½ï¿½ï¿½ï¿½Ö®ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½Ïµ)
+	uint32 PaladinMelee_HolyAtt;// 48825			ï¿½ï¿½Ê¥ï¿½ï¿½ï¿½(ï¿½ï¿½Ê¥Ïµ)
+	uint32 PaladinMelee_LifeJudge;// 20271			ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 PaladinMelee_ManaJudge;// 53408			ï¿½Ç»ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 PaladinMelee_FleeJudge;// 53407			ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	uint32 PaladinMelee_WeaponAtt;// 35395			Ê®ï¿½Ö¾ï¿½ï¿½ï¿½ï¿½(ï¿½Í½ï¿½Ïµ)
+	uint32 PaladinMelee_HolyStrom;// 53385			ï¿½ï¿½Ê¥ï¿½ç±©(ï¿½Í½ï¿½Ïµ)
+	uint32 PaladinMelee_BladeJustice;// 184575		Blade of Justice
+	uint32 PaladinMelee_TemplarVerdict;// 85256		Templar's Verdict
+	uint32 PaladinMelee_AvengingWrath;// 231895		Avenging Wrath
 
-	uint32 PaladinFlag_MomentHoly;// 59578			Õ½ÕùÒÕÊõ Ë²·¢Ê¥ÉÁ
-	uint32 PaladinFlag_Discipline;// 25771			×ÔÂÉ DEBUFF
+	uint32 PaladinFlag_MomentHoly;// 59578			Õ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ë²ï¿½ï¿½Ê¥ï¿½ï¿½
+	uint32 PaladinFlag_Discipline;// 25771			ï¿½ï¿½ï¿½ï¿½ DEBUFF
 };
 
 #endif // !_BOT_PALADIN_AI_H

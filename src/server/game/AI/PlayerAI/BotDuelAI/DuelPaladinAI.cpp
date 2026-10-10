@@ -269,9 +269,18 @@ void DuelPaladinAI::ProcessMeleeSpell(Unit* pTarget)
 	{
 		if (me->HasAura(PaladinFlag_MomentHoly) && meLife < 90 && TryCastSpell(PaladinHeal_FastHoly, me) == SpellCastResult::SPELL_CAST_OK)
 			return;
-		if (PaladinMelee_HolyStrom && TryCastSpell(PaladinMelee_HolyStrom, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		// Real Retribution priority (ru.wowhead-confirmed guide): burn the cooldown, keep
+		// Judgment's debuff up, spend both Holy Power generators, then dump into Templar's
+		// Verdict - always single-target here, a duel never has a second enemy.
+		if (PaladinMelee_AvengingWrath && TryCastSpell(PaladinMelee_AvengingWrath, me) == SpellCastResult::SPELL_CAST_OK)
+			return;
+		if (PaladinMelee_LifeJudge && TryCastSpell(PaladinMelee_LifeJudge, pTarget) == SpellCastResult::SPELL_CAST_OK)
+			return;
+		if (PaladinMelee_BladeJustice && TryCastSpell(PaladinMelee_BladeJustice, pTarget) == SpellCastResult::SPELL_CAST_OK)
 			return;
 		if (PaladinMelee_WeaponAtt && TryCastSpell(PaladinMelee_WeaponAtt, pTarget) == SpellCastResult::SPELL_CAST_OK)
+			return;
+		if (PaladinMelee_TemplarVerdict && TryCastSpell(PaladinMelee_TemplarVerdict, pTarget) == SpellCastResult::SPELL_CAST_OK)
 			return;
 	}
 

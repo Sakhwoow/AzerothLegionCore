@@ -65,11 +65,14 @@ void BotPaladinAI::InitializeSpells()
 	PaladinMelee_ShieldAtt = FindMaxRankSpellByExist(53600);
 	PaladinMelee_MaceAtt = FindMaxRankSpellByExist(53595);
 	PaladinMelee_HolyAtt = FindMaxRankSpellByExist(25914);
-	PaladinMelee_LifeJudge = FindMaxRankSpellByExist(31804);
+	PaladinMelee_LifeJudge = FindMaxRankSpellByExist(20271);
 	PaladinMelee_ManaJudge = FindMaxRankSpellByExist(41368);
 	PaladinMelee_FleeJudge = FindMaxRankSpellByExist(201371);
-	PaladinMelee_WeaponAtt = FindMaxRankSpellByExist(213844);
-	PaladinMelee_HolyStrom = FindMaxRankSpellByExist(163888);
+	PaladinMelee_WeaponAtt = FindMaxRankSpellByExist(35395);
+	PaladinMelee_HolyStrom = FindMaxRankSpellByExist(53385);
+	PaladinMelee_BladeJustice = FindMaxRankSpellByExist(184575);
+	PaladinMelee_TemplarVerdict = FindMaxRankSpellByExist(85256);
+	PaladinMelee_AvengingWrath = FindMaxRankSpellByExist(231895);
 
 	PaladinFlag_MomentHoly = 251152;
 	PaladinFlag_Discipline = 25771;
@@ -518,9 +521,19 @@ void BotPaladinAI::ProcessMeleeSpell(Unit* pTarget)
 	{
 		if (me->HasAura(PaladinFlag_MomentHoly) && meLife < 90 && TryCastSpell(PaladinHeal_FastHoly, me) == SpellCastResult::SPELL_CAST_OK)
 			return;
-		if (PaladinMelee_HolyStrom && TryCastSpell(PaladinMelee_HolyStrom, pTarget) == SpellCastResult::SPELL_CAST_OK)
+		// Real Retribution priority (ru.wowhead-confirmed guide): burn the cooldown, keep
+		// Judgment's debuff up, spend both Holy Power generators, then dump into Templar's
+		// Verdict - BG/arena bots fight 1v1 far more often than they cleave, so this doesn't
+		// bother switching to Divine Storm the way the open-world AIs do.
+		if (PaladinMelee_AvengingWrath && TryCastSpell(PaladinMelee_AvengingWrath, me) == SpellCastResult::SPELL_CAST_OK)
+			return;
+		if (PaladinMelee_LifeJudge && TryCastSpell(PaladinMelee_LifeJudge, pTarget) == SpellCastResult::SPELL_CAST_OK)
+			return;
+		if (PaladinMelee_BladeJustice && TryCastSpell(PaladinMelee_BladeJustice, pTarget) == SpellCastResult::SPELL_CAST_OK)
 			return;
 		if (PaladinMelee_WeaponAtt && TryCastSpell(PaladinMelee_WeaponAtt, pTarget) == SpellCastResult::SPELL_CAST_OK)
+			return;
+		if (PaladinMelee_TemplarVerdict && TryCastSpell(PaladinMelee_TemplarVerdict, pTarget) == SpellCastResult::SPELL_CAST_OK)
 			return;
 	}
 
