@@ -39,7 +39,7 @@ void BotWarlockAI::InitializeSpells()
 	WarlockIDLE_SummonSuccubus = FindMaxRankSpellByExist(712);
 	WarlockIDLE_SummonDogDemon = FindMaxRankSpellByExist(691);
 	WarlockIDLE_SummonGuardDemon = FindMaxRankSpellByExist(30146);
-	WarlockIDLE_FastSummon = FindMaxRankSpellByExist(53915);
+	WarlockIDLE_FastSummon = FindMaxRankSpellByExist(18708);
 	WarlockIDLE_OpenGate = FindMaxRankSpellByExist(48018);
 	WarlockIDLE_TeleGate = FindMaxRankSpellByExist(48020);
 	WarlockIDLE_SummonRite = FindMaxRankSpellByExist(60429);

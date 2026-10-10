@@ -506,7 +506,7 @@ void BotWarlockSpells::InitializeSpells(Player* player)
 	WarlockIDLE_SummonSuccubus = BotUtility::FindMaxRankSpellByExist(player, 712);
 	WarlockIDLE_SummonDogDemon = BotUtility::FindMaxRankSpellByExist(player, 691);
 	WarlockIDLE_SummonGuardDemon = BotUtility::FindMaxRankSpellByExist(player, 30146);
-	WarlockIDLE_FastSummon = BotUtility::FindMaxRankSpellByExist(player, 53915);
+	WarlockIDLE_FastSummon = BotUtility::FindMaxRankSpellByExist(player, 18708);
 	WarlockIDLE_OpenGate = BotUtility::FindMaxRankSpellByExist(player, 48018);
 	WarlockIDLE_TeleGate = BotUtility::FindMaxRankSpellByExist(player, 48020);
 	WarlockIDLE_SummonRite = BotUtility::FindMaxRankSpellByExist(player, 60429);

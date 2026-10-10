@@ -604,7 +604,9 @@ protected:
 	uint32 WarlockIDLE_SummonSuccubus =712;// 712		�ٻ���ħ
 	uint32 WarlockIDLE_SummonDogDemon =691;// 691		�ٻ���Ȯ
 	uint32 WarlockIDLE_SummonGuardDemon =30146;// 30146	�ٻ���������
-	uint32 WarlockIDLE_FastSummon =53915;// 18708		�����ٻ�(��ħϵ)
+	// FastSummon duplicated ShadowShield's value (53915=Shadow Protection) - fixed to its own
+	// spell, Fel Domination (18708, instant pet resummon).
+	uint32 WarlockIDLE_FastSummon =18708;// was 53915 (duplicate of ShadowShield)
 	uint32 WarlockIDLE_OpenGate =48018;// 48018		�������ͷ���
 	uint32 WarlockIDLE_TeleGate =48020;// 48020		˲�Ƶ����ͷ���
 	uint32 WarlockIDLE_SummonRite =60429;// 29893		�����ʽ
@@ -644,7 +646,7 @@ protected:
 	uint32 WarlockCast_ChaosArrow =79939;// 59172		����֮��(����ϵ)
 	uint32 WarlockCast_FullBurn =41960;// 47838		ȼ�� ���׼�ʱ��ǿЧ��(����ϵ)
 	uint32 WarlockCast_FireBurn =19428;// 17962		���� �����׼�(����ϵ)
-	uint32 WarlockCast_BigFireBall =131381;// 47825		�������
+	uint32 WarlockCast_BigFireBall =47825;// confirmed: Soul Fire (the .cpp InitializeSpells already used this; .h default was stale)
 
 	uint32 WarlockPetDemon_Charge =225417;// 47996		��ħpet���
 	uint32 WarlockPetDemon_Melee =161703;// 47994		��ħpet˳��ն
