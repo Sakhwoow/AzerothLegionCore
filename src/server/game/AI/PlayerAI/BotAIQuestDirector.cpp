@@ -55,7 +55,6 @@ BotAIQuestDirector::BotAIQuestDirector(Player* self) :
 	m_StateTick(0),
 	m_ScanTick(0),
 	m_LevelAtLastGearSync(self ? self->getLevel() : 0),
-	m_IdleScansWithNoGiver(0),
 	m_HomeZoneId(0)
 {
 }
@@ -256,18 +255,7 @@ void BotAIQuestDirector::UpdateIdle(BotBGAIMovement* pMovement)
 	m_ScanTick = now;
 
 	if (!FindQuestgiverNearby())
-	{
-		if (++m_IdleScansWithNoGiver >= 5)
-		{
-			m_IdleScansWithNoGiver = 0;
-			if (BotUtility::QuestAIDebug)
-				TC_LOG_INFO("server.loading", ">> QuestAI: %s (%s) isolated (no questgiver found nearby for 5 scans) - recovering to a valid position",
-					me->GetName().c_str(), me->GetGUID().ToString().c_str());
-			pMovement->TeleportToValidPosition();
-		}
 		return;
-	}
-	m_IdleScansWithNoGiver = 0;
 
 	if (me->GetDistance(m_GiverPos) <= QD_TRAVEL_ARRIVE_DIST)
 	{
