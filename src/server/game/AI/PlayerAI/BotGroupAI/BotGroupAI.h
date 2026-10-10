@@ -142,6 +142,12 @@ protected:
 	// ".pet attack" dispatch helper - looks up the caller's current target and forwards through
 	// the virtual CommandPetAttack() hook (no-op for classes without a pet).
 	void ProcessPetAttackCommand(Player* srcPlayer);
+	// "autogear [<color>|<itemLevel>|reset [<color>|<itemLevel>]]" whisper, mirroring AC's
+	// "autogear" command for a companion bot - a one-shot action (not a persistent per-bot
+	// setting, unlike .selfbot autogear which has a ManualBotValue slot to live in), so the
+	// master can request it again any time with different limits. "reset" moves everything
+	// equipped into bags (BotUtility::TryUnequipAllToBags, never destroys) then re-gears.
+	void ProcessAutoGearCommand(Player* srcPlayer, std::string const& param);
 
 protected:
 	void ProcessHorror(uint32 diff);

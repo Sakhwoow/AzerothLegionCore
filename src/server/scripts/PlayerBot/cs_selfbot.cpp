@@ -30,29 +30,6 @@
 
 namespace
 {
-	// Maps a color/quality word to its ITEM_QUALITY_* value. Returns false (leaves quality
-	// untouched) for anything unrecognized, including an empty string.
-	bool ParseGearQualityWord(std::string const& word, uint32& quality)
-	{
-		if (word == "white" || word == "common" || word == "normal")
-			quality = ITEM_QUALITY_NORMAL;
-		else if (word == "green" || word == "uncommon")
-			quality = ITEM_QUALITY_UNCOMMON;
-		else if (word == "blue" || word == "rare")
-			quality = ITEM_QUALITY_RARE;
-		else if (word == "purple" || word == "epic")
-			quality = ITEM_QUALITY_EPIC;
-		else if (word == "orange" || word == "legendary")
-			quality = ITEM_QUALITY_LEGENDARY;
-		else if (word == "artifact")
-			quality = ITEM_QUALITY_ARTIFACT;
-		else if (word == "heirloom")
-			quality = ITEM_QUALITY_HEIRLOOM;
-		else
-			return false;
-		return true;
-	}
-
 	bool IsAllDigits(std::string const& word)
 	{
 		if (word.empty())
@@ -70,7 +47,7 @@ namespace
 	bool ApplyAutoGearLimitWord(SelfBotAI* ai, std::string const& word)
 	{
 		uint32 quality = 0;
-		if (ParseGearQualityWord(word, quality))
+		if (BotUtility::ParseGearQualityWord(word, quality))
 		{
 			if (BotValue<uint32>* qualityVal = ai->GetContext()->GetValue<uint32>("autogear quality"))
 				qualityVal->Set(std::min(quality, BotUtility::AutoGearMaxQuality));

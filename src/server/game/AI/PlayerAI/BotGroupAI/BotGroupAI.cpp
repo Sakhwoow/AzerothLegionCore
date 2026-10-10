@@ -17,6 +17,8 @@
 
 //#include "G3D/stringutils.h"
 #include "BotGroupAI.h"
+#include <cctype>
+#include <cstdlib>
 #include "MoveSplineInit.h"
 #include "BotBGAIMovement.h"
 #include "CellImpl.h"
@@ -786,6 +788,64 @@ void BotGroupAI::ProcessPetAttackCommand(Player* srcPlayer)
 	CommandPetAttack(target);
 }
 
+void BotGroupAI::ProcessAutoGearCommand(Player* srcPlayer, std::string const& param)
+{
+	if (!srcPlayer)
+		return;
+	if (!BotUtility::AutoGearEnabled)
+	{
+		me->Whisper("AutoGear is disabled on this server.", Language::LANG_COMMON, srcPlayer);
+		return;
+	}
+
+	size_t sep = param.find(' ');
+	std::string arg1 = sep == std::string::npos ? param : param.substr(0, sep);
+	std::string arg2 = sep == std::string::npos ? "" : param.substr(sep + 1);
+
+	bool doReset = (arg1 == "reset");
+	std::string const& limitWord = doReset ? arg2 : arg1;
+
+	uint32 quality = 0, itemLevel = 0;
+	if (!limitWord.empty())
+	{
+		if (!BotUtility::ParseGearQualityWord(limitWord, quality))
+		{
+			bool allDigits = !limitWord.empty();
+			for (char c : limitWord)
+				if (!isdigit(static_cast<unsigned char>(c)))
+					allDigits = false;
+			if (allDigits)
+				itemLevel = uint32(atoi(limitWord.c_str()));
+			else if (doReset)
+			{
+				me->Whisper("Usage: autogear reset [<color>|<itemLevel>]", Language::LANG_COMMON, srcPlayer);
+				return;
+			}
+			else
+			{
+				me->Whisper("Usage: autogear [<color>|<itemLevel>|reset [<color>|<itemLevel>]]", Language::LANG_COMMON, srcPlayer);
+				return;
+			}
+		}
+	}
+
+	if (doReset)
+		BotUtility::TryUnequipAllToBags(me);
+
+	uint32 equipped = 0;
+	uint8 maxEquipSlots = EquipmentSlots::EQUIPMENT_SLOT_END - EquipmentSlots::EQUIPMENT_SLOT_START;
+	for (uint8 i = 0; i < maxEquipSlots; i++)
+	{
+		if (!BotUtility::TryAutoGearFromBags(me, IsTankBotAI(), quality, itemLevel))
+			break;
+		++equipped;
+	}
+
+	std::ostringstream out;
+	out << me->GetName() << ": autogear " << (doReset ? "reset, " : "") << "equipped " << equipped << " item(s).";
+	me->Whisper(out.str(), Language::LANG_COMMON, srcPlayer);
+}
+
 std::unordered_map<std::string, BotGroupAI::CommandHandler> const& BotGroupAI::GetCommandDispatchTable()
 {
 	static std::unordered_map<std::string, CommandHandler> const table =
@@ -832,6 +892,10 @@ std::unordered_map<std::string, BotGroupAI::CommandHandler> const& BotGroupAI::G
 		// any existing vendor-sell/pet-command logic first - neither existed anywhere before this).
 		{ "sell", [](BotGroupAI* ai, Player* srcPlayer, std::string const&) { ai->ProcessSellCommand(srcPlayer); } },
 		{ "pet attack", [](BotGroupAI* ai, Player* srcPlayer, std::string const&) { ai->ProcessPetAttackCommand(srcPlayer); } },
+		// Mirrors AC's whisper "autogear"/"autogear <color>"/"autogear <itemLevel>"/
+		// "autogear reset [...]" - see .selfbot autogear (cs_selfbot.cpp) for the same command
+		// family built for a real player's own character instead of a companion bot.
+		{ "autogear", [](BotGroupAI* ai, Player* srcPlayer, std::string const& param) { ai->ProcessAutoGearCommand(srcPlayer, param); } },
 		// Lists every registered command name - added last since it needs the table to already
 		// contain everything else; safe to self-reference, the static table is fully built by
 		// the time any lambda actually runs.

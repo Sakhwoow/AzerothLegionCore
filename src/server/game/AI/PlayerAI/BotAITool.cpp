@@ -607,6 +607,27 @@ bool BotUtility::TryAutoGearFromBags(Player* bot, bool isTank, uint32 maxQuality
 	return false;
 }
 
+bool BotUtility::ParseGearQualityWord(std::string const& word, uint32& quality)
+{
+	if (word == "white" || word == "common" || word == "normal")
+		quality = ITEM_QUALITY_NORMAL;
+	else if (word == "green" || word == "uncommon")
+		quality = ITEM_QUALITY_UNCOMMON;
+	else if (word == "blue" || word == "rare")
+		quality = ITEM_QUALITY_RARE;
+	else if (word == "purple" || word == "epic")
+		quality = ITEM_QUALITY_EPIC;
+	else if (word == "orange" || word == "legendary")
+		quality = ITEM_QUALITY_LEGENDARY;
+	else if (word == "artifact")
+		quality = ITEM_QUALITY_ARTIFACT;
+	else if (word == "heirloom")
+		quality = ITEM_QUALITY_HEIRLOOM;
+	else
+		return false;
+	return true;
+}
+
 bool BotUtility::TryUnequipAllToBags(Player* bot)
 {
 	if (!bot)

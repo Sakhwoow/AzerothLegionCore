@@ -188,6 +188,10 @@ public:
     // .selfbot. Stops and leaves the rest equipped if bag space runs out rather than failing
     // loudly partway - a selfbot command should never need a GM to clean up after it.
     static bool TryUnequipAllToBags(Player* bot);
+    // Maps a color/quality word ("green", "epic", ...) to its ITEM_QUALITY_* value. Returns
+    // false (leaves quality untouched) for anything unrecognized, including an empty string.
+    // Shared between .selfbot's and a companion bot's "autogear <color>" command parsing.
+    static bool ParseGearQualityWord(std::string const& word, uint32& quality);
     // Phase 9 (professions): grants Skinning+Leatherworking once (SetSkill's own engine logic -
     // Player::LearnSkillRewardedSpells, called internally - auto-learns every skill-appropriate
     // recipe already in SkillLineAbility data; no recipe spell ids are guessed at here at all).
