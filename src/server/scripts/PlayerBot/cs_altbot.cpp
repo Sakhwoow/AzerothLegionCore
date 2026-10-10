@@ -42,10 +42,13 @@ static bool HandleAltBotCommand(ChatHandler* handler, const char* args)
     if (sub == "add" && !name.empty())
     {
         std::string error;
+        // Загрузка асинхронная - AddAltBot тут только ставит её в очередь, реальное
+        // подключение подтвердит сам альт шёпотом, когда действительно загрузится
+        // (AltBotMgr::FinishPendingLogin).
         if (sAltBotMgr->AddAltBot(self, name, error))
-            handler->PSendSysMessage("Alt-bot: %s added.", name.c_str());
+            handler->PSendSysMessage("Альтбот: загружаю %s...", name.c_str());
         else
-            handler->PSendSysMessage("Alt-bot: %s", error.c_str());
+            handler->PSendSysMessage("Альтбот: %s", error.c_str());
         return true;
     }
 
@@ -53,13 +56,13 @@ static bool HandleAltBotCommand(ChatHandler* handler, const char* args)
     {
         std::string error;
         if (sAltBotMgr->RemoveAltBot(self, name, error))
-            handler->PSendSysMessage("Alt-bot: %s removed.", name.c_str());
+            handler->PSendSysMessage("Альтбот: %s отключён.", name.c_str());
         else
-            handler->PSendSysMessage("Alt-bot: %s", error.c_str());
+            handler->PSendSysMessage("Альтбот: %s", error.c_str());
         return true;
     }
 
-    handler->SendSysMessage("Usage: .altbot add <name> | .altbot remove <name>");
+    handler->SendSysMessage("Использование: .altbot add <имя> | .altbot remove <имя>");
     return true;
 }
 

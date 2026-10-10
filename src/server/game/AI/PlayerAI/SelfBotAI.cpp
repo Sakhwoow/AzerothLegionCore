@@ -375,7 +375,7 @@ std::string SelfBotAI::ProcessWhisperCommand(std::string const& rawCmd)
 	std::string rest = sep == std::string::npos ? "" : cmd.substr(sep + 1);
 
 	if (sub == "attack")
-		return TryAttackSelection() ? "attacking your current target." : "no valid target selected.";
+		return TryAttackSelection() ? "атакую твою цель." : "нет подходящей выбранной цели.";
 
 	if (sub == "stay")
 	{
@@ -383,7 +383,7 @@ std::string SelfBotAI::ProcessWhisperCommand(std::string const& rawCmd)
 		if (!stay)
 			return "";
 		stay->Set(!stay->Get());
-		return stay->Get() ? "stay enabled." : "stay disabled.";
+		return stay->Get() ? "стою на месте." : "стоять выключено.";
 	}
 
 	if (sub == "follow")
@@ -392,7 +392,7 @@ std::string SelfBotAI::ProcessWhisperCommand(std::string const& rawCmd)
 		if (!follow)
 			return "";
 		follow->Set(!follow->Get());
-		return follow->Get() ? "follow leader enabled." : "follow leader disabled.";
+		return follow->Get() ? "следую за лидером." : "следование выключено.";
 	}
 
 	if (sub == "ready")
@@ -401,7 +401,7 @@ std::string SelfBotAI::ProcessWhisperCommand(std::string const& rawCmd)
 		if (!autoReady)
 			return "";
 		autoReady->Set(!autoReady->Get());
-		return autoReady->Get() ? "auto-confirm ready checks enabled." : "auto-confirm ready checks disabled.";
+		return autoReady->Get() ? "авто-подтверждение готовности включено." : "авто-подтверждение готовности выключено.";
 	}
 
 	if (sub == "co")
@@ -409,20 +409,20 @@ std::string SelfBotAI::ProcessWhisperCommand(std::string const& rawCmd)
 		if (rest == "dps")
 		{
 			SetHealEnabled(false);
-			return "combat order set to dps (no self-heal).";
+			return "порядок боя: ДД (без самолечения).";
 		}
 		if (rest == "heal" || rest == "auto" || rest.empty())
 		{
 			SetHealEnabled(true);
-			return "combat order set to auto (heal, then rotation).";
+			return "порядок боя: авто (лечение, потом ротация).";
 		}
-		return "usage: co <auto|dps|heal>";
+		return "использование: co <auto|dps|heal>";
 	}
 
 	if (sub == "autogear")
 	{
 		if (!BotUtility::AutoGearEnabled)
-			return "AutoGear is disabled on this server.";
+			return "АвтоГир отключён на этом сервере.";
 
 		size_t aSep = rest.find(' ');
 		std::string arg1 = aSep == std::string::npos ? rest : rest.substr(0, aSep);
@@ -460,24 +460,24 @@ std::string SelfBotAI::ProcessWhisperCommand(std::string const& rawCmd)
 			if (!autoGear)
 				return "";
 			autoGear->Set(!autoGear->Get());
-			return autoGear->Get() ? "autogear enabled." : "autogear disabled.";
+			return autoGear->Get() ? "автогир включён." : "автогир выключен.";
 		}
 
 		if (arg1 == "reset")
 		{
 			if (!arg2.empty() && !applyLimitWord(arg2))
-				return "usage: autogear reset [<color>|<itemLevel>]";
+				return "использование: autogear reset [<цвет>|<уровень предмета>]";
 			TryResetAndRegear();
-			return "gear moved to bags and re-geared from whatever qualifies.";
+			return "шмот снят в сумки и переодет заново под текущий лимит.";
 		}
 
 		if (applyLimitWord(arg1))
 		{
 			TryUseAutoGear();
-			return "autogear limit set to '" + arg1 + "'.";
+			return "лимит автогира: '" + arg1 + "'.";
 		}
 
-		return "usage: autogear [<color>|<itemLevel>|reset [<color>|<itemLevel>]]";
+		return "использование: autogear [<цвет>|<уровень предмета>|reset [<цвет>|<уровень предмета>]]";
 	}
 
 	return "";

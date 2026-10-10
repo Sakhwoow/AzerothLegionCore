@@ -29,6 +29,13 @@
 #include "CharacterPackets.h"
 #include "Opcodes.h"
 #include "WorldPacket.h"
+#include "Language.h"
+#include <iterator>
+
+namespace
+{
+    uint32 const ALTBOT_LOGIN_TIMEOUT_MS = 10000;
+}
 
 AltBotMgr* AltBotMgr::instance()
 {
@@ -54,36 +61,36 @@ bool AltBotMgr::AddAltBot(Player* master, std::string const& charName, std::stri
 {
     if (!sConfigMgr->GetBoolDefault("altbot_enable", false))
     {
-        outError = "Alt-bot is disabled on this server.";
+        outError = "Альтбот отключён на этом сервере.";
         return false;
     }
     if (!master || master->IsPlayerBot())
     {
-        outError = "No valid character.";
+        outError = "Нет подходящего персонажа.";
         return false;
     }
 
     ObjectGuid altGuid = ObjectMgr::GetPlayerGUIDByName(charName);
     if (!altGuid)
     {
-        outError = "No such character.";
+        outError = "Такого персонажа нет.";
         return false;
     }
     if (altGuid == master->GetGUID())
     {
-        outError = "That is your own current character.";
+        outError = "Это твой же текущий персонаж.";
         return false;
     }
     if (IsActiveAltBotGuid(altGuid))
     {
-        outError = "That character is already an active alt-bot.";
+        outError = "Этот персонаж уже активен как альтбот.";
         return false;
     }
-    // Covers both "really connected right now" and "already puppeted by some other bot
-    // system" - either way this guid is not free to take over.
+    // Покрывает и "реально сейчас онлайн", и "уже кем-то управляется" - в обоих случаях
+    // этого guid'а нельзя забирать.
     if (ObjectAccessor::FindConnectedPlayer(altGuid))
     {
-        outError = "That character is already online.";
+        outError = "Этот персонаж уже онлайн.";
         return false;
     }
 
@@ -91,35 +98,34 @@ bool AltBotMgr::AddAltBot(Player* master, std::string const& charName, std::stri
     uint32 altAccountId = ObjectMgr::GetPlayerAccountIdByGUID(altGuid);
     if (!altAccountId || altAccountId != masterAccountId)
     {
-        // Never allow puppeting a character that isn't the inviter's own - this is the one
-        // hard security line the whole feature rests on, mirroring mod-playerbots'
-        // "sameAccount" check in PlayerbotHolder::AddPlayerBot (PlayerbotMgr.cpp).
-        outError = "That character does not belong to your account.";
+        // Никогда не разрешать управлять чужим персонажем - единственная жёсткая проверка
+        // безопасности всей фичи, зеркалит "sameAccount" из mod-playerbots
+        // (PlayerbotHolder::AddPlayerBot, PlayerbotMgr.cpp).
+        outError = "Этот персонаж не на твоём аккаунте.";
         return false;
     }
 
     uint32 maxPerMaster = sConfigMgr->GetIntDefault("altbot_max_per_master", 1);
     if (CountForMaster(masterAccountId) >= maxPerMaster)
     {
-        outError = "You already have the maximum number of alt-bots active.";
+        outError = "У тебя уже максимум активных альтботов.";
         return false;
     }
 
-    // Deliberately never calls sWorld->AddSession() - see the class comment in AltBotMgr.h.
-    // master's account already owns the one live session slot World::AddSession_ enforces per
-    // account id (World.cpp); registering a second session under that same id would kick and
-    // delete master's own real connection. mod-playerbots' real equivalent
-    // (PlayerbotMgr.cpp::HandlePlayerBotLoginCallback) hits the exact same constraint for its
-    // own bot sessions and solves it the same way: build the WorldSession directly, never
-    // register it, drive its Update() from the module's own tick instead of the engine's.
+    // Намеренно никогда не зовёт sWorld->AddSession() - см. комментарий класса в AltBotMgr.h.
+    // Аккаунт мастера уже занимает единственный слот сессии, который World::AddSession_
+    // закрепляет за accountId (World.cpp); регистрация второй сессии того же аккаунта убила бы
+    // живое подключение мастера. Реальный аналог в mod-playerbots
+    // (PlayerbotMgr.cpp::HandlePlayerBotLoginCallback) упирается в то же самое и решает так же:
+    // строит WorldSession напрямую, никогда её не регистрирует, тикает сам из своего движка.
     std::string accountName = master->GetSession()->GetAccountName();
     uint32 battlenetAccountId = master->GetSession()->GetBattlenetAccountId();
     PlayerBotSession* botSession = new PlayerBotSession(masterAccountId, accountName, battlenetAccountId,
         AccountTypes::SEC_GAMEMASTER, 2, 0, master->GetSession()->GetSessionDbcLocale(), 0, false, std::string());
     botSession->LoadPermissions();
 
-    // Same login-simulation pattern PlayerBotMgr::AllPlayerBotRandomLogin already uses to swap
-    // an existing bot session onto a specific character by guid - reused as-is, not reinvented.
+    // Тот же приём симуляции логина что уже использует PlayerBotMgr::AllPlayerBotRandomLogin
+    // для переключения существующей бот-сессии на конкретного персонажа по guid'у.
     WorldPacket rawPacket(CMSG_PLAYER_LOGIN);
     WorldPackets::Character::PlayerLogin cmd(std::move(rawPacket));
     cmd.Guid = altGuid;
@@ -127,38 +133,20 @@ bool AltBotMgr::AddAltBot(Player* master, std::string const& charName, std::stri
     botSession->HandlePlayerLoginOpcode(cmd);
     botSession->HandleContinuePlayerLogin();
 
-    Player* altPlayer = botSession->GetPlayer();
-    if (!altPlayer)
-    {
-        delete botSession;
-        outError = "Failed to load that character.";
-        return false;
-    }
-
-    // Group with master so BotGroupAI (not the autonomous BotFieldAI) is what
-    // PlayerBotMgr::OnPlayerBotLogin attaches - that call already happened, automatically,
-    // inside HandlePlayerLoginOpcode's own completion path (CharacterHandler.cpp checks
-    // IsBotSession() alone, not any account-naming convention), but it only chose BotGroupAI if
-    // the character was ALREADY a group member at that exact moment. A fresh alt-bot never is,
-    // so it was attached as BotFieldAI (autonomous) - group it now and explicitly re-switch.
-    Group* group = master->GetGroup();
-    if (!group)
-    {
-        group = new Group();
-        group->Create(master);
-        sGroupMgr->AddGroup(group);
-    }
-    if (!group->AddMember(altPlayer))
-    {
-        botSession->LogoutPlayer(false);
-        delete botSession;
-        outError = "Could not add that character to your group (group full?).";
-        return false;
-    }
-    group->BroadcastGroupUpdate();
-    PlayerBotMgr::SwitchPlayerBotAI(altPlayer, PlayerBotAIType::PBAIT_GROUP, true);
-
-    m_ActiveAltBots[altGuid] = AltBotEntry{ botSession, masterAccountId };
+    // Загрузка персонажа асинхронная (DB-запрос, который разрешается на следующих тиках) -
+    // подтверждено вживую: session->GetPlayer() сразу после этих двух вызовов всегда был
+    // nullptr, даже когда загрузка в итоге проходила успешно. Сессия, зарегистрированная
+    // обычным sWorld->AddSession(), тикается движком сама по себе каждый тик - именно поэтому
+    // AllPlayerBotRandomLogin (откуда скопирован этот приём) не нужно было ничего ждать. Нашей
+    // сессии тикать некому кроме UpdateAltBotsFor ниже - группировка и переключение на
+    // BotGroupAI откладываются туда же, до первого тика где GetPlayer() станет не-null.
+    AltBotEntry entry;
+    entry.session = botSession;
+    entry.masterAccountId = masterAccountId;
+    entry.masterGuid = master->GetGUID();
+    entry.grouped = false;
+    entry.pendingSinceMs = getMSTime();
+    m_ActiveAltBots[altGuid] = entry;
     return true;
 }
 
@@ -166,14 +154,14 @@ bool AltBotMgr::RemoveAltBot(Player* master, std::string const& charName, std::s
 {
     if (!master)
     {
-        outError = "No valid character.";
+        outError = "Нет подходящего персонажа.";
         return false;
     }
     ObjectGuid altGuid = ObjectMgr::GetPlayerGUIDByName(charName);
     auto it = altGuid ? m_ActiveAltBots.find(altGuid) : m_ActiveAltBots.end();
     if (it == m_ActiveAltBots.end() || it->second.masterAccountId != master->GetSession()->GetAccountId())
     {
-        outError = "That is not one of your active alt-bots.";
+        outError = "Это не твой активный альтбот.";
         return false;
     }
     RemoveAltBotByGuid(altGuid);
@@ -212,6 +200,53 @@ void AltBotMgr::RemoveAllForMaster(Player* master)
     }
 }
 
+void AltBotMgr::FinishPendingLogin(ObjectGuid const& altGuid, AltBotEntry& entry)
+{
+    Player* altPlayer = entry.session->GetPlayer();
+    Player* master = ObjectAccessor::FindPlayer(entry.masterGuid);
+
+    if (!altPlayer)
+    {
+        if (getMSTime() - entry.pendingSinceMs < ALTBOT_LOGIN_TIMEOUT_MS)
+            return; // ещё грузится, подождём следующий тик
+
+        if (master)
+            master->Whisper("Альтбот: не удалось загрузить персонажа.", LANG_UNIVERSAL, master);
+        RemoveAltBotByGuid(altGuid);
+        return;
+    }
+
+    // Группируем с мастером, чтобы PlayerBotMgr::OnPlayerBotLogin подключил BotGroupAI, а не
+    // автономный BotFieldAI - тот вызов уже отработал раньше (внутри HandlePlayerLoginOpcode,
+    // CharacterHandler.cpp смотрит только IsBotSession(), без учёта имени аккаунта), но выбрал
+    // BotGroupAI только если персонаж УЖЕ был в группе в тот самый момент. Свежий альтбот
+    // никогда не был - группируем сейчас и переключаем явно.
+    if (master)
+    {
+        Group* group = master->GetGroup();
+        if (!group)
+        {
+            group = new Group();
+            group->Create(master);
+            sGroupMgr->AddGroup(group);
+        }
+        if (group->AddMember(altPlayer))
+        {
+            group->BroadcastGroupUpdate();
+            PlayerBotMgr::SwitchPlayerBotAI(altPlayer, PlayerBotAIType::PBAIT_GROUP, true);
+            altPlayer->Whisper("Я на связи.", LANG_UNIVERSAL, master);
+        }
+        else
+        {
+            master->Whisper("Альтбот: не удалось добавить в группу (группа заполнена?).", LANG_UNIVERSAL, master);
+            RemoveAltBotByGuid(altGuid);
+            return;
+        }
+    }
+
+    entry.grouped = true;
+}
+
 void AltBotMgr::UpdateAltBotsFor(Player* master, uint32 diff)
 {
     if (!master)
@@ -219,22 +254,33 @@ void AltBotMgr::UpdateAltBotsFor(Player* master, uint32 diff)
     uint32 accountId = master->GetSession()->GetAccountId();
     for (auto it = m_ActiveAltBots.begin(); it != m_ActiveAltBots.end();)
     {
+        // Capture the next iterator before any possible erase below (RemoveAltBotByGuid /
+        // FinishPendingLogin can both erase `it`'s own entry) - advancing from a stale `it`
+        // after an erase would be undefined behaviour, and re-finding by guid instead of just
+        // continuing from the right place would wrongly abort the whole loop early whenever one
+        // entry among several got removed this tick.
+        auto next = std::next(it);
+
         if (it->second.masterAccountId != accountId)
         {
-            ++it;
+            it = next;
             continue;
         }
 
+        ObjectGuid guid = it->first;
         PlayerBotSession* session = it->second.session;
         WorldSessionFilter filter(session);
         bool keepAlive = session->Update(diff, filter);
         if (!keepAlive)
         {
-            ObjectGuid guid = it->first;
-            ++it;
             RemoveAltBotByGuid(guid);
+            it = next;
             continue;
         }
-        ++it;
+
+        if (!it->second.grouped)
+            FinishPendingLogin(guid, it->second);
+
+        it = next;
     }
 }

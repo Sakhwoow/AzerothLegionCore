@@ -81,7 +81,22 @@ private:
     {
         PlayerBotSession* session;
         uint32 masterAccountId;
+        ObjectGuid masterGuid;
+
+        // Character loading is async (a DB query queued by HandlePlayerLoginOpcode, resolved
+        // over later ticks - confirmed live: checking session->GetPlayer() immediately after
+        // the login calls always saw nullptr, even on what turned out to be a successful load).
+        // A session registered the normal way (sWorld->AddSession) gets ticked automatically by
+        // the engine's own main loop regardless, so the existing bot-login code this was copied
+        // from (PlayerBotMgr::AllPlayerBotRandomLogin) never needed to wait for it either - ours
+        // does, since nothing else ever calls Update() on an alt-bot's session. grouped tracks
+        // whether the one-time "group with master + switch to BotGroupAI" step has run yet;
+        // pendingSinceMs bounds how long UpdateAltBotsFor keeps waiting before giving up.
+        bool grouped;
+        uint32 pendingSinceMs;
     };
+
+    void FinishPendingLogin(ObjectGuid const& altGuid, AltBotEntry& entry);
 
     std::unordered_map<ObjectGuid, AltBotEntry> m_ActiveAltBots;
 };

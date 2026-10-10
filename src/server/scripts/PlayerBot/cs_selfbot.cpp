@@ -73,7 +73,7 @@ namespace
 	{
 		if (!BotUtility::AutoGearEnabled)
 		{
-			handler->SendSysMessage("AutoGear is disabled on this server (admin needs autogear_enable=1).");
+			handler->SendSysMessage("АвтоГир отключён на этом сервере (нужен autogear_enable=1).");
 			return true;
 		}
 
@@ -87,7 +87,7 @@ namespace
 			if (!autoGear)
 				return true;
 			autoGear->Set(!autoGear->Get());
-			handler->PSendSysMessage("Selfbot: autogear %s.", autoGear->Get() ? "enabled" : "disabled");
+			handler->PSendSysMessage("Селфбот: автогир %s.", autoGear->Get() ? "включён" : "выключен");
 			return true;
 		}
 
@@ -95,22 +95,22 @@ namespace
 		{
 			if (!arg2.empty() && !ApplyAutoGearLimitWord(ai, arg2))
 			{
-				handler->SendSysMessage("Usage: .selfbot autogear reset [<color>|<itemLevel>]");
+				handler->SendSysMessage("Использование: .selfbot autogear reset [<цвет>|<уровень предмета>]");
 				return true;
 			}
 			ai->TryResetAndRegear();
-			handler->SendSysMessage("Selfbot: gear moved to bags and re-geared from whatever qualifies.");
+			handler->SendSysMessage("Селфбот: шмот снят в сумки и переодет заново под текущий лимит.");
 			return true;
 		}
 
 		if (ApplyAutoGearLimitWord(ai, arg1))
 		{
-			handler->PSendSysMessage("Selfbot: autogear limit set to '%s'.", arg1.c_str());
+			handler->PSendSysMessage("Селфбот: лимит автогира '%s'.", arg1.c_str());
 			ai->TryUseAutoGear();
 			return true;
 		}
 
-		handler->SendSysMessage("Usage: .selfbot autogear [<color>|<itemLevel>|reset [<color>|<itemLevel>]]");
+		handler->SendSysMessage("Использование: .selfbot autogear [<цвет>|<уровень предмета>|reset [<цвет>|<уровень предмета>]]");
 		return true;
 	}
 
@@ -126,7 +126,7 @@ namespace
 		SelfBotAI* ai = sSelfBotMgr->GetSelfBotAI(self);
 		if (!ai || !ai->IsActive())
 		{
-			handler->SendSysMessage("Enable selfbot first with .selfbot");
+			handler->SendSysMessage("Сначала включи селфбот командой .selfbot");
 			return true;
 		}
 
@@ -136,7 +136,7 @@ namespace
 			if (!stay)
 				return true;
 			stay->Set(!stay->Get());
-			handler->PSendSysMessage("Selfbot: stay %s.", stay->Get() ? "enabled" : "disabled");
+			handler->PSendSysMessage("Селфбот: стоять на месте %s.", stay->Get() ? "включено" : "выключено");
 			return true;
 		}
 
@@ -146,7 +146,7 @@ namespace
 			if (!follow)
 				return true;
 			follow->Set(!follow->Get());
-			handler->PSendSysMessage("Selfbot: follow leader %s.", follow->Get() ? "enabled" : "disabled");
+			handler->PSendSysMessage("Селфбот: следование за лидером %s.", follow->Get() ? "включено" : "выключено");
 			return true;
 		}
 
@@ -155,15 +155,15 @@ namespace
 			if (rest == "dps")
 			{
 				ai->SetHealEnabled(false);
-				handler->SendSysMessage("Selfbot: combat order set to dps (no self-heal).");
+				handler->SendSysMessage("Селфбот: порядок боя - ДД (без самолечения).");
 			}
 			else if (rest == "heal" || rest == "auto" || rest.empty())
 			{
 				ai->SetHealEnabled(true);
-				handler->SendSysMessage("Selfbot: combat order set to auto (heal, then rotation).");
+				handler->SendSysMessage("Селфбот: порядок боя - авто (лечение, потом ротация).");
 			}
 			else
-				handler->SendSysMessage("Usage: .selfbot co <auto|dps|heal>");
+				handler->SendSysMessage("Использование: .selfbot co <auto|dps|heal>");
 			return true;
 		}
 
@@ -173,7 +173,7 @@ namespace
 			if (!autoReady)
 				return true;
 			autoReady->Set(!autoReady->Get());
-			handler->PSendSysMessage("Selfbot: auto-confirm ready checks %s.", autoReady->Get() ? "enabled" : "disabled");
+			handler->PSendSysMessage("Селфбот: авто-подтверждение готовности %s.", autoReady->Get() ? "включено" : "выключено");
 			return true;
 		}
 
@@ -183,13 +183,13 @@ namespace
 		if (sub == "attack")
 		{
 			if (ai->TryAttackSelection())
-				handler->SendSysMessage("Selfbot: attacking your current target.");
+				handler->SendSysMessage("Селфбот: атакую твою цель.");
 			else
-				handler->SendSysMessage("Selfbot: no valid target selected.");
+				handler->SendSysMessage("Селфбот: нет подходящей выбранной цели.");
 			return true;
 		}
 
-		handler->SendSysMessage("Unknown selfbot subcommand. Known: stay, follow, co <auto|dps|heal>, ready, autogear, attack.");
+		handler->SendSysMessage("Неизвестная подкоманда. Доступны: stay, follow, co <auto|dps|heal>, ready, autogear, attack.");
 		return true;
 	}
 }
@@ -205,12 +205,12 @@ static bool HandleSelfBotCommand(ChatHandler* handler, const char* args)
 
 	if (BotUtility::SelfBotLevel == 0)
 	{
-		handler->SendSysMessage("Selfbot is disabled on this server.");
+		handler->SendSysMessage("Селфбот отключён на этом сервере.");
 		return true;
 	}
 	if (BotUtility::SelfBotLevel == 1 && !pSelf->CanBeGameMaster())
 	{
-		handler->SendSysMessage("You do not have permission to use selfbot.");
+		handler->SendSysMessage("У тебя нет прав на использование селфбота.");
 		return true;
 	}
 
@@ -229,12 +229,12 @@ static bool HandleSelfBotCommand(ChatHandler* handler, const char* args)
 	if (sSelfBotMgr->IsSelfBotActive(pSelf))
 	{
 		sSelfBotMgr->Disable(pSelf);
-		handler->SendSysMessage("Selfbot disabled.");
+		handler->SendSysMessage("Селфбот выключен.");
 	}
 	else
 	{
 		sSelfBotMgr->Enable(pSelf);
-		handler->SendSysMessage("Selfbot enabled.");
+		handler->SendSysMessage("Селфбот включён.");
 	}
 	return true;
 }

@@ -23,6 +23,8 @@
 #include "WorldSession.h"
 #include "PlayerBotSession.h"
 #include "OnlineMgr.h"
+#include <unordered_map>
+#include <cstdio>
 #include "MapManager.h"
 #include "Item.h"
 #include "ItemTemplate.h"
@@ -1816,6 +1818,34 @@ void PlayerBotSetting::UpdateReset()
 	m_TenacitySetting = false;
 }
 
+// Looks up "talent_spell_<specId>_<tier, 1-based>" without ever calling GetIntDefault for a
+// key that doesn't exist - ConfigMgr logs a "Missing name ... add ... to this file" warning
+// for every single miss (confirmed live: this spammed one warning per spec per tier, ~189 of
+// them, every time LearnTalents() ran for a class with no curated keys configured at all).
+// Same fix AC itself already uses for its own per-spec config block
+// (PlayerbotAIConfig.cpp: "On servers with many configured specs... the naive loop would call
+// GetOption ~22000 times... GetKeysByString reads the config map once") - scan the configured
+// keys exactly once, cache them, and only ever call GetIntDefault for a key proven to exist.
+static uint32 GetTalentSpellOverride(uint32 specId, uint32 tier1Based)
+{
+	static std::unordered_map<uint64, uint32> cache;
+	static bool loaded = false;
+	if (!loaded)
+	{
+		loaded = true;
+		static std::string const prefix = "talent_spell_";
+		for (std::string const& key : sConfigMgr->GetKeysByString(prefix))
+		{
+			uint32 spec = 0, tier = 0;
+			if (sscanf(key.c_str() + prefix.size(), "%u_%u", &spec, &tier) != 2)
+				continue;
+			cache[uint64(spec) * 10 + tier] = sConfigMgr->GetIntDefault(key.c_str(), 0);
+		}
+	}
+	auto it = cache.find(uint64(specId) * 10 + tier1Based);
+	return it != cache.end() ? it->second : 0;
+}
+
 void PlayerBotSetting::LearnTalents()
 {
 	// Phase 9g bug hunt: this function was a completely empty stub - confirmed by reading it -
@@ -1861,7 +1891,7 @@ void PlayerBotSetting::LearnTalents()
 		// order a reference guide lists options in. No override configured for this spec/tier,
 		// or the configured id doesn't appear in any column here -> falls back to column 0,
 		// same "something beats nothing" default this function always had.
-		uint32 targetSpell = sConfigMgr->GetIntDefault(("talent_spell_" + std::to_string(specId) + "_" + std::to_string(tier + 1)).c_str(), 0);
+		uint32 targetSpell = GetTalentSpellOverride(specId, tier + 1);
 		if (targetSpell)
 		{
 			for (uint32 col = 0; col < 3 && chosen->SpellID != targetSpell; ++col)
