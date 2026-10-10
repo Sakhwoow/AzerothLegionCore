@@ -836,6 +836,13 @@ void BotUtility::AssignRandomSpec(Player* bot)
 		bot->ActivateTalentGroup(spec);
 }
 
+bool BotUtility::HasAuraMechanic(Unit* target, Mechanics mask)
+{
+	if (!target)
+		return false;
+	return target->HasAuraWithMechanic(1 << mask);
+}
+
 bool BotUtility::ParseGearQualityWord(std::string const& word, uint32& quality)
 {
 	if (word == "white" || word == "common" || word == "normal")

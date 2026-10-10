@@ -192,6 +192,11 @@ public:
     // false (leaves quality untouched) for anything unrecognized, including an empty string.
     // Shared between .selfbot's and a companion bot's "autogear <color>" command parsing.
     static bool ParseGearQualityWord(std::string const& word, uint32& quality);
+    // Self-contained (confirmed by reading every existing per-context copy - BotFieldAI,
+    // BotGroupAI, BotDuelAI, BotAI, BotMovementAI all have an identical duplicate of this exact
+    // one-liner): a shared version so new call sites (SelfBot's class-rotation ports) don't need
+    // a 6th copy or the owning AI class's full machinery just to check this.
+    static bool HasAuraMechanic(Unit* target, Mechanics mask);
     // Assigns a real, weighted-random Legion specialization to a freshly-created bot via
     // Player::ActivateTalentGroup (the same function dual-spec switching uses) - mirrors AC's
     // AiPlayerbot.RandomClassSpecProb.<class>.<specno> config (new config key per spec, see

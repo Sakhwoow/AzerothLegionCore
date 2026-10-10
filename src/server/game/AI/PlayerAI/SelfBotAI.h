@@ -26,6 +26,7 @@ class Player;
 class Unit;
 class BotAiObjectContext;
 class BotEngine;
+class SelfBotWarriorAI;
 
 // Lets a real, connected player opt into light AI assistance on their OWN character via
 // .selfbot: continue attacking whatever they're already fighting, run a tiny per-class
@@ -90,10 +91,16 @@ public:
 	// value through the engine - the strategy's own presence/absence IS the state here.
 	void SetHealEnabled(bool enabled);
 
+	// Public for the same reason ResolveCombatVictim/TryUseRotationSpell are (see class comment):
+	// per-class "rich rotation" ports (SelfBotWarriorAI and, eventually, the other classes -
+	// see Strategies/SelfBotClassRotation.h) need this exact safe-cast primitive and have no
+	// other way to reach it, being plain BotXxxSpells-derived helpers with no SelfBotAI of
+	// their own.
+	bool TryCastFirstKnown(Unit* target, std::vector<uint32> const& spellList);
+
 private:
 	bool CanAct() const;
 	Unit* FindGroupAssistTarget() const;
-	bool TryCastFirstKnown(Unit* target, std::vector<uint32> const& spellList);
 	void TryUseSelfPotion();
 	Item* FindOwnedLifePotion() const;
 	Item* FindOwnedManaPotion() const;
@@ -126,6 +133,12 @@ private:
 	// Only ever applied out of combat (pre-pull maintenance), lowest-relevance of the default
 	// actions - see TryUseBuffSpell()/BuffSelfAction.
 	std::vector<uint32> m_BuffSpells;
+
+	// Pilot of the "real per-class rotation, not the thin m_RotationSpells list" port (see
+	// Strategies/SelfBotClassRotation.h) - null for every class except Warrior until the
+	// remaining classes get the same treatment. TryUseRotationSpell prefers this over
+	// m_RotationSpells when present.
+	std::unique_ptr<SelfBotWarriorAI> m_WarriorRotation;
 };
 
 #endif // !_SELF_BOT_AI_H_

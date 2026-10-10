@@ -27,6 +27,7 @@
 #include "BotAiObjectContext.h"
 #include "BotEngine.h"
 #include "SelfBotStrategies.h"
+#include "SelfBotClassRotation.h"
 
 namespace
 {
@@ -198,8 +199,19 @@ void SelfBotAI::SetActive(bool active)
 	m_RotationSpells.clear();
 	m_HealSpells.clear();
 	m_BuffSpells.clear();
+	m_WarriorRotation.reset();
 	if (active)
 	{
+		// Pilot of the real per-class rotation port (Strategies/SelfBotClassRotation.h) -
+		// TryUseRotationSpell prefers this over the thin m_RotationSpells list below when
+		// present. Only Warrior so far; the other classes fall through to the old list until
+		// they get the same treatment.
+		if (me->getClass() == CLASS_WARRIOR)
+		{
+			m_WarriorRotation = std::make_unique<SelfBotWarriorAI>();
+			m_WarriorRotation->InitializeSpells(me);
+		}
+
 		for (uint32 baseId : GetClassRotationBaseSpells(me->getClass()))
 		{
 			uint32 known = BotUtility::FindMaxRankSpellByExist(me, baseId);
@@ -401,6 +413,9 @@ bool SelfBotAI::TryUseRotationSpell(Unit* target)
 {
 	if (!target)
 		return false;
+
+	if (m_WarriorRotation)
+		return m_WarriorRotation->ProcessMeleeSpell(this, me, target);
 
 	return TryCastFirstKnown(target, m_RotationSpells);
 }
