@@ -317,13 +317,17 @@ protected:
 	uint32 DruidGuard_TreeMan =6913;// 33831			��Ȼ֮���ٻ�����(ƽ��ϵ)
 
 	uint32 DruidAssist_PersonSpirit =13752;// 770		����̬����֮��
-	uint32 DruidAssist_BeastSpirit =13752;// 16857		Ұ����̬����֮��
+	// BeastSpirit дублировал PersonSpirit (13752=Faerie Fire, кастуемая в облике человека) -
+	// должен быть Faerie Fire (Feral) (16857), отдельная версия для применения в формах.
+	uint32 DruidAssist_BeastSpirit =16857;// was 13752 (duplicate of PersonSpirit)
 	uint32 DruidAssist_Active =6950;// 29166			���� Ŀ�����
 	uint32 DruidAssist_DecCruse =30281;// 2782			��³���������
 	uint32 DruidAssist_DecCruel =14253;// 2893			��³���ⶾ��BUF
 
 	uint32 DruidCast_Moonfire =65856;// 48463			�»� �����˺�����
-	uint32 DruidCast_Insect =65855;// 48468			��Ⱥ �����˺�����(ƽ��ϵ)
+	// Insect Swarm удалён из игры в MoP (5.0.4), задолго до Legion - держал мёртвый ID.
+	// Заменён на Sunfire (93402) - настоящий Legion-эквивалент (AoE-версия Moonfire).
+	uint32 DruidCast_Insect =93402;// was 65855 (Insect Swarm, удалён из игры в MoP)
 	uint32 DruidCast_Anger =65862;// 48461				��ŭ
 	uint32 DruidCast_Spark =98993;// 48465				�ǻ� cast��
 
@@ -345,14 +349,23 @@ protected:
 	uint32 DruidCat_Stun =203123;// 49802				è ���� �սἼ
 	uint32 DruidCat_Bite =22568;// 48577				è ����ҧ �����˺��սἼ
 	uint32 DruidCat_Roar =52610;// 52610				è ���� ���Լ����˺����սἼ
-	uint32 DruidCat_Separate =1943;// 49800			è ���� �����˺��սἼ
+	// Separate держал Rupture (1943) - это умение РАЗБОЙНИКА (Assassination), не друида.
+	// Применяется как "если у цели ещё нет этого дебаффа" - по использованию это однозначно
+	// Rip, настоящий друидский финишер-кровотечение формы кота. Исправлено на 1079.
+	uint32 DruidCat_Separate =1079;// was 1943 (Rupture - умение Разбойника, не друида)
 
 	uint32 DruidCat_Tiger=5217;// 50213				è �ͻ�֮ŭ �˺�BUF
 	uint32 DruidCat_FastMove =1850;// 33357			è ����
-	uint32 DruidCat_Charge =16979;// 49376				è ���(Ұ��ϵ)
+	// Charge и DruidBear_Charge (ниже) оба держали разные старые до-Cata ID одного и того же
+	// по смыслу умения ("Feral Charge"). Современный Wild Charge (132302) - один
+	// полиморфный ID, работает одинаково в любой форме - использован для обоих полей.
+	uint32 DruidCat_Charge =132302;// was 16979 (старый Wild Charge, форма медведя)
 	uint32 DruidCat_Surprise =75008;// 49803			è Ǳ��ʱ��1������
 	uint32 DruidCat_Sack =201427;// 48579				è Ǳ��ʱ��1���˺�
-	uint32 DruidCat_Claw =91776;// 48570				è צ��
+	// Claw держал умение ОХОТНИКА (питомец, Beast Mastery) - настоящий кот-генератор на этом
+	// месте уже прикрыт Rake(Sweep)/Mangle(Laceration)/Shred(BackStab), так что заменил на
+	// тот же Shred (5221), а не изобретал 4-е несуществующее умение.
+	uint32 DruidCat_Claw =5221;// was 91776 (умение Охотника, не друида)
 	uint32 DruidCat_BackStab =5221;// 48572			è ����
 	uint32 DruidCat_Attack =26103;// 62078				è �ӻ�Ⱥ��
 	uint32 DruidCat_Sweep =1822;// 48574				è ��Ѫ����
@@ -365,8 +378,11 @@ protected:
 	uint32 DruidBear_Sweep =61896;// 48568				�� ��Ѫ����
 	uint32 DruidBear_Attack =61598;// 48562			�� �ӻ�Ⱥ��
 	uint32 DruidBear_NextAtt =6807;// 48480			�� Next������ǿ
-	uint32 DruidBear_Stun =1464;// 8983				�� ����
-	uint32 DruidBear_Charge =39435;// 16979			�� ���(Ұ��ϵ)
+	// Stun держал Slam (1464) - умение ВОИНА (Arms), не друида. Настоящий стан медвежьей
+	// формы - Bash, замененный на Mighty Bash (5211) после MoP (талант, резолвится в 0
+	// если не взят - безопасно).
+	uint32 DruidBear_Stun =5211;// was 1464 (Slam - умение Воина, не друида)
+	uint32 DruidBear_Charge =132302;// was 39435 (старый Feral Charge; см. комментарий у Cat_Charge)
 };
 
 class BotHunterSpells

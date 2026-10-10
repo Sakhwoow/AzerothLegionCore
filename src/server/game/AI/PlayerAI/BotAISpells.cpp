@@ -253,13 +253,13 @@ void BotDruidSpells::InitializeSpells(Player* player)
 	DruidGuard_TreeMan = BotUtility::FindMaxRankSpellByExist(player, 6913);
 
 	DruidAssist_PersonSpirit = BotUtility::FindMaxRankSpellByExist(player, 13752);
-	DruidAssist_BeastSpirit = BotUtility::FindMaxRankSpellByExist(player, 13752);
+	DruidAssist_BeastSpirit = BotUtility::FindMaxRankSpellByExist(player, 16857);
 	DruidAssist_Active = BotUtility::FindMaxRankSpellByExist(player, 6950);
 	DruidAssist_DecCruse = BotUtility::FindMaxRankSpellByExist(player, 30281);
 	DruidAssist_DecCruel = BotUtility::FindMaxRankSpellByExist(player, 14253);
 
 	DruidCast_Moonfire = BotUtility::FindMaxRankSpellByExist(player, 65856);
-	DruidCast_Insect = BotUtility::FindMaxRankSpellByExist(player, 65855);
+	DruidCast_Insect = BotUtility::FindMaxRankSpellByExist(player, 93402);
 	DruidCast_Anger = BotUtility::FindMaxRankSpellByExist(player, 65862);
 	DruidCast_Spark = BotUtility::FindMaxRankSpellByExist(player, 98993);
 
@@ -281,14 +281,14 @@ void BotDruidSpells::InitializeSpells(Player* player)
 	DruidCat_Stun = BotUtility::FindMaxRankSpellByExist(player, 203123);
 	DruidCat_Bite = BotUtility::FindMaxRankSpellByExist(player, 22568);
 	DruidCat_Roar = BotUtility::FindMaxRankSpellByExist(player, 52610);
-	DruidCat_Separate = BotUtility::FindMaxRankSpellByExist(player, 1943);
+	DruidCat_Separate = BotUtility::FindMaxRankSpellByExist(player, 1079);
 
 	DruidCat_Tiger = BotUtility::FindMaxRankSpellByExist(player, 5217);
 	DruidCat_FastMove = BotUtility::FindMaxRankSpellByExist(player, 1850);
-	DruidCat_Charge = BotUtility::FindMaxRankSpellByExist(player, 16979);
+	DruidCat_Charge = BotUtility::FindMaxRankSpellByExist(player, 132302);
 	DruidCat_Surprise = BotUtility::FindMaxRankSpellByExist(player, 75008);
 	DruidCat_Sack = BotUtility::FindMaxRankSpellByExist(player, 201427);
-	DruidCat_Claw = BotUtility::FindMaxRankSpellByExist(player, 91776);
+	DruidCat_Claw = BotUtility::FindMaxRankSpellByExist(player, 5221);
 	DruidCat_BackStab = BotUtility::FindMaxRankSpellByExist(player, 5221);
 	DruidCat_Attack = BotUtility::FindMaxRankSpellByExist(player, 26103);
 	DruidCat_Sweep = BotUtility::FindMaxRankSpellByExist(player, 1822);
@@ -301,8 +301,8 @@ void BotDruidSpells::InitializeSpells(Player* player)
 	DruidBear_Sweep = BotUtility::FindMaxRankSpellByExist(player, 61896);
 	DruidBear_Attack = BotUtility::FindMaxRankSpellByExist(player, 61598);
 	DruidBear_NextAtt = BotUtility::FindMaxRankSpellByExist(player, 6807);
-	DruidBear_Stun = BotUtility::FindMaxRankSpellByExist(player, 1464);
-	DruidBear_Charge = BotUtility::FindMaxRankSpellByExist(player, 39435);
+	DruidBear_Stun = BotUtility::FindMaxRankSpellByExist(player, 5211);
+	DruidBear_Charge = BotUtility::FindMaxRankSpellByExist(player, 132302);
 }
 
 void BotHunterSpells::InitializeSpells(Player* player)

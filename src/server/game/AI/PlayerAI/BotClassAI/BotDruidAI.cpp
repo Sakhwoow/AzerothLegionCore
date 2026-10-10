@@ -44,7 +44,7 @@ void BotDruidAI::InitializeSpells()
 	DruidAssist_Active = FindMaxRankSpellByExist(6950);
 
 	DruidCast_Moonfire = FindMaxRankSpellByExist(65856);
-	DruidCast_Insect = FindMaxRankSpellByExist(65855);
+	DruidCast_Insect = FindMaxRankSpellByExist(93402);
 	DruidCast_Anger = FindMaxRankSpellByExist(65862);
 	DruidCast_Spark = FindMaxRankSpellByExist(98993);
 
@@ -66,14 +66,14 @@ void BotDruidAI::InitializeSpells()
 	DruidCat_Stun = FindMaxRankSpellByExist(203123);
 	DruidCat_Bite = FindMaxRankSpellByExist(22568);
 	DruidCat_Roar = FindMaxRankSpellByExist(52610);
-	DruidCat_Separate = FindMaxRankSpellByExist(1943);
+	DruidCat_Separate = FindMaxRankSpellByExist(1079);
 
 	DruidCat_Tiger = FindMaxRankSpellByExist(5217);
 	DruidCat_FastMove = FindMaxRankSpellByExist(1850);
-	DruidCat_Charge = FindMaxRankSpellByExist(16979);
+	DruidCat_Charge = FindMaxRankSpellByExist(132302);
 	DruidCat_Surprise = FindMaxRankSpellByExist(75008);
 	DruidCat_Sack = FindMaxRankSpellByExist(201427);
-	DruidCat_Claw = FindMaxRankSpellByExist(91776);
+	DruidCat_Claw = FindMaxRankSpellByExist(5221);
 	DruidCat_BackStab = FindMaxRankSpellByExist(5221);
 	DruidCat_Attack = FindMaxRankSpellByExist(26103);
 	DruidCat_Sweep = FindMaxRankSpellByExist(1822);
@@ -86,8 +86,8 @@ void BotDruidAI::InitializeSpells()
 	DruidBear_Sweep = FindMaxRankSpellByExist(61896);
 	DruidBear_Attack = FindMaxRankSpellByExist(61598);
 	DruidBear_NextAtt = FindMaxRankSpellByExist(6807);
-	DruidBear_Stun = FindMaxRankSpellByExist(1464);
-	DruidBear_Charge = FindMaxRankSpellByExist(39435);
+	DruidBear_Stun = FindMaxRankSpellByExist(5211);
+	DruidBear_Charge = FindMaxRankSpellByExist(132302);
 }
 
 void BotDruidAI::UpdateTalentType()
