@@ -445,10 +445,156 @@ INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `Opt
 (5673, 1, 'ruRU', 'Кто контролирует рудник Холодного Клыка?');
 
 -- MenuId 5674 - Alterac Valley bunker/tower control-status menu.
-DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 5674 AND `OptionIndex` BETWEEN 0 AND 4 AND `Locale` = 'ruRU';
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 5674 AND `OptionIndex` BETWEEN 0 AND 8 AND `Locale` = 'ruRU';
 INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
 (5674, 0, 'ruRU', 'Кто контролирует южный бункер Дун Балдара?'),
 (5674, 1, 'ruRU', 'Кто контролирует северный бункер Дун Балдара?'),
 (5674, 2, 'ruRU', 'Кто контролирует бункер Ледяного Крыла?'),
 (5674, 3, 'ruRU', 'Кто контролирует бункер Каменного Очага?'),
-(5674, 4, 'ruRU', 'Кто контролирует западную башню Северного Волка?');
+(5674, 4, 'ruRU', 'Кто контролирует западную башню Северного Волка?'),
+(5674, 5, 'ruRU', 'Кто контролирует восточную башню Северного Волка?'),
+(5674, 6, 'ruRU', 'Кто контролирует Вершину Башни?'),
+(5674, 7, 'ruRU', 'Кто контролирует башню Ледяной Крови?'),
+(5674, 8, 'ruRU', 'Кто контролирует западную башню Северного Волка?');
+
+-- MenuId 5676-5684 - recurring "tower status" dialogue (same pattern as the graveyard one).
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` IN (5676,5677,5678,5679,5680,5681,5682,5683,5684) AND `OptionIndex` IN (0,2) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(5676, 0, 'ruRU', 'Расскажи мне снова о башнях...'),
+(5676, 2, 'ruRU', 'Расскажи мне о чём-то другом...'),
+(5677, 0, 'ruRU', 'Расскажи мне снова о башнях...'),
+(5677, 2, 'ruRU', 'Расскажи мне о чём-то другом...'),
+(5678, 0, 'ruRU', 'Расскажи мне снова о башнях...'),
+(5678, 2, 'ruRU', 'Расскажи мне о чём-то другом...'),
+(5679, 0, 'ruRU', 'Расскажи мне снова о башнях...'),
+(5679, 2, 'ruRU', 'Расскажи мне о чём-то другом...'),
+(5680, 0, 'ruRU', 'Расскажи мне снова о башнях...'),
+(5680, 2, 'ruRU', 'Расскажи мне о чём-то другом...'),
+(5681, 0, 'ruRU', 'Расскажи мне снова о башнях...'),
+(5681, 2, 'ruRU', 'Расскажи мне о чём-то другом...'),
+(5682, 0, 'ruRU', 'Расскажи мне снова о башнях...'),
+(5682, 2, 'ruRU', 'Расскажи мне о чём-то другом...'),
+(5683, 0, 'ruRU', 'Расскажи мне снова о башнях...'),
+(5683, 2, 'ruRU', 'Расскажи мне о чём-то другом...'),
+(5684, 0, 'ruRU', 'Расскажи мне снова о башнях...'),
+(5684, 2, 'ruRU', 'Расскажи мне о чём-то другом...');
+
+-- MenuId 5692 - Alterac Valley lore-figure dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 5692 AND `OptionIndex` BETWEEN 0 AND 5 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(5692, 0, 'ruRU', 'Расскажи мне о капитане Галвангаре.'),
+(5692, 1, 'ruRU', 'Расскажи мне о Дрек''Таре.'),
+(5692, 2, 'ruRU', 'Расскажи мне о крепости Северного Волка.'),
+(5692, 3, 'ruRU', 'Расскажи мне о капитане Белинде Каменный Очаг.'),
+(5692, 4, 'ruRU', 'Расскажи мне о Ваннаре Штормпике.'),
+(5692, 5, 'ruRU', 'Расскажи мне о Дун Балдаре.');
+
+-- MenuId 5693/5695/5697/5699/5705/5706 - recurring "Alterac Valley" dialogue continuation.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` IN (5693,5695,5697,5699,5705,5706) AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(5693, 0, 'ruRU', 'Расскажи мне снова об Альтеракской долине...'),
+(5693, 1, 'ruRU', 'Расскажи мне о чём-то другом...'),
+(5695, 0, 'ruRU', 'Расскажи мне снова об Альтеракской долине...'),
+(5695, 1, 'ruRU', 'Расскажи мне о чём-то другом...'),
+(5697, 0, 'ruRU', 'Расскажи мне снова об Альтеракской долине...'),
+(5697, 1, 'ruRU', 'Расскажи мне о чём-то другом...'),
+(5699, 0, 'ruRU', 'Расскажи мне снова об Альтеракской долине...'),
+(5699, 1, 'ruRU', 'Расскажи мне о чём-то другом...'),
+(5705, 0, 'ruRU', 'Расскажи мне снова об Альтеракской долине...'),
+(5705, 1, 'ruRU', 'Расскажи мне о чём-то другом...'),
+(5706, 0, 'ruRU', 'Расскажи мне снова об Альтеракской долине...'),
+(5706, 1, 'ruRU', 'Расскажи мне о чём-то другом...');
+
+-- MenuId 5744 - "This sounds like a task worthy of the new king!"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 5744 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(5744, 0, 'ruRU', 'Это задание достойно нового короля!');
+
+-- MenuId 5764/5765/5767/5768/5769 - Felwood Fruit of Fertility quest dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` IN (5764,5765,5767,5768,5769) AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(5764, 0, 'ruRU', 'Почему ты говоришь, что это случайность, Рабин?'),
+(5765, 0, 'ruRU', 'Плод Плодородия?'),
+(5767, 0, 'ruRU', 'Что ты хочешь, чтобы я сделал, Рабин?'),
+(5768, 0, 'ruRU', 'Что произойдёт, если позволить Плоду Плодородия - или Фелвайну - полностью поддаться Скверне?'),
+(5769, 0, 'ruRU', 'Но что-то пошло не так, верно?');
+
+-- MenuId 5968 - flight into the Cauldron (Dragonblight).
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 5968 AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(5968, 0, 'ruRU', 'Мне нужно долететь.'),
+(5968, 1, 'ruRU', 'Я готов лететь в Котёл!');
+
+-- MenuId 6001 - "<Put your hand on the sphere.>"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 6001 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6001, 0, 'ruRU', '<Положи руку на сферу.>');
+
+-- MenuId 6021, 6101 - Vaelastrasz dialogue (Blackwing Lair prelude).
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 6021 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6021, 0, 'ruRU', 'Я не могу, Вейлестраз! Наверняка есть способ тебя исцелить!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 6101 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6101, 0, 'ruRU', 'Вейлестраз, нет!!!');
+
+-- MenuId 6083, 6085 - vendor "I would like to buy from you."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 6083 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6083, 0, 'ruRU', 'Я хотел бы купить у тебя.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 6085 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6085, 0, 'ruRU', 'Я хотел бы купить у тебя.');
+
+-- MenuId 6187 - roleplay judgment scenario (prisoner mercy vs. execution); trailing \n in
+-- option 1 preserved verbatim.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 6187 AND `OptionIndex` IN (1,2) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6187, 1, 'ruRU', 'Я казню его, как приказал мой повелитель, но сделаю это как можно безболезненнее. Правосудие должно быть исполнено, но я могу проявить сострадание.\n'),
+(6187, 2, 'ruRU', 'Я рискую собственной жизнью и освобождаю его, чтобы он мог доказать свою невиновность. Если смогу, помогу ему всем, чем только можно.');
+
+-- MenuId 6208 - roleplay scenario (confronting a ruler's insult).
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 6208 AND `OptionIndex` IN (0,1,2) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6208, 0, 'ruRU', 'Я открыто обличаю правителя за его злонамеренное поведение, защищая честь своего повелителя, даже рискуя будущей дипломатией.'),
+(6208, 1, 'ruRU', 'Я не слишком тихо игнорирую оскорбление, надеясь внушить правителю страх, что он мог допустить ошибку. А вернувшись, сообщу своему повелителю об этом оскорблении.'),
+(6208, 2, 'ruRU', 'Я молча игнорирую оскорбление. Я не стану рассказывать об этом своему повелителю, ведь моя задача - сохранить мир любой ценой. Это всего лишь оскорбление, а не объявление войны.');
+
+-- MenuId 6209 - roleplay scenario (brother joining an order).
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 6209 AND `OptionIndex` IN (0,1,2) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6209, 0, 'ruRU', 'Я выступлю против того, чтобы мой брат вступил в орден, даже рискуя навсегда разрушить наши отношения. Он будет опасен для себя и окружающих, и надеяться, что со временем он исправится, - слишком большой риск.'),
+(6209, 1, 'ruRU', 'Я выступлю за то, чтобы мой брат вступил в орден, даже рискуя безопасностью самого ордена. Я смогу помочь ему с орденскими порядками и верю в его способность приспособиться и научиться.'),
+(6209, 2, 'ruRU', 'Я найду скрытый способ не допустить брата в орден. Я смогу сделать это так, что он даже не узнает, и тем самым сохраню наши родственные связи.');
+
+-- MenuId 6484, 6508 - "I wish to join the battle!"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 6484 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6484, 0, 'ruRU', 'Я хочу вступить в бой!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 6508 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6508, 0, 'ruRU', 'Я хочу вступить в бой!');
+
+-- MenuId 6533, 6534 - Natalia Mar'alith investigation questline.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 6533 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6533, 0, 'ruRU', 'Привет, Франкал. Я слышал, у тебя может быть информация о местонахождении госпожи Наталии Мар''алит.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 6534 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6534, 0, 'ruRU', 'Привет, Рутгар. Командир отправил меня сюда, чтобы собрать информацию о его пропавшей жене.');
+
+-- MenuId 6539 - Anachronos dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 6539 AND `OptionIndex` = 16 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6539, 16, 'ruRU', 'Да, Анахронос. Я готов узреть твоё видение будущего.');
+
+-- MenuId 6545-6551 - Natalia Mar'alith investigation questline, continued.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` IN (6545,6546,6547,6548,6549,6550,6551) AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6545, 0, 'ruRU', 'Я вернусь, как только разберусь с этим беспорядком.'),
+(6546, 0, 'ruRU', 'Одержим чем?'),
+(6547, 0, 'ruRU', 'Потерял его? Что ты имеешь в виду?'),
+(6548, 0, 'ruRU', 'Какие требования?'),
+(6549, 0, 'ruRU', 'Наталия?'),
+(6550, 0, 'ruRU', 'Что случилось с ней после этого?'),
+(6551, 0, 'ruRU', 'Звучит опасно.');
