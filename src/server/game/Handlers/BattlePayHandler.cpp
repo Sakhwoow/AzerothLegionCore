@@ -316,26 +316,31 @@ void WorldSession::HandleBattlePayTrialBoostCharacter(WorldPackets::BattlePay::B
     uint8 charRace = charInfo->Race;
     bool isAlliance = ((1 << (charRace - 1)) & RACEMASK_ALLIANCE) != 0;
 
+    // Maps 1554/1557 (the intended ship-intro scenario) have no static geometry in this
+    // client's data at all (no WMO/doodad placements anywhere in their WDT/ADT, confirmed by
+    // direct vmap extraction) - players fell through the deck into the void. Until that content
+    // can be sourced from elsewhere, land the boosted character in the capital instead, same
+    // coordinates CharacterService::BoostCharacter already uses for a plain level-100 boost.
     float x, y, z, o;
     uint16 mapId, zoneId;
 
     if (isAlliance)
     {
-        mapId = 1554;
-        zoneId = 8124;
-        x = -2556.0f;
-        y = 2939.6f;
-        z = 134.6f;
-        o = 1.98f;
+        mapId = 0;
+        zoneId = 1519;
+        x = -8833.0f;
+        y = 628.0f;
+        z = 94.0f;
+        o = 0.0f;
     }
     else
     {
-        mapId = 1557;
-        zoneId = 8422;
-        x = 0.721f;
-        y = 1.685f;
-        z = 34.501f;
-        o = 6.2787f;
+        mapId = 1;
+        zoneId = 1637;
+        x = 1569.0f;
+        y = -4397.0f;
+        z = 16.0f;
+        o = 0.0f;
     }
 
     sCharacterService->BoostCharacter(this, packet.Character, 100, mapId, zoneId, x, y, z, o, true, uint16(packet.SpecializationID));
