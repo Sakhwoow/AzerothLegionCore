@@ -598,3 +598,121 @@ INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `Opt
 (6549, 0, 'ruRU', 'Наталия?'),
 (6550, 0, 'ruRU', 'Что случилось с ней после этого?'),
 (6551, 0, 'ruRU', 'Звучит опасно.');
+
+-- MenuId 6552-6558 - Natalia Mar'alith investigation questline, continued further.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` IN (6552,6553,6554,6555,6556,6557,6558) AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6552, 0, 'ruRU', 'Спасибо за информацию, Франкал.'),
+(6553, 0, 'ruRU', 'Какая история! То есть она отправилась в Хайв''Регал, и это был последний раз, когда ты её видел?'),
+(6554, 0, 'ruRU', 'А что потом?'),
+(6555, 0, 'ruRU', 'Я всё хотел спросить тебя об этой обезьяне.'),
+(6556, 0, 'ruRU', 'Ты не справился с одной-единственной жрицей ночных эльфов?'),
+(6557, 0, 'ruRU', 'Это странно.'),
+(6558, 0, 'ruRU', 'Вот это мне нравится слышать.');
+
+-- MenuId 6574 - "I understand."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 6574 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6574, 0, 'ruRU', 'Я понимаю.');
+
+-- MenuId 6575 - Darkmoon Faire cannon; color token preserved.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 6575 AND `OptionIndex` IN (0,1,2) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6575, 0, 'ruRU', 'Как мне использовать пушку?'),
+(6575, 1, 'ruRU', 'Запусти меня! |cFF0008E8(Жетон ярмарки Новолуния)|r'),
+(6575, 2, 'ruRU', 'Запусти меня! |cFF0008E8(Жетон ярмарки Новолуния)|r');
+
+-- MenuId 6581, 6582 - Darkmoon Faire tonk/cannon dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 6581 AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6581, 0, 'ruRU', 'Что это за консоли управления танками?'),
+(6581, 1, 'ruRU', 'Расскажи мне о пушке.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 6582 AND `OptionIndex` = 3 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6582, 3, 'ruRU', 'Что ещё можно делать на ярмарке?');
+
+-- MenuId 6629 - "Let's find out."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 6629 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6629, 0, 'ruRU', 'Давай выясним.');
+
+-- MenuId 6650 - "<Take the letter>"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 6650 AND `OptionIndex` = 4 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6650, 4, 'ruRU', '<Взять письмо>');
+
+-- MenuId 6666 - "Teleport me"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 6666 AND `OptionIndex` = 6666 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6666, 6666, 'ruRU', 'Телепортируй меня');
+
+-- MenuId 6917, 6924 - "Farewell."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 6917 AND `OptionIndex` = 3 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6917, 3, 'ruRU', 'Прощай.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 6924 AND `OptionIndex` = 1 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6924, 1, 'ruRU', 'Прощай.');
+
+-- MenuId 6952 - "Why... yes, of course. I've something to show you right inside this
+-- building, Mr. Anvilward."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 6952 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(6952, 0, 'ruRU', 'Что ж... да, разумеется. У меня есть что показать тебе прямо здесь, в этом здании, мистер Энвилворд.');
+
+-- MenuId 7147 - "I'd like to fly back to Silvermoon City."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 7147 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(7147, 0, 'ruRU', 'Я хотел бы вернуться в Луносвет.');
+
+-- MenuId 7260 - "Enter the Ordeal"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 7260 AND `OptionIndex` = 3 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(7260, 3, 'ruRU', 'Войти в Испытание');
+
+-- MenuId 7288 - innkeeper "Make this inn your home."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 7288 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(7288, 0, 'ruRU', 'Сделать эту гостиницу своим домом.');
+
+-- MenuId 7290 - Floyd, Hellfire Peninsula innkeeper/vendor.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 7290 AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(7290, 0, 'ruRU', 'Отличное предложение, Флойд. Я хочу сделать полуостров Адского Пламени своим домом.'),
+(7290, 1, 'ruRU', 'Я ищу особые товары. Дай мне взглянуть на твой ассортимент, Флойд.');
+
+-- MenuId 7410 - "I wish to browse your wares."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 7410 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(7410, 0, 'ruRU', 'Я хочу посмотреть твои товары.');
+
+-- MenuId 7441-7443 - Little Red Riding Hood joke NPC.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` IN (7441,7442,7443) AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(7441, 0, 'ruRU', 'Ох, бабушка, какие у тебя большие уши.'),
+(7442, 0, 'ruRU', 'Ох, бабушка, какие у тебя большие глаза.'),
+(7443, 0, 'ruRU', 'Ох, бабушка, какой у тебя жирный лут.');
+
+-- MenuId 7470, 7471 - hippogryph taxi / vendor.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 7470 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(7470, 0, 'ruRU', 'Я хочу полететь на гиппогрифе.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 7471 AND `OptionIndex` = 1 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(7471, 1, 'ruRU', 'Я хочу посмотреть твои товары.');
+
+-- MenuId 7486 - "Take Blood Knight Insignia"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 7486 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(7486, 0, 'ruRU', 'Взять знак отличия рыцаря крови');
+
+-- MenuId 7552 - Lady Proudmoore dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 7552 AND `OptionIndex` IN (1,2) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(7552, 1, 'ruRU', 'Мы готовы к всему, что Архимонд может на нас обрушить, леди Праудмур.'),
+(7552, 2, 'ruRU', 'До новой встречи, леди Праудмур.');
+
+-- MenuId 7559 - "Grant me your mark, wise ancient."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 7559 AND `OptionIndex` = 1 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(7559, 1, 'ruRU', 'Даруй мне свою метку, мудрый древний.');
