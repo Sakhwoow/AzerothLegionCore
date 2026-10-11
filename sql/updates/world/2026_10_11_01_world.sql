@@ -1860,6 +1860,1046 @@ INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `Opt
 (12539, 0, 'ruRU', 'Я ищу обучения друида.'),
 (12539, 1, 'ruRU', 'Я хочу забыть свои таланты.');
 
+-- MenuId 12540(remainder) - unlearn.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12540 AND `OptionIndex` = 1 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12540, 1, 'ruRU', 'Я хочу забыть свои таланты.');
+
+-- MenuId 12541 - "Come little guy, let's get out of here."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12541 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12541, 0, 'ruRU', 'Идём, малыш, выбираемся отсюда.');
+
+-- MenuId 12549, 12550, 12551 - Grim Guzzler elevator-button dialogue (shared lines).
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12549 AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12549, 0, 'ruRU', 'Нажать кнопку с надписью «Сразу за Мрачным Пожирателем».'),
+(12549, 1, 'ruRU', 'Нажать кнопку с надписью «В жилище».');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12550 AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12550, 0, 'ruRU', 'Нажать кнопку с надписью «Вход».'),
+(12550, 1, 'ruRU', 'Нажать кнопку с надписью «В жилище».');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12551 AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12551, 0, 'ruRU', 'Нажать кнопку с надписью «Вход».'),
+(12551, 1, 'ruRU', 'Нажать кнопку с надписью «Сразу за Мрачным Пожирателем».');
+
+-- MenuId 12579, 12580 - "Teach me the ways of the spirits."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12579 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12579, 0, 'ruRU', 'Научи меня путям духов.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12580 AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12580, 0, 'ruRU', 'Научи меня путям духов.'),
+(12580, 1, 'ruRU', 'Я хочу забыть свои таланты.');
+
+-- MenuId 12606 - mage training dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12606 AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12606, 0, 'ruRU', 'Меня интересует обучение магии.'),
+(12606, 1, 'ruRU', 'Я хочу забыть свои таланты.');
+
+-- MenuId 12609, 12613 - "I am ready."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12609 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12609, 0, 'ruRU', 'Я готов.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12613 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12613, 0, 'ruRU', 'Я готов.');
+
+-- MenuId 12637, 12638, 12639 - Orgrimmar valley selection.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` IN (12637,12638,12639) AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12637, 0, 'ruRU', 'Долина Силы'),
+(12637, 1, 'ruRU', 'Долина Чести'),
+(12638, 0, 'ruRU', 'Долина Силы'),
+(12638, 1, 'ruRU', 'Долина Чести'),
+(12639, 0, 'ruRU', 'Долина Силы'),
+(12639, 1, 'ruRU', 'Долина Чести');
+
+-- MenuId 12642 - vendor "I would like to buy from you."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12642 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12642, 0, 'ruRU', 'Я хотел бы купить у тебя.');
+
+-- MenuId 12646 - elevator floor selection.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12646 AND `OptionIndex` IN (0,1,2) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12646, 0, 'ruRU', 'Вызвать лифт на первый этаж.'),
+(12646, 1, 'ruRU', 'Вызвать лифт на второй этаж.'),
+(12646, 2, 'ruRU', 'Вызвать лифт на третий этаж.');
+
+-- MenuId 12669 - instance-wing destination selection.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12669 AND `OptionIndex` IN (0,1,2,3) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12669, 0, 'ruRU', 'Можешь отвести меня в Великий зал?'),
+(12669, 1, 'ruRU', 'Можешь отвести меня в Часовню?'),
+(12669, 2, 'ruRU', 'Можешь отвести меня на Бастионы?'),
+(12669, 3, 'ruRU', 'Можешь отвести меня в Лабораторию?');
+
+-- MenuId 12677 - Duskhaven amnesia dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12677 AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12677, 0, 'ruRU', 'Я мало что помню о том, как попал в Сумеречную Гавань. Расскажи, что знаешь.'),
+(12677, 1, 'ruRU', 'Сделать эту гостиницу своим домом.');
+
+-- MenuId 12701 - "Umm... Pebblebitty... the gate is open."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12701 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12701, 0, 'ruRU', 'Эм... Пебблбитти... ворота открыты.');
+
+-- MenuId 12714 - training dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12714 AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12714, 0, 'ruRU', 'Я хотел бы обучиться.'),
+(12714, 1, 'ruRU', 'Я хочу забыть свои таланты.');
+
+-- MenuId 12716 - "I seek further training."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12716 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12716, 0, 'ruRU', 'Я ищу дальнейшего обучения.');
+
+-- MenuId 12716(remainder) - unlearn.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12716 AND `OptionIndex` = 1 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12716, 1, 'ruRU', 'Я хочу забыть свои таланты.');
+
+-- MenuId 12717 - "I'm ready to fly, let's bomb the Undercity!"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12717 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12717, 0, 'ruRU', 'Я готов лететь, бомбим Подземный Город!');
+
+-- MenuId 12744 - "Im ready. Lets go"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12744 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12744, 0, 'ruRU', 'Я готов. Идём');
+
+-- MenuId 12746 - training dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12746 AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12746, 0, 'ruRU', 'Обучи меня.'),
+(12746, 1, 'ruRU', 'Я хочу забыть свои таланты.');
+
+-- MenuId 12754 - "Im ready to ride"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12754 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12754, 0, 'ruRU', 'Я готов ехать');
+
+-- MenuId 12755 - druid training dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12755 AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12755, 0, 'ruRU', 'Я ищу обучения друида.'),
+(12755, 1, 'ruRU', 'Я хочу забыть свои таланты.');
+
+-- MenuId 12760 - "I am ready to meet with Anachronos, Ziradormi."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12760 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12760, 0, 'ruRU', 'Я готов встретиться с Анахроносом, Зирадорми.');
+
+-- MenuId 12761 - "Let me see what you have for sale."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12761 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12761, 0, 'ruRU', 'Покажи мне, что у тебя есть на продажу.');
+
+-- MenuId 12762 - "I am prepared to face Nemesis, Tooga."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12762 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12762, 0, 'ruRU', 'Я готов встретиться с Немезидой, Туга.');
+
+-- MenuId 12795 - "What can you tell me about these spiders?"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12795 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12795, 0, 'ruRU', 'Что ты можешь рассказать об этих пауках?');
+
+-- MenuId 12797 - "We're ready to open the gates."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12797 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12797, 0, 'ruRU', 'Мы готовы открыть ворота.');
+
+-- MenuId 12799 - "How are we doing in the battle?"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12799 AND `OptionIndex` IN (2,3) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12799, 2, 'ruRU', 'Как у нас дела в бою?'),
+(12799, 3, 'ruRU', 'Как у нас дела в бою?');
+
+-- MenuId 12800, 12802, 12805, 12807 - captivity-release dialogue chain.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` IN (12800,12802,12805,12807) AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12800, 0, 'ruRU', 'Налоракк мёртв, ты свободен.'),
+(12802, 0, 'ruRU', 'Путь свободен. Ты свободен!'),
+(12805, 0, 'ruRU', 'Мы убили твоих похитителей. Ты свободен.'),
+(12807, 0, 'ruRU', 'Должно быть, тебя чем-то опоили. Теперь безопасно.');
+
+-- MenuId 12821 - warlock training dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12821 AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12821, 0, 'ruRU', 'Меня интересует обучение колдовству.'),
+(12821, 1, 'ruRU', 'Я хочу забыть свои таланты.');
+
+-- MenuId 12833 - "How do I get out of here?"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12833 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12833, 0, 'ruRU', 'Как мне отсюда выбраться?');
+
+-- MenuId 12836, 12837 - "Present the Smoke-Stained Locket."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12836 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12836, 0, 'ruRU', 'Предъявить закопчённый медальон.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12837 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12837, 0, 'ruRU', 'Предъявить закопчённый медальон.');
+
+-- MenuId 12855 - class-trainer selection (8 classes).
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12855 AND `OptionIndex` IN (0,1,2,3,4,5,6,7) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12855, 0, 'ruRU', 'Охотник'),
+(12855, 1, 'ruRU', 'Маг'),
+(12855, 2, 'ruRU', 'Паладин'),
+(12855, 3, 'ruRU', 'Жрец'),
+(12855, 4, 'ruRU', 'Разбойник'),
+(12855, 5, 'ruRU', 'Шаман'),
+(12855, 6, 'ruRU', 'Колдун'),
+(12855, 7, 'ruRU', 'Воин');
+
+-- MenuId 12865 - profession-trainer selection.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12865 AND `OptionIndex` IN (0,2,3) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12865, 0, 'ruRU', 'Алхимия'),
+(12865, 2, 'ruRU', 'Кузнечное дело'),
+(12865, 3, 'ruRU', 'Кулинария');
+
+-- MenuId 12865 - profession-trainer selection remainder.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12865 AND `OptionIndex` IN (4,5,6,7,8,9,10,11,12,14,15) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12865, 4, 'ruRU', 'Создание чар'),
+(12865, 5, 'ruRU', 'Инженерное дело'),
+(12865, 6, 'ruRU', 'Первая помощь'),
+(12865, 7, 'ruRU', 'Рыбная ловля'),
+(12865, 8, 'ruRU', 'Травничество'),
+(12865, 9, 'ruRU', 'Начертание'),
+(12865, 10, 'ruRU', 'Ювелирное дело'),
+(12865, 11, 'ruRU', 'Кожевничество'),
+(12865, 12, 'ruRU', 'Горное дело'),
+(12865, 14, 'ruRU', 'Снятие шкур'),
+(12865, 15, 'ruRU', 'Портняжное дело');
+
+-- MenuId 12880, 12887 - trainer dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12880 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12880, 0, 'ruRU', 'Мне нужно обучение, Кренк.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12887 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12887, 0, 'ruRU', 'Обучи меня.');
+
+-- MenuId 12890 - "What occasion brings you to our home town, drake?"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12890 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12890, 0, 'ruRU', 'Что привело тебя в наш родной город, дракончик?');
+
+-- MenuId 12897 - "What more can you tell me about these fire hawks?"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12897 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12897, 0, 'ruRU', 'Что ещё ты можешь рассказать об этих огненных ястребах?');
+
+-- MenuId 12911 - "Tell me about the ancient, Malorne."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12911 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12911, 0, 'ruRU', 'Расскажи мне о древнем, Малорне.');
+
+-- MenuId 12918 - "I am interested in mage training."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12918 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12918, 0, 'ruRU', 'Меня интересует обучение магии.');
+
+-- MenuId 12920, 12927 - priest/druid training dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12920 AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12920, 0, 'ruRU', 'Мне нужно обучение жреца.'),
+(12920, 1, 'ruRU', 'Я хочу забыть свои таланты.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12927 AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12927, 0, 'ruRU', 'Я ищу дальнейшего обучения друидизму, чтобы лучше понять волю Матери-Земли.'),
+(12927, 1, 'ruRU', 'Я хочу забыть свои таланты.');
+
+-- MenuId 12939 - "Wait no longer, I'm ready to fight."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12939 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12939, 0, 'ruRU', 'Хватит ждать, я готов сражаться.');
+
+-- MenuId 12941, 12949 - auction browsing dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12941 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12941, 0, 'ruRU', 'Я хотел бы посмотреть лоты аукциона.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12949 AND `OptionIndex` = 1 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12949, 1, 'ruRU', 'Покажи мне лоты аукциона.');
+
+-- MenuId 12950, 12951 - Aggra/totems dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12950 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12950, 0, 'ruRU', 'Эм, Агра... разве тебе не следует быть рядом с Траллом?');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12951 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12951, 0, 'ruRU', 'Не забудь свои тотемы!');
+
+-- MenuId 12972, 12973, 12977, 12979, 12981 - lore-dialogue fragments.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` IN (12972,12973,12977,12979,12981) AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12972, 0, 'ruRU', 'Нет, расскажи подробнее!'),
+(12973, 0, 'ruRU', 'Что произошло во время Войны древних?'),
+(12977, 0, 'ruRU', 'Кажется, я понимаю. Спасибо.'),
+(12979, 0, 'ruRU', 'Увлекательно.'),
+(12981, 0, 'ruRU', 'Мне жаль это слышать.');
+
+-- MenuId 12991, 12992 - Darkmoon Faire dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12991 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12991, 0, 'ruRU', 'Я готов.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 12992 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(12992, 0, 'ruRU', 'Отведи меня к месту проведения ярмарки.');
+
+-- MenuId 13012 - Darkmoon Faire Ring Toss; color token preserved.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13012 AND `OptionIndex` IN (0,1,2) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13012, 0, 'ruRU', 'Как играть в Бросок колец?'),
+(13012, 1, 'ruRU', 'Готов играть! |cFF0008E8(Жетон ярмарки Новолуния)|r'),
+(13012, 2, 'ruRU', 'Готов играть! |cFF0008E8(Жетон ярмарки Новолуния)|r');
+
+-- MenuId 13013, 13014, 13015 - misc dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13013 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13013, 0, 'ruRU', 'Я понимаю.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13014 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13014, 0, 'ruRU', 'Обучи меня.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13015 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13015, 0, 'ruRU', 'Да, Тралл.');
+
+-- MenuId 13018 - "How do I play Whack-a-Gnoll?"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13018 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13018, 0, 'ruRU', 'Как играть в Ударь гнолла?');
+
+-- MenuId 13018(remainder), 13019 - Darkmoon Faire games; color token preserved.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13018 AND `OptionIndex` IN (1,2) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13018, 1, 'ruRU', 'Готов ударить! |cFF0008E8(Жетон ярмарки Новолуния)|r'),
+(13018, 2, 'ruRU', 'Готов ударить! |cFF0008E8(Жетон ярмарки Новолуния)|r');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13019 AND `OptionIndex` IN (0,1,2) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13019, 0, 'ruRU', 'Как играть в Испытание на танке?'),
+(13019, 1, 'ruRU', 'Готов играть! |cFF0008E8(Жетон ярмарки Новолуния)|r'),
+(13019, 2, 'ruRU', 'Готов играть! |cFF0008E8(Жетон ярмарки Новолуния)|r');
+
+-- MenuId 13047 - "I'd like to travel by air."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13047 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13047, 0, 'ruRU', 'Я хотел бы полететь по воздуху.');
+
+-- MenuId 13063 - "Yes Thrall, lets do this!"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13063 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13063, 0, 'ruRU', 'Да, Тралл, сделаем это!');
+
+-- MenuId 13065, 13066, 13068 - "I understand."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` IN (13065,13066,13068) AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13065, 0, 'ruRU', 'Я понимаю.'),
+(13066, 0, 'ruRU', 'Я понимаю.'),
+(13068, 0, 'ruRU', 'Я понимаю.');
+
+-- MenuId 13111 - vendor "I would like to buy from you."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13111 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13111, 0, 'ruRU', 'Я хотел бы купить у тебя.');
+
+-- MenuId 13162 - "I am ready to be hidden by your shadowcloak."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13162 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13162, 0, 'ruRU', 'Я готов, чтобы меня скрыл твой теневой плащ.');
+
+-- MenuId 13163, 13164 - "Let's go!" / "Lead the way."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13163 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13163, 0, 'ruRU', 'Идём!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13164 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13164, 0, 'ruRU', 'Веди.');
+
+-- MenuId 13183 - "Yes Thrall."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13183 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13183, 0, 'ruRU', 'Да, Тралл.');
+
+-- MenuId 13210 - "No thank you."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13210 AND `OptionIndex` = 1 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13210, 1, 'ruRU', 'Нет, спасибо.');
+
+-- MenuId 13294, 13295 - "We defeated the Destroyer!"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13294 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13294, 0, 'ruRU', 'Мы победили Разрушителя!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13295 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13295, 0, 'ruRU', 'Немыслимо! Он просто не может быть жив!');
+
+-- MenuId 13321 - Caverns of Time wing selection.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13321 AND `OptionIndex` IN (0,1,2,3,4,5,9) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13321, 0, 'ruRU', 'Преддверие Времени'),
+(13321, 1, 'ruRU', 'Рубиновое святилище драконов'),
+(13321, 2, 'ruRU', 'Изумрудное святилище драконов'),
+(13321, 3, 'ruRU', 'Лазурное святилище драконов'),
+(13321, 4, 'ruRU', 'Обсидиановое святилище драконов'),
+(13321, 5, 'ruRU', 'Рубиновое святилище драконов'),
+(13321, 9, 'ruRU', 'Бронзовое святилище драконов');
+
+-- MenuId 13326 - Well of Eternity teleport dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13326 AND `OptionIndex` IN (5,7) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13326, 5, 'ruRU', 'Телепортировать во дворец Азшары.'),
+(13326, 7, 'ruRU', 'Телепортировать к Колодцу Вечности.');
+
+-- MenuId 13352 - cannon teleport dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13352 AND `OptionIndex` IN (0,7) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13352, 0, 'ruRU', 'Телепортируй меня к пушке.'),
+(13352, 7, 'ruRU', 'Мне не нужен телепорт.');
+
+-- MenuId 13356 - "I humbly request that the Dragon Aspects provide no aid..."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13356 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13356, 0, 'ruRU', 'Я почтительно прошу Аспектов драконов не оказывать помощь ни мне, ни моим товарищам-искателям приключений. Пусть они беспокоятся о своих проблемах, а мы - о своих.');
+
+-- MenuId 13357 - "We will become legend."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13357 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13357, 0, 'ruRU', 'Мы станем легендой.');
+
+-- MenuId 13360, 13362 - time-travel dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13360 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13360, 0, 'ruRU', 'Я готов отправиться назад во времени - к Колодцу Вечности.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13362 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13362, 0, 'ruRU', 'Я готов помочь Траллу, вернувшись в своё время.');
+
+-- MenuId 13373, 13376 - Kalecgos dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13373 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13373, 0, 'ruRU', 'У нас получилось, Калекгос.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13376 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13376, 0, 'ruRU', 'Ты из бронзового клана, ты знаешь, что будет дальше! Может, просто перенесёшь нас сразу к настоящему действию?');
+
+-- MenuId 13390 - "Show me, dragon."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13390 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13390, 0, 'ruRU', 'Покажи мне, дракон.');
+
+-- MenuId 13405, 13406 - garden-entrance teleport dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13405 AND `OptionIndex` IN (0,5) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13405, 0, 'ruRU', 'Телепортировать ко входу в сад.'),
+(13405, 5, 'ruRU', 'Телепортировать во дворец Азшары.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13406 AND `OptionIndex` IN (0,5) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13406, 0, 'ruRU', 'Телепортировать ко входу в сад.'),
+(13406, 5, 'ruRU', 'Телепортировать во дворец Азшары.');
+
+-- MenuId 13406(remainder) - Well of Eternity teleport.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13406 AND `OptionIndex` = 7 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13406, 7, 'ruRU', 'Телепортировать к Колодцу Вечности.');
+
+-- MenuId 13411 - "I humbly request that the Dragon Aspects provide no aid..." (same as 13356).
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13411 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13411, 0, 'ruRU', 'Я почтительно прошу Аспектов драконов не оказывать помощь ни мне, ни моим товарищам-искателям приключений. Пусть они беспокоятся о своих проблемах, а мы - о своих.');
+
+-- MenuId 13691 - Fire Lotus Incense dialogue; \n preserved.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 13691 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(13691, 0, 'ruRU', 'Что ж, ты не можешь просто оставаться здесь! Ты не оставляешь мне выбора!\n<Использовать благовоние огненного лотоса.>');
+
+-- MenuId 14084, 14294, 14295 - "Enter the Ordeal"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 14084 AND `OptionIndex` = 8 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(14084, 8, 'ruRU', 'Войти в Испытание');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 14294 AND `OptionIndex` = 4 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(14294, 4, 'ruRU', 'Войти в Испытание');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 14295 AND `OptionIndex` = 4 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(14295, 4, 'ruRU', 'Войти в Испытание');
+
+-- MenuId 14991 - pet battle-stone trader dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 14991 AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(14991, 0, 'ruRU', 'Интересуют редкие питомцы для поимки?'),
+(14991, 1, 'ruRU', 'Хочешь обменять свои боевые камни?');
+
+-- MenuId 15187 - "Could you, please, send me to Moonglade, Emissary?"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 15187 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(15187, 0, 'ruRU', 'Не мог бы ты, пожалуйста, отправить меня в Лунную поляну, посланник?');
+
+-- MenuId 16767 - reforge vendor dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 16767 AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(16767, 0, 'ruRU', '<Перековать добычу.>'),
+(16767, 1, 'ruRU', 'Покажи мне свои товары!');
+
+-- MenuId 16862 - fishing-advice quest dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 16862 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(16862, 0, 'ruRU', 'Ты похож на умелого рыбака, сможешь нам помочь?\n\nМы разбили небольшой гарнизон неподалёку, но нам трудно прокормить войска. Любой совет по рыбалке нам бы очень пригодился.');
+
+-- MenuId 17404 - "You are free....."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 17404 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(17404, 0, 'ruRU', 'Ты свободен.....');
+
+-- MenuId 18068 - "Let's see what you have."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 18068 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(18068, 0, 'ruRU', 'Давай посмотрим, что у тебя есть.');
+
+-- MenuId 18724 - Legion zone destination selection.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 18724 AND `OptionIndex` IN (2,3,4,5,6,7,8) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(18724, 2, 'ruRU', 'Даларан.'),
+(18724, 3, 'ruRU', 'Штормхейм.'),
+(18724, 4, 'ruRU', 'Азсуна.'),
+(18724, 5, 'ruRU', 'Вал''шара.'),
+(18724, 6, 'ruRU', 'Вышегорье.'),
+(18724, 7, 'ruRU', 'Сурамар.'),
+(18724, 8, 'ruRU', 'Расколотый берег.');
+
+-- MenuId 18747 - "Show me what missions you have prepared."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 18747 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(18747, 0, 'ruRU', 'Покажи мне, какие задания у тебя готовы.');
+
+-- MenuId 18748 - "I wish to trade."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 18748 AND `OptionIndex` = 5 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(18748, 5, 'ruRU', 'Я хочу торговать.');
+
+-- MenuId 18773 - "It works, get ready!"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 18773 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(18773, 0, 'ruRU', 'Работает, приготовься!');
+
+-- MenuId 18776 - "Whitemoon, I'll be taking one of your fel bats..."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 18776 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(18776, 0, 'ruRU', 'Уайтмун, я возьму одного из твоих осквернённых нетопырей. Мы получим то, за чем пришли.');
+
+-- MenuId 18850 - "I challenge you, Haldor."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 18850 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(18850, 0, 'ruRU', 'Я вызываю тебя, Халдор.');
+
+-- MenuId 18904 - "Did the taurens participate in the construction of the pavilion?"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 18904 AND `OptionIndex` = 1 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(18904, 1, 'ruRU', 'Таурены участвовали в строительстве павильона?');
+
+-- MenuId 18956 - "I'll have you out of there in just a moment."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 18956 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(18956, 0, 'ruRU', 'Я вытащу тебя оттуда через секунду.');
+
+-- MenuId 19086 - "Something worries you?"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 19086 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(19086, 0, 'ruRU', 'Тебя что-то беспокоит?');
+
+-- MenuId 19102 - stable/pet dialogue; group1/2 are deliberate French flavor text (no accented
+-- chars so they slipped the usual filter, but match the established French-NPC convention),
+-- left untranslated.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 19102 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(19102, 0, 'ruRU', 'Я хотел бы оставить питомца в стойле.');
+
+-- MenuId 19255 - "Here are 100 gold coins..." ransom dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 19255 AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(19255, 0, 'ruRU', 'Вот 100 золотых монет. Пойдёт?'),
+(19255, 1, 'ruRU', '<Приставить нож к горлу Марина.> Итак, поговорим о деле?');
+
+-- MenuId 19258, 19281 - "How do you go down to the arena?" / "Where does this altar come from?"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 19258 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(19258, 0, 'ruRU', 'Как спуститься на арену?');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 19281 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(19281, 0, 'ruRU', 'Откуда взялся этот алтарь?');
+
+-- MenuId 19340 - "Do you live here in Thunder Totem, Lessah?"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 19340 AND `OptionIndex` = 1 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(19340, 1, 'ruRU', 'Ты живёшь здесь, в Громовом Тотеме, Лесса?');
+
+-- MenuId 19434 - "I see."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 19434 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(19434, 0, 'ruRU', 'Понятно.');
+
+-- MenuId 19717 - "I have to travel."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 19717 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(19717, 0, 'ruRU', 'Мне нужно отправиться в путь.');
+
+-- MenuId 19948 - "Yes, I'd like to refund the traits in my artifact."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 19948 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(19948, 0, 'ruRU', 'Да, я хочу сбросить способности своего артефакта.');
+
+-- MenuId 4444, 5555 - deliberate French flavor text (same convention as 999/1111/2222/3333),
+-- left untranslated.
+
+-- MenuId 19966-19970 - "death hunters" dialogue chain.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 19966 AND `OptionIndex` = 1 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(19966, 1, 'ruRU', 'Эм, мы знакомы?');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` IN (19967,19968,19969,19970) AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(19967, 0, 'ruRU', 'Что ж, мне всё равно нужно с ней поговорить.'),
+(19968, 0, 'ruRU', 'Я не хочу вмешиваться...'),
+(19969, 0, 'ruRU', 'Подожди... я правильно расслышал?'),
+(19970, 0, 'ruRU', 'Я никогда не слышал о «охотниках на смерть».');
+
+-- MenuId 20007 - "The Valarjar await."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 20007 AND `OptionIndex` = 1 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(20007, 1, 'ruRU', 'Валарьяры ждут.');
+
+-- MenuId 20079 - "The Light is ready to serve."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 20079 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(20079, 0, 'ruRU', 'Свет готов служить.');
+
+-- MenuId 20095 - "Who wants a job?"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 20095 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(20095, 0, 'ruRU', 'Кому нужна работа?');
+
+-- MenuId 20187 - Suramar withered-training purchase menu; \n, color codes and icon tags
+-- preserved verbatim.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 20187 AND `OptionIndex` IN (0,2,4,5,6,7,9) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(20187, 0, 'ruRU', 'Восемь иссохших.\n(Стоимость: 400 Древней маны |TINTERFACE\\ICONS\\INV_Misc_ancient_mana.blp:16|t)'),
+(20187, 2, 'ruRU', 'Десять иссохших.\n(Стоимость: 650 Древней маны |TINTERFACE\\ICONS\\INV_Misc_ancient_mana.blp:16|t)'),
+(20187, 4, 'ruRU', 'Двенадцать иссохших.\n(Стоимость: 900 Древней маны |TINTERFACE\\ICONS\\INV_Misc_ancient_mana.blp:16|t)'),
+(20187, 5, 'ruRU', 'Двенадцать иссохших.\n|cFFFF0000(Стоимость: 900 Древней маны |TINTERFACE\\ICONS\\INV_Misc_ancient_mana.blp:16|t)|r'),
+(20187, 6, 'ruRU', 'Пятнадцать иссохших.\n(Стоимость: 1300 Древней маны |TINTERFACE\\ICONS\\INV_Misc_ancient_mana.blp:16|t)'),
+(20187, 7, 'ruRU', 'Пятнадцать иссохших.\n|cFFFF0000(Стоимость: 1300 Древней маны |TINTERFACE\\ICONS\\INV_Misc_ancient_mana.blp:16|t)|r'),
+(20187, 9, 'ruRU', 'Двадцать иссохших.\n|cFFFF0000(Стоимость: 2000 Древней маны |TINTERFACE\\ICONS\\INV_Misc_ancient_mana.blp:16|t)|r');
+
+-- MenuId 20344 - "Place a work order for Champion armaments."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 20344 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(20344, 0, 'ruRU', 'Разместить заказ на снаряжение чемпиона.');
+
+-- MenuId 20352, 20356, 20360, 20369, 20370, 20371 - "Let's see what you have there."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` IN (20352,20356,20360,20369,20370,20371) AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(20352, 0, 'ruRU', 'Давай посмотрим, что у тебя есть.'),
+(20356, 0, 'ruRU', 'Давай посмотрим, что у тебя есть.'),
+(20360, 0, 'ruRU', 'Давай посмотрим, что у тебя есть.'),
+(20369, 0, 'ruRU', 'Давай посмотрим, что у тебя есть.'),
+(20370, 0, 'ruRU', 'Давай посмотрим, что у тебя есть.'),
+(20371, 0, 'ruRU', 'Давай посмотрим, что у тебя есть.');
+
+-- MenuId 20375 - "Let's see what you have."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 20375 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(20375, 0, 'ruRU', 'Давай посмотрим, что у тебя есть.');
+
+-- MenuId 20380-20386, 20542 - "Enter the Ordeal"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` IN (20380,20381,20382,20383,20384,20385,20386,20542) AND `OptionIndex` = 8 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(20380, 8, 'ruRU', 'Войти в Испытание'),
+(20381, 8, 'ruRU', 'Войти в Испытание'),
+(20382, 8, 'ruRU', 'Войти в Испытание'),
+(20383, 8, 'ruRU', 'Войти в Испытание'),
+(20384, 8, 'ruRU', 'Войти в Испытание'),
+(20385, 8, 'ruRU', 'Войти в Испытание'),
+(20386, 8, 'ruRU', 'Войти в Испытание'),
+(20542, 8, 'ruRU', 'Войти в Испытание');
+
+-- MenuId 20389 - innkeeper/vendor combo.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 20389 AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(20389, 0, 'ruRU', 'Сделать эту гостиницу своим домом.'),
+(20389, 1, 'ruRU', 'Что у тебя есть на продажу?');
+
+-- MenuId 20424 - module-activation dialogue; icon tag preserved.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 20424 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(20424, 0, 'ruRU', '<Активировать модуль, потратив 25 |TINTERFACE\\ICONS\\INV_MISC_ANCIENT_MANA.BLP:15|t Древней маны.>');
+
+-- MenuId 20677 - "You are free to go!"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 20677 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(20677, 0, 'ruRU', 'Ты свободен!');
+
+-- MenuId 20678 - "You are free to go!"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 20678 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(20678, 0, 'ruRU', 'Ты свободен!');
+
+-- MenuId 20697 - "Teleport to the Nightspire."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 20697 AND `OptionIndex` = 3 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(20697, 3, 'ruRU', 'Телепортировать к Шпилю Ночи.');
+
+-- MenuId 20737 - "We're ready to leave now."
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 20737 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(20737, 0, 'ruRU', 'Мы готовы отправляться.');
+
+-- MenuId 21249, 21251 - Metzen holiday-event dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 21249 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(21249, 0, 'ruRU', 'Пожать руку');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 21251 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(21251, 0, 'ruRU', 'Посыпать Метцена оленьей пылью.');
+
+-- MenuId 21263-21270 - Zul'Gurub tribute-trinket replacement dialogue (lost item variants).
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 21263 AND `OptionIndex` IN (3,4,5,6) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(21263, 3, 'ruRU', 'Кажется, я потерял свою Печать героя. Поможешь?'),
+(21263, 4, 'ruRU', 'Кажется, я потерял свою Печать язычника. Поможешь?'),
+(21263, 5, 'ruRU', 'Кажется, я потерял свою Печать язычника. Поможешь?'),
+(21263, 6, 'ruRU', 'Кажется, я потерял свою Печать язычника. Поможешь?');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 21264 AND `OptionIndex` IN (3,4,5,6) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(21264, 3, 'ruRU', 'Кажется, я потерял свою Ярость Мугамбы. Поможешь?'),
+(21264, 4, 'ruRU', 'Кажется, я потерял свою Силу Мугамбы. Поможешь?'),
+(21264, 5, 'ruRU', 'Кажется, я потерял свою Силу Мугамбы. Поможешь?'),
+(21264, 6, 'ruRU', 'Кажется, я потерял свою Силу Мугамбы. Поможешь?');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 21265 AND `OptionIndex` IN (3,4,5,6) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(21265, 3, 'ruRU', 'Кажется, я потерял свой Всевидящий глаз Зулдазара. Поможешь?'),
+(21265, 4, 'ruRU', 'Кажется, я потерял свой Глаз Зулдазара. Поможешь?'),
+(21265, 5, 'ruRU', 'Кажется, я потерял свой Глаз Зулдазара. Поможешь?'),
+(21265, 6, 'ruRU', 'Кажется, я потерял свой Глаз Зулдазара. Поможешь?');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 21266 AND `OptionIndex` IN (3,4,5,6) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(21266, 3, 'ruRU', 'Кажется, я потерял свою Неостановимую Скверну Кезана. Поможешь?'),
+(21266, 4, 'ruRU', 'Кажется, я потерял свою Скверну Кезана. Поможешь?'),
+(21266, 5, 'ruRU', 'Кажется, я потерял свою Скверну Кезана. Поможешь?'),
+(21266, 6, 'ruRU', 'Кажется, я потерял свою Скверну Кезана. Поможешь?');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 21267 AND `OptionIndex` IN (3,4,5,6) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(21267, 3, 'ruRU', 'Кажется, я потерял свою Драгоценность Каджаро. Поможешь?'),
+(21267, 4, 'ruRU', 'Кажется, я потерял свой Камешек Каджаро. Поможешь?'),
+(21267, 5, 'ruRU', 'Кажется, я потерял свой Камешек Каджаро. Поможешь?'),
+(21267, 6, 'ruRU', 'Кажется, я потерял свой Камешек Каджаро. Поможешь?');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 21268 AND `OptionIndex` IN (3,4,5,6) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(21268, 3, 'ruRU', 'Кажется, я потерял своё Незамутнённое Видение Вудресс. Поможешь?'),
+(21268, 4, 'ruRU', 'Кажется, я потерял своё Видение Вудресс. Поможешь?'),
+(21268, 5, 'ruRU', 'Кажется, я потерял своё Видение Вудресс. Поможешь?'),
+(21268, 6, 'ruRU', 'Кажется, я потерял своё Видение Вудресс. Поможешь?');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 21269 AND `OptionIndex` IN (3,4,5,6) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(21269, 3, 'ruRU', 'Кажется, я потерял свои Безупречные зачарованные водоросли Южных морей. Поможешь?'),
+(21269, 4, 'ruRU', 'Кажется, я потерял свои Зачарованные водоросли Южных морей. Поможешь?'),
+(21269, 5, 'ruRU', 'Кажется, я потерял свои Зачарованные водоросли Южных морей. Поможешь?'),
+(21269, 6, 'ruRU', 'Кажется, я потерял свои Зачарованные водоросли Южных морей. Поможешь?');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 21270 AND `OptionIndex` IN (3,4) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(21270, 3, 'ruRU', 'Кажется, я потерял свой Зандаларский талисман мастерства тени. Поможешь?'),
+(21270, 4, 'ruRU', 'Кажется, я потерял свой Зандаларский талисман тени. Поможешь?');
+
+-- MenuId 21270(remainder), 21271 - Zul'Gurub tribute-trinket replacement dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 21270 AND `OptionIndex` IN (5,6) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(21270, 5, 'ruRU', 'Кажется, я потерял свой Зандаларский талисман тени. Поможешь?'),
+(21270, 6, 'ruRU', 'Кажется, я потерял свой Зандаларский талисман тени. Поможешь?');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 21271 AND `OptionIndex` IN (3,4,5,6) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(21271, 3, 'ruRU', 'Кажется, я потерял свой Гнев Водоворота. Поможешь?'),
+(21271, 4, 'ruRU', 'Кажется, я потерял своё Щупальце Водоворота. Поможешь?'),
+(21271, 5, 'ruRU', 'Кажется, я потерял своё Щупальце Водоворота. Поможешь?'),
+(21271, 6, 'ruRU', 'Кажется, я потерял своё Щупальце Водоворота. Поможешь?');
+
+-- MenuId 21336 - "<View Light's Judgment.>"
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 21336 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(21336, 0, 'ruRU', '<Взглянуть на Суд Света.>');
+
+-- MenuId 21910 - Vigilant Quoram (Army of the Light) dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 21910 AND `OptionIndex` BETWEEN 0 AND 5 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(21910, 0, 'ruRU', 'Привет, Бдительный Кворам. Мы уже встречались на Аргусе.'),
+(21910, 1, 'ruRU', 'Я прошёл своё испытание!'),
+(21910, 2, 'ruRU', 'Что ты знаешь о становлении Озарёнными Светом?'),
+(21910, 3, 'ruRU', 'Ты планируешь остаться с дренеями?'),
+(21910, 4, 'ruRU', 'Как тебе на борту Виндикара?'),
+(21910, 5, 'ruRU', 'Можешь телепортировать меня обратно на мостик?');
+
+-- MenuId 21937, 21938 - race lore dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 21937 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(21937, 0, 'ruRU', 'Что мы знаем о тауренах Вышегорья?');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 21938 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(21938, 0, 'ruRU', 'Что мы знаем о светлостражах?');
+
+-- MenuId 22068, 22081, 22082 - race/lore dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 22068 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(22068, 0, 'ruRU', 'Что ты знаешь о Телогрусе?');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 22081 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(22081, 0, 'ruRU', 'Что ты можешь рассказать об озарённых Светом дренеях?');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 22082 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(22082, 0, 'ruRU', 'Что мы знаем об эльфах Бездны?');
+
+-- MenuId 22114, 22117, 22121 - profession-trainer/vendor dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 22114 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(22114, 0, 'ruRU', 'Обучи меня травничеству.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 22117 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(22117, 0, 'ruRU', 'Дай мне посмотреть твои товары.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 22121 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(22121, 0, 'ruRU', 'Я хотел бы купить у тебя.');
+
+-- MenuId 22124, 22125 - profession-trainer/vendor combo.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 22124 AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(22124, 0, 'ruRU', 'Я здесь ради обучения кулинарии.'),
+(22124, 1, 'ruRU', 'Дай мне посмотреть твои товары.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 22125 AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(22125, 0, 'ruRU', 'Обучи меня портняжному делу.'),
+(22125, 1, 'ruRU', 'Дай мне посмотреть твои товары.');
+
+-- MenuId 22169, 22171, 22172, 22173 - profession-trainer/vendor dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 22169 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(22169, 0, 'ruRU', 'Обучи меня первой помощи.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 22171 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(22171, 0, 'ruRU', 'Обучи меня портняжному делу.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 22172 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(22172, 0, 'ruRU', 'Дай мне посмотреть твои товары.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 22173 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(22173, 0, 'ruRU', 'Обучи меня инженерному делу.');
+
+-- MenuId 22176, 22177 - blacksmith/mining dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 22176 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(22176, 0, 'ruRU', 'Я хочу стать кузнецом.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 22177 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(22177, 0, 'ruRU', 'Расскажи мне о горном деле.');
+
+-- MenuId 22193, 22201 - race lore dialogue.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 22193 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(22193, 0, 'ruRU', 'Что мы знаем об орках Маг''хар?');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 22201 AND `OptionIndex` = 3 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(22201, 3, 'ruRU', 'Что ты можешь рассказать о дворфах Тёмного Железа?');
+
+-- MenuId 22234 - innkeeper/vendor combo.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 22234 AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(22234, 0, 'ruRU', 'Сделать эту гостиницу своим домом.'),
+(22234, 1, 'ruRU', 'Что у тебя есть на продажу?');
+
+-- MenuId 24381-54894 - final scattered batch of one-off gossip options.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 24381 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(24381, 0, 'ruRU', 'Изменение рун');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 25318 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(25318, 0, 'ruRU', 'Идём!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 25794 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(25794, 0, 'ruRU', 'Включить!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 29384 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(29384, 0, 'ruRU', 'Я не рабочий. Я здесь, чтобы освободить тебя от рабства в шахтах.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 30127 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(30127, 0, 'ruRU', 'Взять это железо!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 30154 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(30154, 0, 'ruRU', 'Пропустим разминку, сестра... или ты слишком боишься сразиться с кем-то своего роста?');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 33220 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(33220, 0, 'ruRU', 'Ты знаешь, где найти Ясенрощный клинок?');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` IN (34957,34958,34959) AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(34957, 0, 'ruRU', 'Прокатимся!'),
+(34958, 0, 'ruRU', 'Прокатимся!'),
+(34959, 0, 'ruRU', 'Прокатимся!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 39865 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(39865, 0, 'ruRU', 'Не мог бы ты, пожалуйста, отправить меня на Хиджал?');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 39999 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(39999, 0, 'ruRU', 'Спасти его!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 40056 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(40056, 0, 'ruRU', 'Пожалуйста, помоги нам!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 42465 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(42465, 0, 'ruRU', 'Я слушаю!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 42468 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(42468, 0, 'ruRU', 'Вот, держи!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` IN (43036,43042) AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(43036, 0, 'ruRU', 'Идём!'),
+(43042, 0, 'ruRU', 'Идём!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 43170 AND `OptionIndex` IN (0,1,2,3) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(43170, 0, 'ruRU', 'Уничтожить вход!!'),
+(43170, 1, 'ruRU', 'Уничтожить вход!!'),
+(43170, 2, 'ruRU', 'Уничтожить вход!!'),
+(43170, 3, 'ruRU', 'Уничтожить вход!!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` IN (43572,44427) AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(43572, 0, 'ruRU', 'Идём!'),
+(44427, 0, 'ruRU', 'Идём!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 44768 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(44768, 0, 'ruRU', 'Ты теперь свободен!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 46014 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(46014, 0, 'ruRU', 'Проверить его карман...');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` IN (46881,46882) AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(46881, 0, 'ruRU', 'Проверить солдата...'),
+(46882, 0, 'ruRU', 'Проверить солдата...');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` IN (47814,47820,47821,47822) AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(47814, 0, 'ruRU', 'Взять его.'),
+(47820, 0, 'ruRU', 'Взять его.'),
+(47821, 0, 'ruRU', 'Взять его.'),
+(47822, 0, 'ruRU', 'Взять его.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 47930 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(47930, 0, 'ruRU', 'Король желает быть в курсе недавней активности Неферсетов.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 48705 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(48705, 0, 'ruRU', 'Я готов, ВПЕРЁД!!!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 54763 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(54763, 0, 'ruRU', 'Тебе нужно идти!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 54894 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(54894, 0, 'ruRU', 'Начнём!');
+
+-- MenuId 54914-99914 - final tail batch of one-off gossip options.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 54914 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(54914, 0, 'ruRU', 'Я нашёл это!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` IN (54924,54925,54926,54944) AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(54924, 0, 'ruRU', 'Приступим!'),
+(54925, 0, 'ruRU', 'Приступим!'),
+(54926, 0, 'ruRU', 'Приступим!'),
+(54944, 0, 'ruRU', 'Приступим!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 54990 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(54990, 0, 'ruRU', 'Теперь ты свободен!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 55009 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(55009, 0, 'ruRU', 'Мы нашли это!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 55201 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(55201, 0, 'ruRU', 'Теперь ты спасён!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` IN (55283,55333) AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(55283, 0, 'ruRU', 'Расскажи мне всё!'),
+(55333, 0, 'ruRU', 'Расскажи мне всё!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 55490 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(55490, 0, 'ruRU', 'Теперь ты спасён!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 56222 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(56222, 0, 'ruRU', 'Я могу победить тебя!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 56737 AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(56737, 0, 'ruRU', 'Я хочу быстро добраться до места'),
+(56737, 1, 'ruRU', 'Я хочу отправиться в путь!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 59348 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(59348, 0, 'ruRU', 'Я могу тебе помочь!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 59572 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(59572, 0, 'ruRU', 'Я могу победить тебя!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 59899 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(59899, 0, 'ruRU', 'Я готов идти!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 60000 AND `OptionIndex` = 1 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(60000, 1, 'ruRU', 'ЗА АЗЕРОТ!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 60001 AND `OptionIndex` = 1 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(60001, 1, 'ruRU', 'Кадгар попросил нас отвлечь внимание от Ока Килрогга.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 60002 AND `OptionIndex` = 1 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(60002, 1, 'ruRU', 'У нас есть всё необходимое. Пора строить этот гарнизон.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 61492 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(61492, 0, 'ruRU', 'Теперь ты спасён!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 64475 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(64475, 0, 'ruRU', 'Отдать ему реликвию...');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` IN (64491,64493,64494) AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(64491, 0, 'ruRU', 'Ты спасён!'),
+(64493, 0, 'ruRU', 'Ты спасён!'),
+(64494, 0, 'ruRU', 'Ты спасён!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 65910 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(65910, 0, 'ruRU', 'Я из Альянса');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 66292 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(66292, 0, 'ruRU', 'Я готов, ВПЕРЁД!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` IN (66564,66567) AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(66564, 0, 'ruRU', 'Теперь ты спасён!'),
+(66567, 0, 'ruRU', 'Теперь ты спасён!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 67067 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(67067, 0, 'ruRU', 'Идём!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 86563 AND `OptionIndex` = 1 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(86563, 1, 'ruRU', 'В пути в Азсуну!');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 88867 AND `OptionIndex` = 0 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(88867, 0, 'ruRU', 'Я не пойду с тобой пешком! Телепорт.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 93428 AND `OptionIndex` = 1 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(93428, 1, 'ruRU', 'Телепортировать в Хельхейм.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 97664 AND `OptionIndex` = 1 AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(97664, 1, 'ruRU', 'Телепортируй меня за пределы Хельхейма.');
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 99914 AND `OptionIndex` IN (0,1) AND `Locale` = 'ruRU';
+INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
+(99914, 0, 'ruRU', 'Мистик, благодарю за твою жертву'),
+(99914, 1, 'ruRU', 'Мы не забудем твою жертву');
+
 -- MenuId 9793 (talent unlearn), 9794 - Lord Thorval training dialogue.
 DELETE FROM `gossip_menu_option_locale` WHERE `MenuId` = 9793 AND `OptionIndex` = 1 AND `Locale` = 'ruRU';
 INSERT INTO `gossip_menu_option_locale` (`MenuId`, `OptionIndex`, `Locale`, `OptionText`) VALUES
