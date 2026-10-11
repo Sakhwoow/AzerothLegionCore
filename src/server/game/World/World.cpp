@@ -2523,6 +2523,7 @@ void World::SetInitialWorldSettings()
         BotUtility::QuestAIMaxLevel = uint32(questbotMaxLevel > 0 ? questbotMaxLevel : 0);
         BotUtility::QuestAIDebug = (sConfigMgr->GetIntDefault("questbot_debug", 0) != 0);
         BotUtility::QuestAIWorldQuestEnabled = (sConfigMgr->GetIntDefault("questbot_worldquest_enable", 0) != 0);
+        BotUtility::QuestAIStatsInterval = uint32(sConfigMgr->GetIntDefault("questbot_stats_interval", 300));
 
         int selfbotLevel = sConfigMgr->GetIntDefault("selfbot_level", 1);
         if (selfbotLevel < 0)

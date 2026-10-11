@@ -114,7 +114,7 @@ void SelfBotMgr::TryAutoAcceptInvite(Player* invitedPlayer)
 	invite->BroadcastGroupUpdate();
 
 	if (BotUtility::SelfBotDebug)
-		TC_LOG_INFO("server.loading", ">> SelfBot: %s auto-accepted group invite", invitedPlayer->GetName().c_str());
+		TC_LOG_DEBUG("playerbots", ">> SelfBot: %s auto-accepted group invite", invitedPlayer->GetName().c_str());
 }
 
 void SelfBotMgr::TryAutoConfirmReadyCheck(Player* player, Group* group)
@@ -130,5 +130,5 @@ void SelfBotMgr::TryAutoConfirmReadyCheck(Player* player, Group* group)
 	group->SetMemberReadyCheck(player->GetGUID(), true);
 
 	if (BotUtility::SelfBotDebug)
-		TC_LOG_INFO("server.loading", ">> SelfBot: %s auto-confirmed ready check", player->GetName().c_str());
+		TC_LOG_DEBUG("playerbots", ">> SelfBot: %s auto-confirmed ready check", player->GetName().c_str());
 }

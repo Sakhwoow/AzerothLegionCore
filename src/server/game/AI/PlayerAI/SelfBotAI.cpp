@@ -253,7 +253,7 @@ void SelfBotAI::SetActive(bool active)
 		std::string buffList;
 		for (uint32 id : m_BuffSpells)
 			buffList += std::to_string(id) + " ";
-		TC_LOG_INFO("server.loading", ">> SelfBot: %s (%s) %s (rotation: %s) (heal: %s) (buff: %s)", me->GetName().c_str(), me->GetGUID().ToString().c_str(),
+		TC_LOG_DEBUG("playerbots", ">> SelfBot: %s (%s) %s (rotation: %s) (heal: %s) (buff: %s)", me->GetName().c_str(), me->GetGUID().ToString().c_str(),
 			active ? "enabled" : "disabled", knownList.empty() ? "none" : knownList.c_str(), healList.empty() ? "none" : healList.c_str(),
 			buffList.empty() ? "none" : buffList.c_str());
 	}
@@ -331,7 +331,7 @@ bool SelfBotAI::TryUseHealSpell()
 
 	bool cast = TryCastFirstKnown(lowestAlly, m_HealSpells);
 	if (BotUtility::SelfBotDebug)
-		TC_LOG_INFO("server.loading", ">> SelfBot: %s heal check target=%s pct=%.1f -> %s",
+		TC_LOG_DEBUG("playerbots", ">> SelfBot: %s heal check target=%s pct=%.1f -> %s",
 			me->GetName().c_str(), lowestAlly->GetName().c_str(), lowestPct, cast ? "cast" : "none");
 	return cast;
 }
@@ -535,7 +535,7 @@ Unit* SelfBotAI::ResolveCombatVictim()
 		}
 
 		if (BotUtility::SelfBotDebug)
-			TC_LOG_INFO("server.loading", ">> SelfBot: %s no victim - selected=%s valid=%d attackers=%u -> victim=%s",
+			TC_LOG_DEBUG("playerbots", ">> SelfBot: %s no victim - selected=%s valid=%d attackers=%u -> victim=%s",
 				me->GetName().c_str(), selected ? selected->GetName().c_str() : "none", selectedValid,
 				uint32(me->getAttackers().size()), victim ? victim->GetName().c_str() : "none");
 
@@ -565,7 +565,7 @@ Unit* SelfBotAI::ResolveCombatVictim()
 	me->GetMotionMaster()->MoveChase(victim);
 
 	if (BotUtility::SelfBotDebug)
-		TC_LOG_INFO("server.loading", ">> SelfBot: %s combat victim=%s dist=%.1f motionType=%u",
+		TC_LOG_DEBUG("playerbots", ">> SelfBot: %s combat victim=%s dist=%.1f motionType=%u",
 			me->GetName().c_str(), victim->GetName().c_str(), me->GetDistance(victim), motionType);
 
 	return victim;
@@ -666,7 +666,7 @@ bool SelfBotAI::TryCastFirstKnown(Unit* target, std::vector<uint32> const& spell
 		SpellCastResult result = spell->prepare(&targets, nullptr);
 
 		if (BotUtility::SelfBotDebug)
-			TC_LOG_INFO("server.loading", ">> SelfBot: %s cast %u -> %s (%u)", me->GetName().c_str(), spellId,
+			TC_LOG_DEBUG("playerbots", ">> SelfBot: %s cast %u -> %s (%u)", me->GetName().c_str(), spellId,
 				result == SPELL_CAST_OK ? "ok" : "failed", uint32(result));
 
 		if (result == SPELL_CAST_OK)
@@ -691,7 +691,7 @@ void SelfBotAI::TryUseSelfPotion()
 				int32 dummyMisc[2] = { 0, 0 };
 				SpellCastResult result = me->CastItemUseSpell(pItem, targets, ObjectGuid::Empty, dummyMisc);
 				if (BotUtility::SelfBotDebug && result != SPELL_CAST_OK)
-					TC_LOG_INFO("server.loading", ">> SelfBot: %s life potion cast failed (%u)", me->GetName().c_str(), uint32(result));
+					TC_LOG_DEBUG("playerbots", ">> SelfBot: %s life potion cast failed (%u)", me->GetName().c_str(), uint32(result));
 			}
 		}
 		return;

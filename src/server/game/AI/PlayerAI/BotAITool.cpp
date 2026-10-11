@@ -63,6 +63,10 @@ uint32 BotUtility::QuestAIPercent = 0;
 uint32 BotUtility::QuestAIMaxLevel = 20;
 bool BotUtility::QuestAIDebug = false;
 bool BotUtility::QuestAIWorldQuestEnabled = false;
+uint32 BotUtility::QuestAIAccepted = 0;
+uint32 BotUtility::QuestAIRewarded = 0;
+uint32 BotUtility::QuestAIAbandoned = 0;
+uint32 BotUtility::QuestAIStatsInterval = 300;
 uint32 BotUtility::SelfBotLevel = 1;
 bool BotUtility::SelfBotDebug = false;
 bool BotUtility::AutoGearEnabled = false;
@@ -727,7 +731,7 @@ bool BotUtility::TryAutoEquipUpgrade(Player* bot, Item* item, bool isTank, uint3
 	float equippedScore = equipped ? EvaluateItemScore(bot, equipped, isTank) : 0.0f;
 
 	if (AutoGearDebug)
-		TC_LOG_INFO("server.loading", ">> AutoGear: %s slot=%u new=%.1f(%u) equipped=%.1f(%u)",
+		TC_LOG_DEBUG("playerbots", ">> AutoGear: %s slot=%u new=%.1f(%u) equipped=%.1f(%u)",
 			bot->GetName().c_str(), slot, newScore, proto->GetId(), equippedScore, equipped ? equipped->GetEntry() : 0);
 
 	if (newScore <= equippedScore)
@@ -955,7 +959,7 @@ void BotUtility::GrantStarterProfessions(Player* bot)
 	bot->SetSkill(SKILL_HERBALISM, 1, value, value);
 
 	if (ProfessionDebug)
-		TC_LOG_INFO("server.loading", ">> Profession: %s granted Skinning+Leatherworking+Mining+Herbalism at %u",
+		TC_LOG_DEBUG("playerbots", ">> Profession: %s granted Skinning+Leatherworking+Mining+Herbalism at %u",
 			bot->GetName().c_str(), uint32(value));
 }
 
@@ -991,7 +995,7 @@ Creature* BotUtility::TryAutoSkin(Player* bot, float range)
 	if (CastSpellChecked(bot, SKINNING_SPELL_ID, nearest))
 	{
 		if (ProfessionDebug)
-			TC_LOG_INFO("server.loading", ">> Profession: %s skinning %s", bot->GetName().c_str(), nearest->GetName().c_str());
+			TC_LOG_DEBUG("playerbots", ">> Profession: %s skinning %s", bot->GetName().c_str(), nearest->GetName().c_str());
 	}
 	return nearest;
 }
@@ -1023,7 +1027,7 @@ GameObject* BotUtility::TryAutoGather(Player* bot, float range)
 	bot->SendLoot(node->GetGUID(), LOOT_NONE);
 
 	if (ProfessionDebug)
-		TC_LOG_INFO("server.loading", ">> Profession: %s gathering node entry=%u", bot->GetName().c_str(), node->GetEntry());
+		TC_LOG_DEBUG("playerbots", ">> Profession: %s gathering node entry=%u", bot->GetName().c_str(), node->GetEntry());
 	return node;
 }
 
@@ -1067,7 +1071,7 @@ bool BotUtility::TryAutoCraft(Player* bot)
 		if (CastSpellChecked(bot, spellInfo->Id, nullptr))
 		{
 			if (ProfessionDebug)
-				TC_LOG_INFO("server.loading", ">> Profession: %s crafting via spell %u", bot->GetName().c_str(), spellInfo->Id);
+				TC_LOG_DEBUG("playerbots", ">> Profession: %s crafting via spell %u", bot->GetName().c_str(), spellInfo->Id);
 			return true;
 		}
 	}

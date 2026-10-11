@@ -3920,6 +3920,12 @@ Appender.Console=1,3,0
 Appender.Server=2,2,0,Server.log,w
 Appender.GM=2,2,15,gm/gm_%s.log
 Appender.DBErrors=2,2,0,DBErrors.log,w
+# Dedicated sink for the bot AI subsystems (QuestAI/SelfBot/AutoGear/Profession/GuildTask) -
+# parity with mod-playerbots' own Playerbots.log, so their per-tick debug chatter has somewhere
+# to go other than Server.log/the live console. The *_debug config toggles (questbot_debug,
+# selfbot_debug, ...) still decide per-feature whether anything is emitted at all; this Logger
+# only decides where it's routed once emitted.
+Appender.Playerbots=2,2,0,Playerbots.log,w
 #Appender.SQLUpdateLog=2,1,16,SQLUpdate.log,w
 #Appender.GrayLog=4,3,0,"http://0.0.0.0:12201/gelf"
 
@@ -3948,6 +3954,7 @@ Logger.scripts.hotswap=3,Console Server
 Logger.sql.sql=5,Console DBErrors
 Logger.sql.updates=3,Console Server
 Logger.mmaps=3,Server
+Logger.playerbots=2,Console Playerbots
 
 #Logger.addon=3,Console Server
 #Logger.ahbot=3,Console Server
@@ -4560,12 +4567,20 @@ warfare_size = 0
 #        Default:     0 - Отключено
 #                     1 - Включено
 #
+#   questbot_stats_interval
+#        Description: Как часто (в секундах) выводить в лог "playerbots" сводку по ИИ заданий
+#                      (принято/сдано/брошено квестов) - паритет с тем, как mod-playerbots
+#                      периодически печатает NewRpgStatistic через RandomPlayerbotMgr::PrintStats.
+#                      Чисто отчётный механизм, ни на что не влияет - 0 отключает.
+#        Default:     300
+#
 
 questbot_enable = 0
 questbot_percent = 0
 questbot_maxlevel = 20
 questbot_worldquest_enable = 0
 questbot_debug = 0
+questbot_stats_interval = 300
 
 #
 # Selfbot (ИИ играет за собственного персонажа игрока)

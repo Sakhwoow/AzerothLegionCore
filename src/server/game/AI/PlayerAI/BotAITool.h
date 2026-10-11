@@ -99,6 +99,17 @@ public:
     // those flags) - so this toggle is the only thing standing between "on" and actually trying
     // them, and should stay separately gated until soak-tested on its own.
     static bool QuestAIWorldQuestEnabled;
+    // Parity with mod-playerbots' NewRpgStatistic (Accepted/Rewarded/Dropped counters, aggregated
+    // server-wide and periodically logged via RandomPlayerbotMgr::PrintStats) - incremented
+    // directly by BotAIQuestDirector at the matching points (TryAcceptQuestsAt/TryTurnInAt/
+    // Abandon) and reported through PlayerBotMgr::Update's periodic "playerbots" log line
+    // (questbot_stats_interval). Plain counters, not atomics - every other static field in this
+    // class follows the same convention, since bot AI ticks run on the single world update
+    // thread for a given map, same as AC's own non-atomic rpgStasticTotal accumulation.
+    static uint32 QuestAIAccepted;
+    static uint32 QuestAIRewarded;
+    static uint32 QuestAIAbandoned;
+    static uint32 QuestAIStatsInterval;
     static uint32 SelfBotLevel;
     static bool SelfBotDebug;
     // Phase 9 ("Legion Bot Architecture" plan, gear scoring): off by default on purpose - this

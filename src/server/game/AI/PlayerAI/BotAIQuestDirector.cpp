@@ -88,7 +88,7 @@ void BotAIQuestDirector::SetActive(bool active)
 		m_ObjectiveStorageIndex = -1;
 	}
 	if (BotUtility::QuestAIDebug)
-		TC_LOG_INFO("server.loading", ">> QuestAI: %s (%s) %s", me->GetName().c_str(), me->GetGUID().ToString().c_str(), active ? "enabled" : "disabled");
+		TC_LOG_DEBUG("playerbots", ">> QuestAI: %s (%s) %s", me->GetName().c_str(), me->GetGUID().ToString().c_str(), active ? "enabled" : "disabled");
 }
 
 void BotAIQuestDirector::EnterState(BotQuestDirectorState state)
@@ -152,7 +152,7 @@ void BotAIQuestDirector::MaybeSyncGear()
 	if (!pSession || pSession->HasSchedules())
 		return;
 	if (BotUtility::QuestAIDebug)
-		TC_LOG_INFO("server.loading", ">> QuestAI: %s (%s) gear resync at level %u", me->GetName().c_str(), me->GetGUID().ToString().c_str(), me->getLevel());
+		TC_LOG_DEBUG("playerbots", ">> QuestAI: %s (%s) gear resync at level %u", me->GetName().c_str(), me->GetGUID().ToString().c_str(), me->getLevel());
 	me->ResetPlayerToLevel(me->getLevel(), 3);
 }
 
@@ -245,9 +245,10 @@ bool BotAIQuestDirector::TryAcceptQuestsAt(WorldObject* questGiver)
 		m_GiverGUID = questGiver->GetGUID();
 		m_GiverPos = questGiver->GetPosition();
 		m_ObjectiveStorageIndex = -1;
+		++BotUtility::QuestAIAccepted;
 
 		if (BotUtility::QuestAIDebug)
-			TC_LOG_INFO("server.loading", ">> QuestAI: %s (%s) accepted quest %u", me->GetName().c_str(), me->GetGUID().ToString().c_str(), m_CurrentQuestId);
+			TC_LOG_DEBUG("playerbots", ">> QuestAI: %s (%s) accepted quest %u", me->GetName().c_str(), me->GetGUID().ToString().c_str(), m_CurrentQuestId);
 
 		if (me->GetQuestStatus(m_CurrentQuestId) == QUEST_STATUS_COMPLETE)
 			EnterState(QD_STATE_RETURN_TO_TURNIN);
@@ -427,9 +428,10 @@ void BotAIQuestDirector::TryTurnInAt(WorldObject* questGiver)
 	uint32 questId = m_CurrentQuestId;
 	uint8 levelBefore = me->getLevel();
 	me->RewardQuest(quest, reward, questGiver, true);
+	++BotUtility::QuestAIRewarded;
 
 	if (BotUtility::QuestAIDebug)
-		TC_LOG_INFO("server.loading", ">> QuestAI: %s (%s) turned in quest %u (level %u -> %u)",
+		TC_LOG_DEBUG("playerbots", ">> QuestAI: %s (%s) turned in quest %u (level %u -> %u)",
 			me->GetName().c_str(), me->GetGUID().ToString().c_str(), questId, levelBefore, me->getLevel());
 
 	m_CurrentQuestId = 0;
@@ -464,7 +466,7 @@ void BotAIQuestDirector::UpdateReturnToTurnIn(BotBGAIMovement* pMovement)
 void BotAIQuestDirector::Abandon(char const* reason)
 {
 	if (BotUtility::QuestAIDebug)
-		TC_LOG_INFO("server.loading", ">> QuestAI: %s (%s) abandoning quest %u: %s",
+		TC_LOG_DEBUG("playerbots", ">> QuestAI: %s (%s) abandoning quest %u: %s",
 			me->GetName().c_str(), me->GetGUID().ToString().c_str(), m_CurrentQuestId, reason);
 
 	if (m_CurrentQuestId != 0 && me->GetQuestStatus(m_CurrentQuestId) == QUEST_STATUS_INCOMPLETE)
@@ -472,6 +474,8 @@ void BotAIQuestDirector::Abandon(char const* reason)
 		if (Quest const* quest = sObjectMgr->GetQuestTemplate(m_CurrentQuestId))
 			me->RemoveActiveQuest(quest, false);
 	}
+	if (m_CurrentQuestId != 0)
+		++BotUtility::QuestAIAbandoned;
 
 	m_LastFailedQuestId = m_CurrentQuestId;
 	m_LastFailedTick = getMSTime();

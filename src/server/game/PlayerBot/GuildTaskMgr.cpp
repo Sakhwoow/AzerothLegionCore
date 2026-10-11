@@ -147,7 +147,7 @@ void GuildTaskMgr::CreateTask(Player* bot, Creature* creature)
 	SaveTask(botGuid, task);
 
 	if (BotUtility::GuildTaskDebug)
-		TC_LOG_INFO("server.loading", ">> GuildTask: %s got a new task - kill %u more %s (entry %u)",
+		TC_LOG_DEBUG("playerbots", ">> GuildTask: %s got a new task - kill %u more %s (entry %u)",
 			bot->GetName().c_str(), task.countNeeded - task.countDone, creature->GetName().c_str(), task.targetEntry);
 }
 
@@ -165,7 +165,7 @@ void GuildTaskMgr::CreateItemTask(Player* bot, Item* item)
 	SaveTask(botGuid, task);
 
 	if (BotUtility::GuildTaskDebug)
-		TC_LOG_INFO("server.loading", ">> GuildTask: %s got a new task - collect %u more of item %u",
+		TC_LOG_DEBUG("playerbots", ">> GuildTask: %s got a new task - collect %u more of item %u",
 			bot->GetName().c_str(), task.countNeeded - task.countDone, task.targetEntry);
 }
 
@@ -185,7 +185,7 @@ void GuildTaskMgr::CompleteTask(Player* bot, GuildTask const& task)
 	}
 
 	if (BotUtility::GuildTaskDebug)
-		TC_LOG_INFO("server.loading", ">> GuildTask: %s completed task (entry %u, x%u), rewarded %u copper",
+		TC_LOG_DEBUG("playerbots", ">> GuildTask: %s completed task (entry %u, x%u), rewarded %u copper",
 			bot->GetName().c_str(), task.targetEntry, uint32(task.countNeeded), reward);
 
 	DeleteTask(bot->GetGUID().GetCounter());

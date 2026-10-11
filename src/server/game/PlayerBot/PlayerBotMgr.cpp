@@ -3465,6 +3465,15 @@ void PlayerBotMgr::Update()
             AllPlayerBotRandomLogin();
     }
 
+    // Parity with mod-playerbots' RandomPlayerbotMgr::PrintStats (periodic quest-stats summary,
+    // AiPlayerbot.RandomBotPrintStatsInterval) - purely a reporting tick, never touches bot state.
+    if (BotUtility::QuestAIStatsInterval > 0 && nowTime >= m_QuestAIStatsReportTime)
+    {
+        m_QuestAIStatsReportTime = nowTime + BotUtility::QuestAIStatsInterval * 1000;
+        TC_LOG_INFO("playerbots", ">> QuestAI stats: accepted=%u rewarded=%u abandoned=%u",
+            BotUtility::QuestAIAccepted, BotUtility::QuestAIRewarded, BotUtility::QuestAIAbandoned);
+    }
+
     //if (!ExistUnBGPlayerBot())
     QueryBattlegroundRequirement();
 #ifndef INCOMPLETE_BOT
