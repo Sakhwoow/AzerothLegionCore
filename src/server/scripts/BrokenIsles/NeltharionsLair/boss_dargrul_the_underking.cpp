@@ -21,6 +21,8 @@
 #include "neltharions_lair.h"
 #include "CreatureTextMgr.h"
 #include "GridNotifiers.h"
+#include "GridNotifiersImpl.h"
+#include "CellImpl.h"
 
 class boss_dargrul : public CreatureScript
 {

@@ -32,6 +32,7 @@
 #include "GroupMgr.h"
 #include "Vehicle.h"
 #include "GridNotifiersImpl.h"
+#include "CellImpl.h"
 #include "AreaTriggerAI.h"
 #include "AreaTriggerPackets.h"
  
