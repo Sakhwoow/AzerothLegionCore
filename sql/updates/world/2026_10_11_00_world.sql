@@ -2076,3 +2076,265 @@ INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Te
 DELETE FROM `creature_text_locale` WHERE `CreatureID` = 118390 AND `Locale` = 'ruRU';
 INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
 (118390, 0, 0, 'ruRU', 'Убить тебя! Забрать твои вещи!');
+
+-- Cove Skrog (89097) - only group1 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 89097 AND `Locale` = 'ruRU' AND `GroupID`=1;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(89097, 1, 0, 'ruRU', 'Я рублю тебя по уху.');
+
+-- Drowned Student (89666) - only group3 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 89666 AND `Locale` = 'ruRU' AND `GroupID`=3;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(89666, 3, 0, 'ruRU', 'Я тут пытаюсь учиться.');
+
+-- Azurewing Keeper (89943) - only group3 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 89943 AND `Locale` = 'ruRU' AND `GroupID`=3;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(89943, 3, 0, 'ruRU', 'Я почувствовал дыхание зимы... и вот его источник. Посох первого Хранителя, что ты держишь.');
+
+-- Stellagosa (90065) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 90065 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(90065, 0, 0, 'ruRU', 'Я переоценила свои силы. Все драконы, кроме Аспектов, значительно ослабли после падения Смертокрыла.');
+
+-- Ishkaneth (90389) - only group4 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 90389 AND `Locale` = 'ruRU' AND `GroupID`=4;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(90389, 4, 0, 'ruRU', 'Я уничтожу тебя!');
+
+-- Agapanthus (90916) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 90916 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(90916, 0, 0, 'ruRU', 'Ты просишь о непростом, $n. Вот, возьми один. Я лишь надеюсь, что это поможет положить конец этой войне.');
+
+-- Tideskorn Longaxe (91204) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 91204 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(91204, 0, 0, 'ruRU', 'Ты уже проиграл. Торигниры разбиты!');
+
+-- Commander Lorna Crowley, Gilneas Brigade (91222) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 91222 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(91222, 0, 0, 'ruRU', 'Защитник! Рада тебя видеть. Врайкулы не славятся гостеприимством.');
+
+-- Koda Steelclaw, Archdruid of the Claw (91223) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 91223 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(91223, 0, 0, 'ruRU', 'Я расчищу проход. Будь начеку - я чувствую присутствие мощной магии.');
+
+-- Spymaster Shwayder, SI:7 (91460) - only group1 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 91460 AND `Locale` = 'ruRU' AND `GroupID`=1;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(91460, 1, 0, 'ruRU', 'Я раскрыт. Умри!');
+
+-- Thistleleaf Menace (91472) - only group2 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 91472 AND `Locale` = 'ruRU' AND `GroupID`=2;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(91472, 2, 0, 'ruRU', 'Я просто хотел... повеселиться...');
+
+-- Commander Lorna Crowley, Gilneas Brigade, separate entry (91481) - only group1 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 91481 AND `Locale` = 'ruRU' AND `GroupID`=1;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(91481, 1, 0, 'ruRU', 'Крюк для подъёма наверху той стены. Следуй за мной!');
+
+-- God-King Skovald (91556) - only group3 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 91556 AND `Locale` = 'ruRU' AND `GroupID`=3;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(91556, 3, 0, 'ruRU', 'Ты опоздал, слабак! Даже сейчас мы ломаем драконов, чтобы они служили нам!');
+
+-- Thrymjaris, Mother of the Thorignir (91570) - only group3 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 91570 AND `Locale` = 'ruRU' AND `GroupID`=3;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(91570, 3, 0, 'ruRU', 'Я свободна! Благодарю!');
+
+-- Reanimated Archer (91860) - only group3 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 91860 AND `Locale` = 'ruRU' AND `GroupID`=3;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(91860, 3, 0, 'ruRU', 'Я не промахиваюсь!');
+
+-- Asger Jarlborn, Longaxe Champion (91895) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 91895 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(91895, 0, 0, 'ruRU', 'Подходи, чужеземное отребье. Я даже позволю тебе ударить первым. Не упусти шанс.');
+
+-- Thrymjaris, Mother of the Thorignir, separate entry (92218) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 92218 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(92218, 0, 0, 'ruRU', 'Взлетай с Ветиром, друг, и покажи этим врайкулам истинную ярость шторма!');
+
+-- Felbound Spirit (116469, separate copy) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 116469 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(116469, 0, 0, 'ruRU', 'Неужели я наконец свободен?');
+
+-- Bunny (92463) - only group3 was English; icon tag preserved verbatim.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 92463 AND `Locale` = 'ruRU' AND `GroupID`=3;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(92463, 3, 0, 'ruRU', '|TINTERFACE\\ICONS\\TRADE_ENGINEERING.BLP:50|tВремя на исходе, $n. Ты нужен в Роще Кенария... нужно действовать быстро.');
+
+-- Dread-Rider Cullen (92561, 92566, two separate entries) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 92561 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(92561, 0, 0, 'ruRU', 'Эй, это ты! Я тут с ума схожу от скуки - скажи, что мы наконец выступаем!');
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 92566 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(92566, 0, 0, 'ruRU', 'Сюда, вот отличное место.');
+
+-- Commander Jarod Shadowsong (92620) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 92620 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(92620, 0, 0, 'ruRU', 'Закончи свои дела здесь, затем встретимся в крепости.');
+
+-- Penelope Heathrow (92734) - fully English; $G token words translated (they're the literal
+-- displayed words, not an opaque key).
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 92734 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(92734, 0, 0, 'ruRU', 'Спасибо, $Gгосподин:барышня;! Я так боялась одна, но я знаю короткий путь обратно в город!');
+
+-- The Nameless King (92763) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 92763 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(92763, 0, 0, 'ruRU', 'Я принимаю твой вызов.');
+
+-- Commander Jarod Shadowsong, separate entry (92850) - only group3 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 92850 AND `Locale` = 'ruRU' AND `GroupID`=3;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(92850, 3, 0, 'ruRU', 'Я останусь с пленником, чтобы облегчить его последние минуты. Найди Майев.');
+
+-- Acolyte of Elothir, separate entry (92874) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 92874 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(92874, 0, 0, 'ruRU', 'Я снова дышу!');
+
+-- Oktel Dragonblood, Thane of the Drekirjar (92920) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 92920 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(92920, 0, 0, 'ruRU', 'Тогда подойди, покажи мне свою ярость!');
+
+-- Trelan Shieldbreaker, Master of the Forge (92966) - only group2 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 92966 AND `Locale` = 'ruRU' AND `GroupID`=2;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(92966, 2, 0, 'ruRU', 'Я недооценил твою силу...');
+
+-- Arduen Soulblade (93029) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93029 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93029, 0, 0, 'ruRU', 'Я почти... вышел...');
+
+-- Gleamhoof Doe (93314) - only group4 was English; %s token preserved.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93314 AND `Locale` = 'ruRU' AND `GroupID`=4;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93314, 4, 0, 'ruRU', '%s в панике пытается сбежать!');
+
+-- Ranid Glowergold, Leatherworking & Skinning Supplies (93521) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93521 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93521, 0, 0, 'ruRU', 'Доброй встречи!');
+
+-- Namha Moonwater, Leatherworking Trainer (93523) - only group1 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93523 AND `Locale` = 'ruRU' AND `GroupID`=1;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93523, 1, 0, 'ruRU', 'Используй мой стеллаж для выделки шкур и рабочий стол, чтобы создавать всё необходимое. Раствор для дубления ты найдёшь там же, на столе.');
+
+-- Timothy Jones, Jewelcrafting Trainer (93527) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93527 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93527, 0, 0, 'ruRU', 'Дамы, дамы, успокойтесь. Кажется, это тот ювелир, который работает с $n.');
+
+-- Jessica Sellers, Ink Trader (93532) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93532 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93532, 0, 0, 'ruRU', 'Доброй встречи.');
+
+-- Felbound Spirit (116466, separate copy) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 116466 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(116466, 0, 0, 'ruRU', 'Неужели я наконец свободен?');
+
+-- Hobart Grapplehammer, Engineering Supplies (93539) - only group3 was English; plural-form
+-- token |3-6($c) preserved verbatim.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93539 AND `Locale` = 'ruRU' AND `GroupID`=3;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93539, 3, 0, 'ruRU', 'Скажи мне, если понадобится моя помощь, |3-6($c).');
+
+-- Tanithria, Tailoring Trainer (93542) - only group1 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93542 AND `Locale` = 'ruRU' AND `GroupID`=1;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93542, 1, 0, 'ruRU', 'Вот, попробуй этот выкрой. Используй мои материалы - они лежат прямо здесь, в лавке.');
+
+-- Sminx Glasseye, Jewelry Vendor (93543) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93543 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93543, 0, 0, 'ruRU', 'Ой! Ну и громадина!');
+
+-- Jang Quillpaw, Inscription Supplies (93544) - only group3 was English; same plural-form
+-- token line as Hobart Grapplehammer above.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93544 AND `Locale` = 'ruRU' AND `GroupID`=3;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93544, 3, 0, 'ruRU', 'Скажи мне, если понадобится моя помощь, |3-6($c).');
+
+-- Smolderhide Chanter (93577) - only group1 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93577 AND `Locale` = 'ruRU' AND `GroupID`=1;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93577, 1, 0, 'ruRU', 'Создание снов, исчезни!');
+
+-- Smolderhide Hunter (93578) - only group1 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93578 AND `Locale` = 'ruRU' AND `GroupID`=1;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93578, 1, 0, 'ruRU', 'Ты мой, кровоточи!');
+
+-- Marnor Lorleaf, Disciple of Elothir (93602) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93602 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93602, 0, 0, 'ruRU', 'Будь благословен, дитя.');
+
+-- Cedonu (93620) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93620 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93620, 0, 0, 'ruRU', 'Прости, $n, но я не могу просто отдать тебе одну из моих чешуек. В эти тяжёлые времена нам нужно сохранять все силы.');
+
+-- Erwind Mistfen, Disciple of Elothir (93640) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93640 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93640, 0, 0, 'ruRU', 'Благодарю тебя, путник. Ещё не всё потеряно.');
+
+-- Del'thanar Sagewood, Disciple of Elothir (93644) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93644 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93644, 0, 0, 'ruRU', 'Да будет с тобой Элотир, друг рощи.');
+
+-- Spiritwalker Ebonhorn (93805) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93805 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93805, 0, 0, 'ruRU', 'А, защитник явился в наш самый тяжёлый час. Добро пожаловать.');
+
+-- Mayla Highmountain (93826) - fully English. "Highmountain" rendered as the official
+-- localization term "Вышегорье".
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93826 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93826, 0, 0, 'ruRU', 'Я Майла, дочь Улана, и я... я - вождь племён Вышегорья.');
+
+-- Greywatch Infiltrator, Gilneas Brigade (93860) - only group1 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93860 AND `Locale` = 'ruRU' AND `GroupID`=1;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93860, 1, 0, 'ruRU', 'Я разорву тебя на куски!');
+
+-- Douglas Carrington, Flight Master (93940) - only group3 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 93940 AND `Locale` = 'ruRU' AND `GroupID`=3;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(93940, 3, 0, 'ruRU', 'Я слышу это уже двадцать седьмой раз за последние два часа. Сколько ещё?');
+
+-- Tamer Korgrul (94051) - only group4 was English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 94051 AND `Locale` = 'ruRU' AND `GroupID`=4;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(94051, 4, 0, 'ruRU', 'Я накормлю твоим мясом своих питомцев!');
+
+-- Vilewing Hexer (94152) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 94152 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(94152, 0, 0, 'ruRU', 'Кроулиак обрушится на вас всех!');
+
+-- Young Snowfeather (115677) - fully English; %s token preserved.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 115677 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(115677, 0, 0, 'ruRU', '%s в панике пытается сбежать!');
