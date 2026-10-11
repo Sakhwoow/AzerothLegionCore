@@ -1986,3 +1986,93 @@ INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Te
 DELETE FROM `creature_text_locale` WHERE `CreatureID` = 116472 AND `Locale` = 'ruRU';
 INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
 (116472, 0, 0, 'ruRU', 'Неужели я наконец свободен?');
+
+-- Duskwatch Highblade (114472), Duskwatch Spellshield group1 (111485) - fictional Thalassian
+-- battle cries with an EXISTING Cyrillic transliteration precedent elsewhere in this DB
+-- ("Араш-фолас...", "Анат'ашар!") - matched exactly per convention.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 114472 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(114472, 0, 0, 'ruRU', 'Араш-фолас...');
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 111485 AND `Locale` = 'ruRU' AND `GroupID`=1;
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(111485, 1, 0, 'ruRU', 'Анат''ашар!');
+
+-- Felsmith Nal'ryssa, Blacksmithing Trainer (92264) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 92264 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(92264, 0, 0, 'ruRU', 'Поторопись с работой. У тебя будет совсем немного времени, чтобы отковать раскалённые слитки лей-камня в нужные тебе детали.');
+
+-- Linzy Blackbolt, Alchemy Trainer (92456) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 92456 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(92456, 0, 0, 'ruRU', 'Ого! Отличный рецепт. Пока травники приносят мне свежий лисоцвет, я без проблем приготовлю это для тебя.');
+
+-- Kuhuine Tenderstride, Herbalism Trainer (92464) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 92464 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(92464, 0, 0, 'ruRU', 'Конечно. Наши травники приносят много лисоцвета. Я прослежу, чтобы часть отложили для твоей кузнечной работы.');
+
+-- Aimee, Pie, Pastry & Cakes (92936) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 92936 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(92936, 0, 0, 'ruRU', 'Глациела, клянусь, однажды у тебя выпадут все зубы от моих вкусных конфет.');
+
+-- Gurbog da Basher (96590) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 96590 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(96590, 0, 0, 'ruRU', 'Я тебя ПРИШИБУ!');
+
+-- Laughing Sister (98027) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 98027 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(98027, 0, 0, 'ruRU', 'Привет, $ct!');
+
+-- Loyalist Sycophant (111490) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 111490 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(111490, 0, 0, 'ruRU', 'Трепещи перед нашей силой!');
+
+-- Duskwatch Executor (111620) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 111620 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(111620, 0, 0, 'ruRU', 'Умри, чужак!');
+
+-- Lunastre Attendant (111903) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 111903 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(111903, 0, 0, 'ruRU', 'Служитель Лунастре кивает тебе и спокойно выходит из таверны.');
+
+-- Shipwrecked Soldier (115445) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 115445 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(115445, 0, 0, 'ruRU', 'Наконец свободен! Помоги остальным, со мной всё будет в порядке...');
+
+-- Shipwrecked Grunt (115453) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 115453 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(115453, 0, 0, 'ruRU', 'Свобода? Я этого не забуду!');
+
+-- Eye of Gurgh (116166) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 116166 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(116166, 0, 0, 'ruRU', 'Посмотри мне в глаза... найди в них свою смерть...');
+
+-- Felbound Spirit (116470, separate copy) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 116470 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(116470, 0, 0, 'ruRU', 'Неужели я наконец свободен?');
+
+-- Dread Warbringer (117431) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 117431 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(117431, 0, 0, 'ruRU', 'Незваный гость? Покажись!');
+
+-- Felblade Devastator (117546) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 117546 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(117546, 0, 0, 'ruRU', 'Пылающий Легион покоряет всё.');
+
+-- Toiling Collector (118390) - fully English.
+DELETE FROM `creature_text_locale` WHERE `CreatureID` = 118390 AND `Locale` = 'ruRU';
+INSERT INTO `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) VALUES
+(118390, 0, 0, 'ruRU', 'Убить тебя! Забрать твои вещи!');
