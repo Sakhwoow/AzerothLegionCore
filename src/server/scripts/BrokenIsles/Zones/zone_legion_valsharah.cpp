@@ -78,8 +78,8 @@ public:
     {
         if (quest->GetQuestId() == 38595)
         {
-            creature->Say("Cenarius's loss has left Malfurion unable to see reason.", LANG_UNIVERSAL);
-            creature->Say("Make haste to the World Tree. He may be headed there, all too ready to take reckless risks.", LANG_UNIVERSAL);
+            creature->AI()->Talk(0);
+            creature->AI()->Talk(1);
         }
 
         return true;

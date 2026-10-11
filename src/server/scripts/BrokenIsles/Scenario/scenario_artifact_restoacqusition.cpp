@@ -183,7 +183,7 @@ struct scenario_artifact_restoacqusition : public InstanceScript
             if (Creature* hamuul = instance->GetCreature(_hamuulGUID))
             {
                 hamuul->CastSpell(hamuul, 207418, true);
-                hamuul->Say("For G'Hanir!", LANG_UNIVERSAL);
+                hamuul->AI()->Talk(2);
                 //move to destromath
             }
             //cat
@@ -196,7 +196,7 @@ struct scenario_artifact_restoacqusition : public InstanceScript
             if (Creature* coth = instance->GetCreature(_cothGUID))
             {
                 coth->CastSpell(coth, 207420, true);
-                coth->Say("I'm gonna light you up!", LANG_UNIVERSAL);
+                coth->AI()->Talk(0);
                 //move to destromath
             }
 
@@ -633,7 +633,7 @@ struct npc_destromath_104619 : public BossAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        me->Say("In Mannoroth's name!", LANG_UNIVERSAL);
+        Talk(0);
     }
 
     void Initialize()

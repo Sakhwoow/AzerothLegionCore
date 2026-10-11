@@ -495,7 +495,7 @@ public:
                     me->AI()->AttackStart(summon);
                     summon->GetMotionMaster()->MoveChase(me, 20.0f, summon->GetOrientation());
                     targetGuid = summon->GetGUID();
-                    summon->Say("Farondis! You traitor! You brought this upon us!", LANG_UNIVERSAL);
+                    summon->AI()->Talk(1);
                     me->GetMotionMaster()->Clear();
                     me->SetFacingToObject(summon, true);
                 }
@@ -516,7 +516,7 @@ public:
                     me->AI()->AttackStart(summon);
                     summon->GetMotionMaster()->MoveChase(me, 20.0f, summon->GetOrientation());
                     targetGuid2 = summon->GetGUID();
-                    summon->Yell("DIE... FARONDIS....", LANG_UNIVERSAL);
+                    summon->AI()->Talk(1);
                     me->GetMotionMaster()->Clear();
                     me->SetFacingToObject(summon, true);
                 }

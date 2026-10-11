@@ -1241,17 +1241,17 @@ private:
                     remulos->Say(103622, me);
                     _scheduler.Schedule(1s, 2s, [this, remulos](TaskContext context)
                     {
-                        me->Say("Ishnu-alah, son of Cenarius. I'm well aware of what brings you. I've heard the screams of the land as it is defiled by the Legion.", LANG_UNIVERSAL, remulos);
+                        Talk(3, remulos);
                     });
 
                     _scheduler.Schedule(4s, 5s, [this, remulos](TaskContext context)
                     {
-                        remulos->Say("We must act swiftly and prepare the weapons of old for war once again.", LANG_UNIVERSAL, me);
+                        remulos->AI()->Talk(1, me);
                     });
 
                     _scheduler.Schedule(7s, 8s, [this, remulos](TaskContext context)
                     {
-                        me->Say("The weapons of the first druids can surely turn the tide in our favor, but is there anyone with the strength to wield them?", LANG_UNIVERSAL, remulos);
+                        Talk(4, remulos);
                     });
 
                     _scheduler.Schedule(10s, 11s, [this, remulos, player](TaskContext context)
@@ -1261,7 +1261,7 @@ private:
 
                     _scheduler.Schedule(12s, 13s, [this, remulos, player](TaskContext context)
                     {
-                        me->Say("Very well, your task will not be easy but I shall do all that I can to aid you.", LANG_UNIVERSAL, player);
+                        Talk(5, player);
                         player->KilledMonsterCredit(101246);
                         isTalking = false;
                     });
@@ -1278,10 +1278,10 @@ private:
              
                 if (Creature* remulos = me->FindNearestCreature(NPC_KEEPER_REMULOS_103832, 15.0f))
                 {
-                    me->Say("g'hanir will not last much longer.It must be cleansed.", LANG_UNIVERSAL, remulos);
+                    Talk(6, remulos);
                     _scheduler.Schedule(1s, 2s, [remulos,player](TaskContext context)
                     {
-                        remulos->Say("We must aid Bashana in clearing out the remaining nightmare here. G'Hanir's fate rests with Lyessa and $n.", LANG_UNIVERSAL, player);
+                        remulos->AI()->Talk(2, player);
                     });
                 }
 
@@ -1606,7 +1606,7 @@ private:
                     {
                         if (Player* player = ObjectAccessor::GetPlayer(*me, m_playerGUID))
                             temp->GetMotionMaster()->MovePoint(1, player->GetPosition(), true);
-                        temp->Say("That creature unworthy of you, great Ursol! I crush it in your name!", LANG_UNIVERSAL);
+                        temp->AI()->Talk(0);
                     }
                 });
                 break;
@@ -1655,7 +1655,7 @@ private:
                 restSummonCount = 8;
                 _scheduler.Schedule(3s, 4s, [this](TaskContext context)
                 {
-                    me->Say("Is there anyone who would fight at your side, druid?", LANG_UNIVERSAL);
+                    Talk(5);
                 });
                 _scheduler.Schedule(5s, 6s, [this](TaskContext context)
                 {
@@ -1967,12 +1967,12 @@ private:
                 return;
             if (player->HasQuest(QUEST_MEET_WITH_MYLUNE) && player->GetQuestStatus(QUEST_MEET_WITH_MYLUNE) == QUEST_STATUS_INCOMPLETE)
             {
-                me->Say("Oh, frends. I don't know what to do!", LANG_UNIVERSAL, player);
+                Talk(0, player);
                 player->ForceCompleteQuest(QUEST_MEET_WITH_MYLUNE);
             }
             if (player->HasQuest(QUEST_NECESSARY_PREPARATIONS) && player->GetQuestStatus(QUEST_NECESSARY_PREPARATIONS) == QUEST_STATUS_COMPLETE)
             {
-                me->Say("Don't worry - $n is going to fix this, just you wait!", LANG_UNIVERSAL, player);
+                Talk(1, player);
             }
         }
 
@@ -1989,7 +1989,7 @@ private:
 
             if (quest->GetQuestId() == QUEST_NECESSARY_PREPARATIONS)
             {
-                me->Say("Be careful - it isn't safe in the Dream right now", LANG_UNIVERSAL, player);
+                Talk(2, player);
             }
         }
     };
@@ -2042,11 +2042,11 @@ private:
         {
             if (quest->GetQuestId() == QUEST_IN_DEEP_SLUMBER)
             {
-                me->Say("You still have the moonwater, yes? Good, good, then you are ready.", LANG_UNIVERSAL, player);
+                Talk(2, player);
             }
             if (quest->GetQuestId() == QUEST_RECONVENE)
             {
-                me->Say("G'Hanir grows more corrupt with each passing moment - may your feet carry you swiftly.", LANG_UNIVERSAL, player);
+                Talk(3, player);
             }
         }
         void Initialize()
@@ -2072,7 +2072,7 @@ private:
             if (!isTalk && player->HasQuest(QUEST_IN_DEEP_SLUMBER)&& (player->GetQuestStatus(QUEST_IN_DEEP_SLUMBER) == QUEST_STATUS_COMPLETE || player->GetQuestStatus(QUEST_IN_DEEP_SLUMBER) == QUEST_STATUS_REWARDED))
             {
                 isTalk = true;
-                me->Say("By the Ancients. you have it! You have G'Hanir!", LANG_UNIVERSAL, player);
+                Talk(4, player);
                 isTalk = false;
             }
             
@@ -2220,7 +2220,7 @@ private:
             if (!IsYellHelp && player->HasQuest(QUEST_IN_DEEP_SLUMBER) )
             {
                 IsYellHelp = true;
-                me->Yell("Anyone...someone! I can't escape these roots!", LANG_UNIVERSAL, player);
+                Talk(2, player);
             }
         }
     private:
