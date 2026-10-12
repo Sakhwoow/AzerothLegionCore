@@ -355,7 +355,7 @@ void BattlegroundBFG::_NodeOccupied(uint8 node, Team team)
 
     uint8 capturedNodes = 0;
     for (uint8 i = 0; i < BG_BFG_DYNAMIC_NODES_COUNT; ++i)
-        if (m_Nodes[i] == GetTeamIndexByTeamId(team) + BG_BFG_NODE_TYPE_OCCUPIED && !m_NodeTimers[i])
+        if (m_Nodes[i] == uint8(GetTeamIndexByTeamId(team)) + uint8(BG_BFG_NODE_TYPE_OCCUPIED) && !m_NodeTimers[i])
             ++capturedNodes;
 
 
@@ -445,7 +445,7 @@ void BattlegroundBFG::EventPlayerClickedOnFlag(Player* source, GameObject* /*tar
         {
             UpdatePlayerScore(source, SCORE_BASES_ASSAULTED, 1);
             m_prevNodes[node] = m_Nodes[node];
-            m_Nodes[node] = teamIndex + BG_BFG_NODE_TYPE_CONTESTED;
+            m_Nodes[node] = uint8(teamIndex) + uint8(BG_BFG_NODE_TYPE_CONTESTED);
             // burn current contested banner
             _DelBanner(node, BG_BFG_NODE_TYPE_CONTESTED, !teamIndex);
             // create new contested banner
@@ -463,7 +463,7 @@ void BattlegroundBFG::EventPlayerClickedOnFlag(Player* source, GameObject* /*tar
         {
             UpdatePlayerScore(source, SCORE_BASES_DEFENDED, 1);
             m_prevNodes[node] = m_Nodes[node];
-            m_Nodes[node] = teamIndex + BG_BFG_NODE_TYPE_OCCUPIED;
+            m_Nodes[node] = uint8(teamIndex) + uint8(BG_BFG_NODE_TYPE_OCCUPIED);
             // burn current contested banner
             _DelBanner(node, BG_BFG_NODE_TYPE_CONTESTED, !teamIndex);
             // create new occupied banner
@@ -484,7 +484,7 @@ void BattlegroundBFG::EventPlayerClickedOnFlag(Player* source, GameObject* /*tar
     {
         UpdatePlayerScore(source, SCORE_BASES_ASSAULTED, 1);
         m_prevNodes[node] = m_Nodes[node];
-        m_Nodes[node] = teamIndex + BG_BFG_NODE_TYPE_CONTESTED;
+        m_Nodes[node] = uint8(teamIndex) + uint8(BG_BFG_NODE_TYPE_CONTESTED);
         // burn current occupied banner
         _DelBanner(node, BG_BFG_NODE_TYPE_OCCUPIED, !teamIndex);
         // create new contested banner

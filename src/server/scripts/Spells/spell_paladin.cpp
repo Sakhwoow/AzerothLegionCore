@@ -502,10 +502,10 @@ class spell_pal_crusader_strike : public SpellScript
         if (caster->HasAura(SPELL_PALADIN_CRUSADERS_MIGHT))
         {
             if (caster->GetSpellHistory()->HasCooldown(SPELL_PALADIN_HOLY_SHOCK_GENERIC))
-                caster->GetSpellHistory()->ModifyCooldown(SPELL_PALADIN_HOLY_SHOCK_GENERIC, -1.5 * IN_MILLISECONDS);
+                caster->GetSpellHistory()->ModifyCooldown(SPELL_PALADIN_HOLY_SHOCK_GENERIC, -1.5 * uint32(IN_MILLISECONDS));
 
             if (caster->GetSpellHistory()->HasCooldown(SPELL_PALADIN_LIGHT_OF_DAWN))
-                caster->GetSpellHistory()->ModifyCooldown(SPELL_PALADIN_LIGHT_OF_DAWN, -1.5 * IN_MILLISECONDS);
+                caster->GetSpellHistory()->ModifyCooldown(SPELL_PALADIN_LIGHT_OF_DAWN, -1.5 * uint32(IN_MILLISECONDS));
         }
     }
 
@@ -602,7 +602,7 @@ class spell_pal_shield_of_the_righteous : public SpellScript
 
                 if (Aura* aura = player->GetAura(SPELL_PALADIN_RIGHTEOUS_PROTECTOR)) //reduce the CD of Light of the Protector and Avenging Wrath by 3
                 {
-                    uint32 cooldownReduction = aura->GetEffect(EFFECT_0)->GetBaseAmount() * IN_MILLISECONDS;
+                    uint32 cooldownReduction = aura->GetEffect(EFFECT_0)->GetBaseAmount() * uint32(IN_MILLISECONDS);
 
                     if (player->HasSpell(SPELL_PALADIN_LIGHT_OF_THE_PROTECTOR))
                         if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(SPELL_PALADIN_LIGHT_OF_THE_PROTECTOR))
@@ -840,7 +840,7 @@ class spell_pal_divine_storm : public SpellScript
         if (caster->HasAura(SPELL_PALADIN_FIST_OF_JUSTICE_RETRI))
         {
             if (caster->GetSpellHistory()->HasCooldown(SPELL_PALADIN_HAMMER_OF_JUSTICE))
-                caster->GetSpellHistory()->ModifyCooldown(SPELL_PALADIN_HAMMER_OF_JUSTICE, -7.5 * IN_MILLISECONDS);
+                caster->GetSpellHistory()->ModifyCooldown(SPELL_PALADIN_HAMMER_OF_JUSTICE, -7.5 * uint32(IN_MILLISECONDS));
         }
 
         if (caster->HasAura(SPELL_PALADIN_DIVINE_PURPOSE_RET_AURA))
@@ -881,7 +881,7 @@ class spell_pal_templar_s_verdict : public SpellScript
         if (caster->HasAura(SPELL_PALADIN_FIST_OF_JUSTICE_RETRI))
         {
             if (caster->GetSpellHistory()->HasCooldown(SPELL_PALADIN_HAMMER_OF_JUSTICE))
-                caster->GetSpellHistory()->ModifyCooldown(SPELL_PALADIN_HAMMER_OF_JUSTICE, -7.5 * IN_MILLISECONDS);
+                caster->GetSpellHistory()->ModifyCooldown(SPELL_PALADIN_HAMMER_OF_JUSTICE, -7.5 * uint32(IN_MILLISECONDS));
         }
 
         if (caster->HasAura(SPELL_PALADIN_DIVINE_PURPOSE_RET_AURA))
@@ -1049,7 +1049,7 @@ class spell_pal_justicars_vengeance : public SpellScript
 
         if (caster->HasAura(SPELL_PALADIN_FIST_OF_JUSTICE_RETRI))
             if (caster->GetSpellHistory()->HasCooldown(SPELL_PALADIN_HAMMER_OF_JUSTICE))
-                caster->GetSpellHistory()->ModifyCooldown(SPELL_PALADIN_HAMMER_OF_JUSTICE, -10 * IN_MILLISECONDS);
+                caster->GetSpellHistory()->ModifyCooldown(SPELL_PALADIN_HAMMER_OF_JUSTICE, -10 * uint32(IN_MILLISECONDS));
     }
 
     void Register() override
@@ -1092,7 +1092,7 @@ class spell_pal_execute_sentence : public SpellScript
             if (caster->HasAura(SPELL_PALADIN_FIST_OF_JUSTICE_RETRI))
             {
                 if (caster->GetSpellHistory()->HasCooldown(SPELL_PALADIN_HAMMER_OF_JUSTICE))
-                    caster->GetSpellHistory()->ModifyCooldown(SPELL_PALADIN_HAMMER_OF_JUSTICE, -7.5 * IN_MILLISECONDS);
+                    caster->GetSpellHistory()->ModifyCooldown(SPELL_PALADIN_HAMMER_OF_JUSTICE, -7.5 * uint32(IN_MILLISECONDS));
             }
         }
     }
@@ -1198,7 +1198,7 @@ class spell_pal_word_of_glory : public SpellScript
             if (caster->HasAura(SPELL_PALADIN_FIST_OF_JUSTICE_RETRI))
             {
                 if (caster->GetSpellHistory()->HasCooldown(SPELL_PALADIN_HAMMER_OF_JUSTICE))
-                    caster->GetSpellHistory()->ModifyCooldown(SPELL_PALADIN_HAMMER_OF_JUSTICE, -7.5 * IN_MILLISECONDS);
+                    caster->GetSpellHistory()->ModifyCooldown(SPELL_PALADIN_HAMMER_OF_JUSTICE, -7.5 * uint32(IN_MILLISECONDS));
             }
         }
     }
@@ -1278,7 +1278,7 @@ class spell_pal_judgment : public SpellScript
                 if (caster->HasAura(SPELL_PALADIN_FIST_OF_JUSTICE))
                 {
                     if (caster->GetSpellHistory()->HasCooldown(SPELL_PALADIN_HAMMER_OF_JUSTICE))
-                        caster->GetSpellHistory()->ModifyCooldown(SPELL_PALADIN_HAMMER_OF_JUSTICE, -10 * IN_MILLISECONDS);
+                        caster->GetSpellHistory()->ModifyCooldown(SPELL_PALADIN_HAMMER_OF_JUSTICE, -10 * uint32(IN_MILLISECONDS));
                 }
                 break;
             }
@@ -1289,7 +1289,7 @@ class spell_pal_judgment : public SpellScript
                 if (caster->HasAura(SPELL_PALADIN_FIST_OF_JUSTICE))
                 {
                     if (caster->GetSpellHistory()->HasCooldown(SPELL_PALADIN_HAMMER_OF_JUSTICE))
-                        caster->GetSpellHistory()->ModifyCooldown(SPELL_PALADIN_HAMMER_OF_JUSTICE, -10 * IN_MILLISECONDS);
+                        caster->GetSpellHistory()->ModifyCooldown(SPELL_PALADIN_HAMMER_OF_JUSTICE, -10 * uint32(IN_MILLISECONDS));
                 }
                 break;
             }

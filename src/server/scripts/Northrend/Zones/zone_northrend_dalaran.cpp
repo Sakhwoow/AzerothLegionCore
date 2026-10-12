@@ -144,8 +144,8 @@ enum MinigobData
     EVENT_DESPAWN           = 4,
 
     MAIL_MINIGOB_ENTRY      = 264,
-    MAIL_DELIVER_DELAY_MIN  = 5*MINUTE,
-    MAIL_DELIVER_DELAY_MAX  = 15*MINUTE
+    MAIL_DELIVER_DELAY_MIN  = 5* uint32(MINUTE),
+    MAIL_DELIVER_DELAY_MAX  = 15* uint32(MINUTE)
 };
 
 class npc_minigob_manabonk : public CreatureScript
@@ -207,15 +207,15 @@ class npc_minigob_manabonk : public CreatureScript
                                 DoCast(player, SPELL_MANABONKED);
                                 SendMailToPlayer(player);
                             }
-                            events.ScheduleEvent(EVENT_BLINK, 3*IN_MILLISECONDS);
+                            events.ScheduleEvent(EVENT_BLINK, 3* uint32(IN_MILLISECONDS));
                             break;
                         case EVENT_BLINK:
                         {
                             DoCast(me, SPELL_IMPROVED_BLINK);
                             Position pos = me->GetRandomNearPosition(frand(15, 40));
                             me->GetMotionMaster()->MovePoint(0, pos.m_positionX, pos.m_positionY, pos.m_positionZ);
-                            events.ScheduleEvent(EVENT_DESPAWN, 3 * IN_MILLISECONDS);
-                            events.ScheduleEvent(EVENT_DESPAWN_VISUAL, 2.5*IN_MILLISECONDS);
+                            events.ScheduleEvent(EVENT_DESPAWN, 3 * uint32(IN_MILLISECONDS));
+                            events.ScheduleEvent(EVENT_DESPAWN_VISUAL, 2.5* uint32(IN_MILLISECONDS));
                             break;
                         }
                         case EVENT_DESPAWN_VISUAL:

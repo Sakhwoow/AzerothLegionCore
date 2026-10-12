@@ -167,7 +167,7 @@ public:
 
         void OnInitialize() override
         {
-            timer = 0.5 * IN_MILLISECONDS;
+            timer = 0.5 * uint32(IN_MILLISECONDS);
         }
 
         void OnUpdate(uint32 diff) override
@@ -192,7 +192,7 @@ public:
                             itr->CastSpell(itr, 217206, true);
                     }
 
-                timer = 0.5 * IN_MILLISECONDS;
+                timer = 0.5 * uint32(IN_MILLISECONDS);
             }
             else
                 timer -= diff;
@@ -220,7 +220,7 @@ public:
 
         void OnInitialize() override
         {
-            timer = 2 * IN_MILLISECONDS;
+            timer = 2 * uint32(IN_MILLISECONDS);
         }
 
         void OnUpdate(uint32 diff) override
@@ -271,7 +271,7 @@ public:
 
         void OnInitialize() override
         {
-            timer = 2 * IN_MILLISECONDS;
+            timer = 2 * uint32(IN_MILLISECONDS);
         }
 
         void OnUpdate(uint32 diff) override
@@ -294,7 +294,7 @@ public:
                         if (caster->isInFront(itr))
                             caster->CastSpell(itr, 217277, true);
                     }
-                timer = 2 * IN_MILLISECONDS;
+                timer = 2 * uint32(IN_MILLISECONDS);
             }
             else
                 timer -= diff;

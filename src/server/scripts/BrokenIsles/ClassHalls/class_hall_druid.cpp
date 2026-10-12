@@ -1322,7 +1322,7 @@ private:
                     player->CompletedAchievement(11063);
                 else if(!player->HasAchieved(11174))
                     player->CompletedAchievement(11174);
-                if(player->GetQuestStatus(QUEST_SOWING_THE_SEED) == QUEST_STATE_NONE)
+                if(player->GetQuestStatus(QUEST_SOWING_THE_SEED) == QUEST_STATUS_NONE)
                     if (const Quest* quest = sObjectMgr->GetQuestTemplate(QUEST_SOWING_THE_SEED))
                         player->AddQuest(quest, me);
             }

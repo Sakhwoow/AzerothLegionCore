@@ -260,9 +260,9 @@ public:
 
         void EnterCombat(Unit* /*who*/) override
         {
-            _events.ScheduleEvent(EVENT_UPPERCUT,      15 * IN_MILLISECONDS);
-            _events.ScheduleEvent(EVENT_IMMOLATE,      10 * IN_MILLISECONDS);
-            _events.ScheduleEvent(EVENT_CURSE_OF_BLOOD, 5 * IN_MILLISECONDS);
+            _events.ScheduleEvent(EVENT_UPPERCUT,      15 * uint32(IN_MILLISECONDS));
+            _events.ScheduleEvent(EVENT_IMMOLATE,      10 * uint32(IN_MILLISECONDS));
+            _events.ScheduleEvent(EVENT_CURSE_OF_BLOOD, 5 * uint32(IN_MILLISECONDS));
         }
 
         void JustDied(Unit* killer) override
@@ -293,15 +293,15 @@ public:
                 {
                     case EVENT_UPPERCUT:
                         DoCastVictim(SPELL_UPPERCUT);
-                        _events.ScheduleEvent(EVENT_UPPERCUT, urand(10, 12) * IN_MILLISECONDS);
+                        _events.ScheduleEvent(EVENT_UPPERCUT, urand(10, 12) * uint32(IN_MILLISECONDS));
                         break;
                     case EVENT_IMMOLATE:
                         DoCastVictim(SPELL_IMMOLATE);
-                        _events.ScheduleEvent(EVENT_IMMOLATE, urand(15, 20) * IN_MILLISECONDS);
+                        _events.ScheduleEvent(EVENT_IMMOLATE, urand(15, 20) * uint32(IN_MILLISECONDS));
                         break;
                     case EVENT_CURSE_OF_BLOOD:
                         DoCastVictim(SPELL_CURSE_OF_BLOOD);
-                        _events.ScheduleEvent(EVENT_CURSE_OF_BLOOD, urand(20, 25) * IN_MILLISECONDS);
+                        _events.ScheduleEvent(EVENT_CURSE_OF_BLOOD, urand(20, 25) * uint32(IN_MILLISECONDS));
                         break;
                     default:
                         break;
@@ -405,10 +405,10 @@ public:
             me->SetCanDualWield(true);
             Initialize();
             _events.Reset();
-            _events.ScheduleEvent(EVENT_FROST_SHOCK, 1 * IN_MILLISECONDS);
-            _events.ScheduleEvent(EVENT_HEALING_SURGE, 5 * IN_MILLISECONDS);
-            _events.ScheduleEvent(EVENT_SEARING_TOTEM, 15 * IN_MILLISECONDS);
-            _events.ScheduleEvent(EVENT_STRENGTH_OF_EARTH_TOTEM, 20 * IN_MILLISECONDS);
+            _events.ScheduleEvent(EVENT_FROST_SHOCK, 1 * uint32(IN_MILLISECONDS));
+            _events.ScheduleEvent(EVENT_HEALING_SURGE, 5 * uint32(IN_MILLISECONDS));
+            _events.ScheduleEvent(EVENT_SEARING_TOTEM, 15 * uint32(IN_MILLISECONDS));
+            _events.ScheduleEvent(EVENT_STRENGTH_OF_EARTH_TOTEM, 20 * uint32(IN_MILLISECONDS));
         }
 
         void UpdateAI(uint32 diff) override
@@ -423,18 +423,18 @@ public:
                     {
                         case EVENT_FROST_SHOCK:
                             DoCastVictim(SPELL_FROST_SHOCK);
-                            _events.DelayEvents(1 * IN_MILLISECONDS);
-                            _events.ScheduleEvent(EVENT_FROST_SHOCK, urand(10, 15) * IN_MILLISECONDS);
+                            _events.DelayEvents(1 * uint32(IN_MILLISECONDS));
+                            _events.ScheduleEvent(EVENT_FROST_SHOCK, urand(10, 15) * uint32(IN_MILLISECONDS));
                             break;
                         case EVENT_SEARING_TOTEM:
                             DoCast(me, SPELL_SEARING_TOTEM);
-                            _events.DelayEvents(1 * IN_MILLISECONDS);
-                            _events.ScheduleEvent(EVENT_SEARING_TOTEM, urand(110, 130) * IN_MILLISECONDS);
+                            _events.DelayEvents(1 * uint32(IN_MILLISECONDS));
+                            _events.ScheduleEvent(EVENT_SEARING_TOTEM, urand(110, 130) * uint32(IN_MILLISECONDS));
                             break;
                         case EVENT_STRENGTH_OF_EARTH_TOTEM:
                             DoCast(me, SPELL_STRENGTH_OF_EARTH_TOTEM);
-                            _events.DelayEvents(1 * IN_MILLISECONDS);
-                            _events.ScheduleEvent(EVENT_STRENGTH_OF_EARTH_TOTEM, urand(110, 130) * IN_MILLISECONDS);
+                            _events.DelayEvents(1 * uint32(IN_MILLISECONDS));
+                            _events.ScheduleEvent(EVENT_STRENGTH_OF_EARTH_TOTEM, urand(110, 130) * uint32(IN_MILLISECONDS));
                             break;
                         case EVENT_HEALING_SURGE:
                         {
@@ -447,10 +447,10 @@ public:
                             if (target)
                             {
                                 DoCast(target, SPELL_HEALING_SURGE);
-                                _events.ScheduleEvent(EVENT_HEALING_SURGE, 10 * IN_MILLISECONDS);
+                                _events.ScheduleEvent(EVENT_HEALING_SURGE, 10 * uint32(IN_MILLISECONDS));
                             }
                             else
-                                _events.ScheduleEvent(EVENT_HEALING_SURGE, 2 * IN_MILLISECONDS);
+                                _events.ScheduleEvent(EVENT_HEALING_SURGE, 2 * uint32(IN_MILLISECONDS));
                             break;
                         }
                         default:
@@ -474,33 +474,33 @@ public:
                     {
                         case PHASE_WP_26: //debug skip path to point 26, buggy path calculation
                             me->GetMotionMaster()->MovePoint(WP_DEBUG_2, -2021.77f, -10648.8f, 129.903f, false);
-                            _moveTimer = 2 * IN_MILLISECONDS;
+                            _moveTimer = 2 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_CONTINUE;
                             break;
                         case PHASE_CONTINUE: // continue escort
                             SetEscortPaused(false);
-                            _moveTimer = 0 * IN_MILLISECONDS;
+                            _moveTimer = 0 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_NONE;
                             break;
                         case PHASE_WP_22: //debug skip path to point 22, buggy path calculation
                             me->GetMotionMaster()->MovePoint(WP_EXPLOSIVES_FIRST_PLANT, -1958.026f, -10660.465f, 111.547f, false);
                             Talk(SAY_LEGOSO_3);
-                            _moveTimer = 2 * IN_MILLISECONDS;
+                            _moveTimer = 2 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_PLANT_FIRST_KNEEL;
                             break;
                         case PHASE_PLANT_FIRST_KNEEL: // plant first explosives stage 1 kneel
                             me->SetStandState(UNIT_STAND_STATE_KNEEL);
-                            _moveTimer = 10 * IN_MILLISECONDS;
+                            _moveTimer = 10 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_PLANT_FIRST_STAND;
                             break;
                         case PHASE_PLANT_FIRST_STAND: // plant first explosives stage 1 stand
                             me->SetStandState(UNIT_STAND_STATE_STAND);
-                            _moveTimer = 0.5* IN_MILLISECONDS;
+                            _moveTimer = 0.5* uint32(IN_MILLISECONDS);
                             _phase = PHASE_PLANT_FIRST_WORK;
                             break;
                         case PHASE_PLANT_FIRST_WORK: // plant first explosives stage 2 work
                             Talk(SAY_LEGOSO_4);
-                            _moveTimer = 17.5 * IN_MILLISECONDS;
+                            _moveTimer = 17.5 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_PLANT_FIRST_FINISH;
                             break;
                         case PHASE_PLANT_FIRST_FINISH: // plant first explosives finish
@@ -514,22 +514,22 @@ public:
                             // force runoff movement so he will not screw up next waypoint
                             me->GetMotionMaster()->MovePoint(WP_EXPLOSIVES_FIRST_RUNOFF, -1955.6f, -10669.8f, 110.65f, false);
                             Talk(SAY_LEGOSO_5);
-                            _moveTimer = 1.5 * IN_MILLISECONDS;
+                            _moveTimer = 1.5 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_CONTINUE;
                             break;
                         case PHASE_PLANT_FIRST_TIMER_1: // first explosives detonate timer 1
                             Talk(SAY_LEGOSO_6);
-                            _moveTimer = 1 * IN_MILLISECONDS;
+                            _moveTimer = 1 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_PLANT_FIRST_TIMER_2;
                             break;
                         case PHASE_PLANT_FIRST_TIMER_2: // first explosives detonate timer 2
                             Talk(SAY_LEGOSO_7);
-                            _moveTimer = 1 * IN_MILLISECONDS;
+                            _moveTimer = 1 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_PLANT_FIRST_TIMER_3;
                             break;
                         case PHASE_PLANT_FIRST_TIMER_3: // first explosives detonate timer 3
                             Talk(SAY_LEGOSO_8);
-                            _moveTimer = 1 * IN_MILLISECONDS;
+                            _moveTimer = 1 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_PLANT_FIRST_DETONATE;
                             break;
                         case PHASE_PLANT_FIRST_DETONATE: // first explosives detonate finish
@@ -540,63 +540,63 @@ public:
                             }
                             _explosivesGuids.clear();
                             me->HandleEmoteCommand(EMOTE_ONESHOT_CHEER);
-                            _moveTimer = 2 * IN_MILLISECONDS;
+                            _moveTimer = 2 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_PLANT_FIRST_SPEECH;
                             break;
                         case PHASE_PLANT_FIRST_SPEECH: // after detonation 1 speech
                             Talk(SAY_LEGOSO_9);
-                            _moveTimer = 4 * IN_MILLISECONDS;
+                            _moveTimer = 4 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_PLANT_FIRST_ROTATE;
                             break;
                         case PHASE_PLANT_FIRST_ROTATE: // after detonation 1 rotate to next point
                             me->SetFacingTo(2.272f);
-                            _moveTimer = 1 * IN_MILLISECONDS;
+                            _moveTimer = 1 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_PLANT_FIRST_POINT;
                             break;
                         case PHASE_PLANT_FIRST_POINT: // after detonation 1 send point anim and go on to next point
                             me->HandleEmoteCommand(EMOTE_ONESHOT_POINT);
-                            _moveTimer = 2 * IN_MILLISECONDS;
+                            _moveTimer = 2 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_CONTINUE;
                             break;
                         case PHASE_FEEL_SIRONAS_1: // legoso exclamation before sironas 1.1
                             Talk(SAY_LEGOSO_10);
-                            _moveTimer = 4 * IN_MILLISECONDS;
+                            _moveTimer = 4 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_FEEL_SIRONAS_2;
                             break;
                         case PHASE_FEEL_SIRONAS_2: // legoso exclamation before sironas 1.2
                             Talk(SAY_LEGOSO_11);
-                            _moveTimer = 4 * IN_MILLISECONDS;
+                            _moveTimer = 4 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_CONTINUE;
                             break;
                         case PHASE_MEET_SIRONAS_ROAR: // legoso exclamation before sironas 2.1
                             Talk(SAY_LEGOSO_12);
-                            _moveTimer = 4 * IN_MILLISECONDS;
+                            _moveTimer = 4 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_MEET_SIRONAS_TURN;
                             break;
                         case PHASE_MEET_SIRONAS_TURN: // legoso exclamation before sironas 2.2
                             if (Player* player = GetPlayerForEscort())
                                 me->SetFacingToObject(player);
-                            _moveTimer = 1 * IN_MILLISECONDS;
+                            _moveTimer = 1 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_MEET_SIRONAS_SPEECH;
                             break;
                         case PHASE_MEET_SIRONAS_SPEECH: // legoso exclamation before sironas 2.3
                             Talk(SAY_LEGOSO_13);
-                            _moveTimer = 7 * IN_MILLISECONDS;
+                            _moveTimer = 7 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_CONTINUE;
                             break;
                         case PHASE_PLANT_SECOND_KNEEL: // plant second explosives stage 1 kneel
                             me->SetStandState(UNIT_STAND_STATE_KNEEL);
-                            _moveTimer = 11 * IN_MILLISECONDS;
+                            _moveTimer = 11 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_PLANT_SECOND_SPEECH;
                             break;
                         case PHASE_PLANT_SECOND_SPEECH: // plant second explosives stage 2 kneel
                             Talk(SAY_LEGOSO_14);
-                            _moveTimer = 13 * IN_MILLISECONDS;
+                            _moveTimer = 13 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_PLANT_SECOND_STAND;
                             break;
                         case PHASE_PLANT_SECOND_STAND: // plant second explosives finish
                             me->SetStandState(UNIT_STAND_STATE_STAND);
-                            _moveTimer = 1 * IN_MILLISECONDS;
+                            _moveTimer = 1 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_PLANT_SECOND_FINISH;
                             break;
                         case PHASE_PLANT_SECOND_FINISH: // plant second explosives finish - create explosives
@@ -607,26 +607,26 @@ public:
                                     _explosivesGuids.push_back(explosive->GetGUID());
                             }
                             Talk(SAY_LEGOSO_15);
-                            _moveTimer = 1 * IN_MILLISECONDS;
+                            _moveTimer = 1 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_PLANT_SECOND_WAIT;
                             break;
                         case PHASE_PLANT_SECOND_WAIT: // plant second explosives finish - proceed to next point
-                            _moveTimer = 1 * IN_MILLISECONDS;
+                            _moveTimer = 1 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_CONTINUE;
                             break;
                         case PHASE_PLANT_SECOND_TIMER_1: // second explosives detonate timer 1
                             Talk(SAY_LEGOSO_16);
-                            _moveTimer = 1 * IN_MILLISECONDS;
+                            _moveTimer = 1 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_PLANT_SECOND_TIMER_2;
                             break;
                         case PHASE_PLANT_SECOND_TIMER_2: // second explosives detonate timer 2
                             Talk(SAY_LEGOSO_17);
-                            _moveTimer = 1 * IN_MILLISECONDS;
+                            _moveTimer = 1 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_PLANT_SECOND_TIMER_3;
                             break;
                         case PHASE_PLANT_SECOND_TIMER_3: // second explosives detonate timer 3
                             Talk(SAY_LEGOSO_18);
-                            _moveTimer = 1 * IN_MILLISECONDS;
+                            _moveTimer = 1 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_PLANT_SECOND_DETONATE;
                             break;
                         case PHASE_PLANT_SECOND_DETONATE: // second explosives detonate finish
@@ -641,26 +641,26 @@ public:
                                 sironas->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
                                 me->SetFacingToObject(sironas);
                             }
-                            _moveTimer = 1 * IN_MILLISECONDS;
+                            _moveTimer = 1 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_FIGHT_SIRONAS_STOP;
                             break;
                         case PHASE_FIGHT_SIRONAS_STOP: // sironas channel stop
                             if (Creature* sironas = me->FindNearestCreature(NPC_SIRONAS, SIZE_OF_GRIDS))
                                 sironas->AI()->DoAction(ACTION_SIRONAS_CHANNEL_STOP);
-                            _moveTimer = 1 * IN_MILLISECONDS;
+                            _moveTimer = 1 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_FIGHT_SIRONAS_SPEECH_1;
                             break;
                         case PHASE_FIGHT_SIRONAS_SPEECH_1: // sironas exclamation before aggro
                             if (Creature* sironas = me->FindNearestCreature(NPC_SIRONAS, SIZE_OF_GRIDS))
                                 sironas->AI()->Talk(SAY_SIRONAS_1);
-                            _moveTimer = 1 * IN_MILLISECONDS;
+                            _moveTimer = 1 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_FIGHT_SIRONAS_SPEECH_2;
                             break;
                         case PHASE_FIGHT_SIRONAS_SPEECH_2: // legoso exclamation before aggro
                             if (Creature* sironas = me->FindNearestCreature(NPC_SIRONAS, SIZE_OF_GRIDS))
                                 sironas->SetObjectScale(3.0f);
                             Talk(SAY_LEGOSO_19);
-                            _moveTimer = 1 * IN_MILLISECONDS;
+                            _moveTimer = 1 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_FIGHT_SIRONAS_START;
                             break;
                         case PHASE_FIGHT_SIRONAS_START: // legoso exclamation at aggro
@@ -674,29 +674,29 @@ public:
                                 sironas->Attack(target, true);
                                 sironas->GetMotionMaster()->MoveChase(target);
                             }
-                            _moveTimer = 10 * IN_MILLISECONDS;
+                            _moveTimer = 10 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_CONTINUE;
                             break;
                         case PHASE_SIRONAS_SLAIN_SPEECH_1: // legoso exclamation after battle - stage 1.1
                             Talk(SAY_LEGOSO_20);
-                            _moveTimer = 2 * IN_MILLISECONDS;
+                            _moveTimer = 2 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_SIRONAS_SLAIN_EMOTE_1;
                             break;
                         case PHASE_SIRONAS_SLAIN_EMOTE_1: // legoso exclamation after battle - stage 1.2
                             me->HandleEmoteCommand(EMOTE_ONESHOT_EXCLAMATION);
-                            _moveTimer = 2 * IN_MILLISECONDS;
+                            _moveTimer = 2 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_SIRONAS_SLAIN_EMOTE_2;
                             break;
                         case PHASE_SIRONAS_SLAIN_EMOTE_2: // legoso exclamation after battle - stage 1.3
                             if (Player* player = GetPlayerForEscort())
                                 player->GroupEventHappens(QUEST_ENDING_THEIR_WORLD, me);
                             me->HandleEmoteCommand(EMOTE_ONESHOT_CHEER);
-                            _moveTimer = 5 * IN_MILLISECONDS;
+                            _moveTimer = 5 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_SIRONAS_SLAIN_SPEECH_2;
                             break;
                         case PHASE_SIRONAS_SLAIN_SPEECH_2: // legoso exclamation after battle - stage 2
                             Talk(SAY_LEGOSO_21);
-                            _moveTimer = 30 * IN_MILLISECONDS;
+                            _moveTimer = 30 * uint32(IN_MILLISECONDS);
                             _phase = PHASE_CONTINUE;
                             break;
                         default:
@@ -720,13 +720,13 @@ public:
                     SetEscortPaused(true);
                     me->SetFacingToObject(player);
                     Talk(SAY_LEGOSO_1);
-                    _moveTimer = 2.5 * IN_MILLISECONDS;
+                    _moveTimer = 2.5 * uint32(IN_MILLISECONDS);
                     _phase = PHASE_CONTINUE;
                     break;
                 case WP_EXPLOSIVES_FIRST_POINT:
                     SetEscortPaused(true);
                     Talk(SAY_LEGOSO_2);
-                    _moveTimer = 8 * IN_MILLISECONDS;
+                    _moveTimer = 8 * uint32(IN_MILLISECONDS);
                     _phase = PHASE_WP_22;
                     break;
                 case WP_EXPLOSIVES_FIRST_PLANT:
@@ -735,12 +735,12 @@ public:
                 case WP_EXPLOSIVES_FIRST_DETONATE:
                     SetEscortPaused(true);
                     me->SetFacingTo(1.05f);
-                    _moveTimer = 1 * IN_MILLISECONDS;
+                    _moveTimer = 1 * uint32(IN_MILLISECONDS);
                     _phase = PHASE_PLANT_FIRST_TIMER_1;
                     break;
                 case WP_DEBUG_1:
                     SetEscortPaused(true);
-                    _moveTimer = 0.5 * IN_MILLISECONDS;
+                    _moveTimer = 0.5 * uint32(IN_MILLISECONDS);
                     _phase = PHASE_WP_26;
                     break;
                 case WP_SIRONAS_HILL:
@@ -761,24 +761,24 @@ public:
                         sironas->AI()->DoAction(ACTION_SIRONAS_CHANNEL_START);
                         me->SetFacingToObject(sironas);
                     }
-                    _moveTimer = 1 * IN_MILLISECONDS;
+                    _moveTimer = 1 * uint32(IN_MILLISECONDS);
                     _phase = PHASE_FEEL_SIRONAS_1;
                     break;
                 }
                 case WP_EXPLOSIVES_SECOND_BATTLEROAR:
                     SetEscortPaused(true);
-                    _moveTimer = 0.2 * IN_MILLISECONDS;
+                    _moveTimer = 0.2 * uint32(IN_MILLISECONDS);
                     _phase = PHASE_MEET_SIRONAS_ROAR;
                     break;
                 case WP_EXPLOSIVES_SECOND_PLANT:
                     SetEscortPaused(true);
-                    _moveTimer = 0.5 * IN_MILLISECONDS;
+                    _moveTimer = 0.5 * uint32(IN_MILLISECONDS);
                     _phase = PHASE_PLANT_SECOND_KNEEL;
                     break;
                 case WP_EXPLOSIVES_SECOND_DETONATE:
                     SetEscortPaused(true);
                     me->SetFacingTo(5.7f);
-                    _moveTimer = 2 * IN_MILLISECONDS;
+                    _moveTimer = 2 * uint32(IN_MILLISECONDS);
                     _phase = PHASE_PLANT_SECOND_TIMER_1;
                     break;
                 default:
@@ -792,7 +792,7 @@ public:
             {
                 case ACTION_LEGOSO_SIRONAS_KILLED:
                     _phase = PHASE_SIRONAS_SLAIN_SPEECH_1;
-                    _moveTimer = 5 * IN_MILLISECONDS;
+                    _moveTimer = 5 * uint32(IN_MILLISECONDS);
                     break;
                 default:
                     break;

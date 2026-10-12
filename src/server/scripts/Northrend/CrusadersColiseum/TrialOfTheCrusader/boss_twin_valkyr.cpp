@@ -269,10 +269,10 @@ struct boss_twin_baseAI : public BossAI
         Talk(SAY_AGGRO);
         DoCast(me, SurgeSpellId);
 
-        events.ScheduleEvent(EVENT_TWIN_SPIKE, 20 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_BERSERK, IsHeroic() ? 6 * MINUTE*IN_MILLISECONDS : 10 * MINUTE*IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_TWIN_SPIKE, 20 * uint32(IN_MILLISECONDS));
+        events.ScheduleEvent(EVENT_BERSERK, IsHeroic() ? 6 * uint32(MINUTE)* uint32(IN_MILLISECONDS) : 10 * uint32(MINUTE)* uint32(IN_MILLISECONDS));
         if (IsHeroic())
-            events.ScheduleEvent(EVENT_TOUCH, urand(10 * IN_MILLISECONDS, 15 * IN_MILLISECONDS));
+            events.ScheduleEvent(EVENT_TOUCH, urand(10 * uint32(IN_MILLISECONDS), 15 * uint32(IN_MILLISECONDS)));
     }
 
     void DoAction(int32 action) override
@@ -308,12 +308,12 @@ struct boss_twin_baseAI : public BossAI
         {
             case EVENT_TWIN_SPIKE:
                 DoCastVictim(SpikeSpellId);
-                events.ScheduleEvent(EVENT_TWIN_SPIKE, 20 * IN_MILLISECONDS);
+                events.ScheduleEvent(EVENT_TWIN_SPIKE, 20 * uint32(IN_MILLISECONDS));
                 break;
             case EVENT_TOUCH:
                 if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 200.0f, true, OtherEssenceSpellId))
                     me->CastCustomSpell(TouchSpellId, SPELLVALUE_MAX_TARGETS, 1, target, false);
-                events.ScheduleEvent(EVENT_TOUCH, urand(10 * IN_MILLISECONDS, 15 * IN_MILLISECONDS));
+                events.ScheduleEvent(EVENT_TOUCH, urand(10 * uint32(IN_MILLISECONDS), 15 * uint32(IN_MILLISECONDS)));
                 break;
             case EVENT_BERSERK:
                 DoCast(me, SPELL_BERSERK);
@@ -396,7 +396,7 @@ class boss_fjola : public CreatureScript
                             break;
                     }
                     ++CurrentStage;
-                    events.ScheduleEvent(EVENT_SPECIAL_ABILITY, 45 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_SPECIAL_ABILITY, 45 * uint32(IN_MILLISECONDS));
                 }
                 else
                     boss_twin_baseAI::ExecuteEvent(eventId);
@@ -405,7 +405,7 @@ class boss_fjola : public CreatureScript
             void EnterCombat(Unit* who) override
             {
                 instance->DoStartCriteriaTimer(CRITERIA_TIMED_TYPE_EVENT,  EVENT_START_TWINS_FIGHT);
-                events.ScheduleEvent(EVENT_SPECIAL_ABILITY, 45 * IN_MILLISECONDS);
+                events.ScheduleEvent(EVENT_SPECIAL_ABILITY, 45 * uint32(IN_MILLISECONDS));
                 me->SummonCreature(NPC_BULLET_CONTROLLER, ToCCommonLoc[1].GetPositionX(), ToCCommonLoc[1].GetPositionY(), ToCCommonLoc[1].GetPositionZ(), 0.0f, TEMPSUMMON_MANUAL_DESPAWN);
                 boss_twin_baseAI::EnterCombat(who);
             }
@@ -533,7 +533,7 @@ struct npc_unleashed_ballAI : public ScriptedAI
 
     void Initialize()
     {
-        RangeCheckTimer = 0.5*IN_MILLISECONDS;
+        RangeCheckTimer = 0.5* uint32(IN_MILLISECONDS);
     }
 
     void MoveToNextPoint()
@@ -600,9 +600,9 @@ class npc_unleashed_dark : public CreatureScript
                     {
                         DoCastAOE(SPELL_UNLEASHED_DARK);
                         me->GetMotionMaster()->MoveIdle();
-                        me->DespawnOrUnsummon(1*IN_MILLISECONDS);
+                        me->DespawnOrUnsummon(1* uint32(IN_MILLISECONDS));
                     }
-                    RangeCheckTimer = 0.5*IN_MILLISECONDS;
+                    RangeCheckTimer = 0.5* uint32(IN_MILLISECONDS);
                 }
                 else
                     RangeCheckTimer -= diff;
@@ -632,9 +632,9 @@ class npc_unleashed_light : public CreatureScript
                     {
                         DoCastAOE(SPELL_UNLEASHED_LIGHT);
                         me->GetMotionMaster()->MoveIdle();
-                        me->DespawnOrUnsummon(1*IN_MILLISECONDS);
+                        me->DespawnOrUnsummon(1* uint32(IN_MILLISECONDS));
                     }
-                    RangeCheckTimer = 0.5*IN_MILLISECONDS;
+                    RangeCheckTimer = 0.5* uint32(IN_MILLISECONDS);
                 }
                 else
                     RangeCheckTimer -= diff;

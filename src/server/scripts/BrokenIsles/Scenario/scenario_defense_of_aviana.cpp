@@ -169,7 +169,7 @@ struct scenario_defense_of_aviana : public InstanceScript
                 if (talkednpc)
                 {
                     events.CancelEvent(DATA_STEP_1);
-                    InstanceScript::m_ScenarioStep = DATA_STEP_2;
+                    InstanceScript::m_ScenarioStep = static_cast<uint8>(DATA_STEP_2);
                     SetData(DATA_SKYLORD_SHADEGROVE, IN_PROGRESS);
                     events.ScheduleEvent(DATA_STEP_2, 3s);
                     break;
@@ -191,7 +191,7 @@ struct scenario_defense_of_aviana : public InstanceScript
                             creature->KillSelf();
                         }
                     }
-                    InstanceScript::m_ScenarioStep = DATA_STEP_3;
+                    InstanceScript::m_ScenarioStep = static_cast<uint8>(DATA_STEP_3);
                     SetData(DATA_SKYLORD_SHADEGROVE, IN_PROGRESS);
                     events.ScheduleEvent(DATA_STEP_3, 3s);
                     break;
@@ -214,7 +214,7 @@ struct scenario_defense_of_aviana : public InstanceScript
                 {
                     events.CancelEvent(DATA_STEP_3);
 
-                    InstanceScript::m_ScenarioStep = DATA_STEP_4;
+                    InstanceScript::m_ScenarioStep = static_cast<uint8>(DATA_STEP_4);
                     SetData(DATA_SKYLORD_SHADEGROVE, IN_PROGRESS);
                     events.ScheduleEvent(DATA_STEP_4, 3s);
                     break;
@@ -245,7 +245,7 @@ struct scenario_defense_of_aviana : public InstanceScript
             }
             case DATA_STEP_5:
             {
-                InstanceScript::m_ScenarioStep = DATA_STEP_5;
+                InstanceScript::m_ScenarioStep = static_cast<uint8>(DATA_STEP_5);
                 SetData(DATA_SKYLORD_SHADEGROVE, DONE);
                 break;
             }

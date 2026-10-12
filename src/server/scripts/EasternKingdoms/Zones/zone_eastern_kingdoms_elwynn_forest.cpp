@@ -205,7 +205,7 @@ struct npc_stormwind_infantry : public ScriptedAI
     {
         wolfTarget = ObjectGuid::Empty;
         me->SetSheath(SHEATH_STATE_MELEE);
-        Yell = urand(40, 60) * IN_MILLISECONDS;
+        Yell = urand(40, 60) * uint32(IN_MILLISECONDS);
         WillSay = urand(0, 100);
         SayChance = urand(1, 15);
         waitTime = urand(0, 2000);
@@ -232,7 +232,7 @@ struct npc_stormwind_infantry : public ScriptedAI
             if (WillSay <= SayChance)
             {
                 Talk(INFANTRY_COMBAT_YELL);
-                Yell = urand(40, 60) * IN_MILLISECONDS;
+                Yell = urand(40, 60) * uint32(IN_MILLISECONDS);
             }
         }
         else Yell -= diff;
@@ -368,7 +368,7 @@ struct npc_brother_paxton : public ScriptedAI
         if (_cooldownTimer <= diff)
         {
             _cooldown = false;
-            _cooldownTimer = 20 * IN_MILLISECONDS;
+            _cooldownTimer = 20 * uint32(IN_MILLISECONDS);
         }
         else _cooldownTimer -= diff;
 
@@ -573,7 +573,7 @@ struct npc_blackrock_spy : public ScriptedAI
             {
                 me->CastSpell(me, SPELL_SPYGLASS);
                 _animatePhase = 1;
-                _animateTimer = 4.8 * IN_MILLISECONDS;
+                _animateTimer = 4.8 * uint32(IN_MILLISECONDS);
             }
 
             if (r2 < 50)
@@ -979,7 +979,7 @@ struct npc_hogger : public ScriptedAI
             GetPositionWithDistInFront(me, distance, hogPos);
             float z = me->GetMap()->GetHeight(me->GetPhaseShift(), hogPos.GetPositionX(), hogPos.GetPositionY(), hogPos.GetPositionZ());
             hogPos.m_positionZ = z;
-            me->SummonCreature(NPC_HOGGER_MINION, hogPos, TEMPSUMMON_TIMED_DESPAWN, 40 * IN_MILLISECONDS);
+            me->SummonCreature(NPC_HOGGER_MINION, hogPos, TEMPSUMMON_TIMED_DESPAWN, 40 * uint32(IN_MILLISECONDS));
         }
         _minionsSummoned = true;
     }
@@ -1101,7 +1101,7 @@ struct npc_hogger : public ScriptedAI
                     {
                         GetHammond()->AI()->Talk(SAY_EXPLAINATION);
                         GetHammond()->HandleEmoteCommand(EMOTE_ONESHOT_POINT);
-                        GetHammond()->EmoteWithDelay(4 * IN_MILLISECONDS, EMOTE_ONESHOT_EXCLAMATION);
+                        GetHammond()->EmoteWithDelay(4 * uint32(IN_MILLISECONDS), EMOTE_ONESHOT_EXCLAMATION);
 
                         GetAndromath()->SetFacingToObject(me);
                         GetDumas()->SetFacingToObject(me);
@@ -1130,7 +1130,7 @@ struct npc_hogger : public ScriptedAI
                         GetAndromath()->SetFacingToObject(GetHammond());
                         GetHammond()->AI()->Talk(SAY_TO_ANDROMATH);
                         GetHammond()->HandleEmoteCommand(EMOTE_ONESHOT_POINT);
-                        GetHammond()->EmoteWithDelay(2 * IN_MILLISECONDS, EMOTE_ONESHOT_TALK);
+                        GetHammond()->EmoteWithDelay(2 * uint32(IN_MILLISECONDS), EMOTE_ONESHOT_TALK);
                     }
                     _events.ScheduleEvent(EVENT_ANDROMATH_TEXT, 3s);
                     _events.ScheduleEvent(EVENT_TELEPORT_BACK, 7s);
@@ -1139,7 +1139,7 @@ struct npc_hogger : public ScriptedAI
                 case EVENT_ANDROMATH_TEXT:
                     GetAndromath()->AI()->Talk(SAY_TO_HAMMOND_TEXT);
                     GetAndromath()->HandleEmoteCommand(EMOTE_ONESHOT_TALK);
-                    GetAndromath()->EmoteWithDelay(2 * IN_MILLISECONDS, EMOTE_ONESHOT_SALUTE);
+                    GetAndromath()->EmoteWithDelay(2 * uint32(IN_MILLISECONDS), EMOTE_ONESHOT_SALUTE);
                     break;
 
                 case EVENT_TELEPORT_BACK:

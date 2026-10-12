@@ -117,8 +117,8 @@ public:
 
             me->SetPower(POWER_ENERGY, 0);
 
-            events.ScheduleEvent(EVENT_COMMANDING_ROAR, 17.3 * IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_DRAW_IN, 59 * IN_MILLISECONDS);
+            events.ScheduleEvent(EVENT_COMMANDING_ROAR, 17.3 * uint32(IN_MILLISECONDS));
+            events.ScheduleEvent(EVENT_DRAW_IN, 59 * uint32(IN_MILLISECONDS));
 
             if (GameObject* go = me->FindNearestGameObject(269192, 500.0f))
                 go->UseDoorOrButton(1000000, true);
@@ -229,7 +229,7 @@ public:
                 if (power == 100)
                     if (!isCasting)
                     {
-                        events.ScheduleEvent(EVENT_UNCHECKED_RAGE, 1 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_UNCHECKED_RAGE, 1 * uint32(IN_MILLISECONDS));
                         isCasting = true;
                     }
 
@@ -252,19 +252,19 @@ public:
                             me->SummonCreature(NPC_RAZORJAW_GLADIATOR, 5876.136f, -887.0951f, 2933.093f, 0.0f, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30000);
                         }
 
-                        events.ScheduleEvent(EVENT_COMMANDING_ROAR, 31.8 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_COMMANDING_ROAR, 31.8 * uint32(IN_MILLISECONDS));
                         break;
 
                     case EVENT_DRAW_IN:
                         DoCast(SPELL_DRAW_IN);
 
-                        events.ScheduleEvent(EVENT_DRAW_IN, 59 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_DRAW_IN, 59 * uint32(IN_MILLISECONDS));
                         break;
 
                     case EVENT_CHECK_FOR_PLAYERS:
                         SetPlayersInCombat(true);
 
-                        events.ScheduleEvent(EVENT_CHECK_FOR_PLAYERS, 1 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_CHECK_FOR_PLAYERS, 1 * uint32(IN_MILLISECONDS));
                         break;
 
                     default:
@@ -302,8 +302,8 @@ public:
 
         void EnterCombat(Unit* /*who*/) override
         {
-            events.ScheduleEvent(EVENT_WATERY_SPLASH, 10 * IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_AQUEOUS_BURST, 12 * IN_MILLISECONDS);
+            events.ScheduleEvent(EVENT_WATERY_SPLASH, 10 * uint32(IN_MILLISECONDS));
+            events.ScheduleEvent(EVENT_AQUEOUS_BURST, 12 * uint32(IN_MILLISECONDS));
         }
 
         void UpdateAI(uint32 diff) override
@@ -324,14 +324,14 @@ public:
                         if (Unit* target = me->GetVictim())
                             me->CastSpell(target, SPELL_WATERY_SPLASH, true);
 
-                        events.ScheduleEvent(EVENT_WATERY_SPLASH, 10 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_WATERY_SPLASH, 10 * uint32(IN_MILLISECONDS));
                         break;
 
                     case EVENT_AQUEOUS_BURST:
                         if (Unit* target = me->GetVictim()/*SelectTarget(SELECT_TARGET_RANDOM, 0, 5.0f, true)*/)
                             me->CastSpell(target, SPELL_AQUEOUS_BURST, true);
 
-                        events.ScheduleEvent(EVENT_AQUEOUS_BURST, 16 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_AQUEOUS_BURST, 16 * uint32(IN_MILLISECONDS));
                         break;
                 }
             }
@@ -375,8 +375,8 @@ public:
         {
             DoCast(SPELL_DRIPPING_BLADE);
 
-            events.ScheduleEvent(EVENT_DRIVEN_ASSAULT, 10 * IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_SPLASHY_CLEAVE, 12 * IN_MILLISECONDS);
+            events.ScheduleEvent(EVENT_DRIVEN_ASSAULT, 10 * uint32(IN_MILLISECONDS));
+            events.ScheduleEvent(EVENT_SPLASHY_CLEAVE, 12 * uint32(IN_MILLISECONDS));
         }
 
         void UpdateAI(uint32 diff) override
@@ -402,16 +402,16 @@ public:
                                 me->CastSpell(me, SPELL_DRIVEN_ASSAULT, true);
                             }
                             else
-                                events.ScheduleEvent(EVENT_DRIVEN_ASSAULT, 1 * IN_MILLISECONDS);
+                                events.ScheduleEvent(EVENT_DRIVEN_ASSAULT, 1 * uint32(IN_MILLISECONDS));
                         }
 
-                        events.ScheduleEvent(EVENT_DRIVEN_ASSAULT, 10 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_DRIVEN_ASSAULT, 10 * uint32(IN_MILLISECONDS));
                         break;
 
                     case EVENT_SPLASHY_CLEAVE:
                         DoCast(SPELL_SPLASHY_CLEAVE);
 
-                        events.ScheduleEvent(EVENT_SPLASHY_CLEAVE, 12 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_SPLASHY_CLEAVE, 12 * uint32(IN_MILLISECONDS));
                         break;
                 }
             }

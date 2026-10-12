@@ -723,41 +723,41 @@ public:
                     {
                     case PHASE_CONTINUE:
                         SetEscortPaused(false);
-                        _moveTimer = 0 * IN_MILLISECONDS;
+                        _moveTimer = 0 * uint32(IN_MILLISECONDS);
                         _phase = PHASE_NONE;
                         break;
                     case PHASE_WAIT_IN_MIDDLE:
-                        _moveTimer = 0 * IN_MILLISECONDS;
+                        _moveTimer = 0 * uint32(IN_MILLISECONDS);
                         _phase = PHASE_CONTINUE;
                         break;
                     case PHASE_SEEK_IN_FIRST_CHEST_1:
                         me->HandleEmoteCommand(EMOTE_STATE_USESTANDING);
                         Talk(SAY_KHADGAR_3);
-                        _moveTimer = 7 * IN_MILLISECONDS;
+                        _moveTimer = 7 * uint32(IN_MILLISECONDS);
                         _phase = PHASE_SEEK_IN_FIRST_CHEST_2;
                         break;
                     case PHASE_SEEK_IN_FIRST_CHEST_2:
                         me->HandleEmoteCommand(EMOTE_STATE_NONE);
                         me->SetFacingTo(5.1576f);
                         Talk(SAY_KHADGAR_4);
-                        _moveTimer = 3 * IN_MILLISECONDS;
+                        _moveTimer = 3 * uint32(IN_MILLISECONDS);
                         _phase = PHASE_SEEK_IN_FIRST_CHEST_3;
                         break;
                     case PHASE_SEEK_IN_FIRST_CHEST_3:
                         SetEscortPaused(false);
-                        _moveTimer = 0 * IN_MILLISECONDS;
+                        _moveTimer = 0 * uint32(IN_MILLISECONDS);
                         _phase = PHASE_NONE;
                         break;
                     case PHASE_SEEK_IN_SECOND_CHEST_1:
                         me->HandleEmoteCommand(EMOTE_STATE_USESTANDING);
                         Talk(SAY_KHADGAR_5);
-                        _moveTimer = 7 * IN_MILLISECONDS;
+                        _moveTimer = 7 * uint32(IN_MILLISECONDS);
                         _phase = PHASE_SEEK_IN_SECOND_CHEST_2;
                         break;
                     case PHASE_SEEK_IN_SECOND_CHEST_2:
                         me->HandleEmoteCommand(EMOTE_STATE_NONE);
                         Talk(SAY_KHADGAR_6);
-                        _moveTimer = 6 * IN_MILLISECONDS;
+                        _moveTimer = 6 * uint32(IN_MILLISECONDS);
                         _phase = PHASE_SEEK_IN_SECOND_CHEST_3;
                         break;
                     case PHASE_SEEK_IN_SECOND_CHEST_3:
@@ -769,12 +769,12 @@ public:
                         }
                         me->SetFacingTo(1.9587f);
                         Talk(SAY_KHADGAR_7);
-                        _moveTimer = 5 * IN_MILLISECONDS;
+                        _moveTimer = 5 * uint32(IN_MILLISECONDS);
                         _phase = PHASE_SEEK_IN_SECOND_CHEST_4;
                         break;
                     case PHASE_SEEK_IN_SECOND_CHEST_4:
                         SetEscortPaused(false);
-                        _moveTimer = 0 * IN_MILLISECONDS;
+                        _moveTimer = 0 * uint32(IN_MILLISECONDS);
                         _phase = PHASE_NONE;
                         break;
                     case PHASE_DESPAWN:
@@ -798,7 +798,7 @@ public:
             switch (waypointId)
             {
             case WP_START_WALK:
-                _moveTimer = 0 * IN_MILLISECONDS;
+                _moveTimer = 0 * uint32(IN_MILLISECONDS);
                 _phase = PHASE_NONE;
                 me->SetWalk(true);
                 me->SetUnitMovementFlags(MOVEMENTFLAG_WALKING);
@@ -807,22 +807,22 @@ public:
                 SetEscortPaused(true);
                 me->SetFacingTo(2.3671f);
                 Talk(SAY_KHADGAR_2);
-                _moveTimer = 5 * IN_MILLISECONDS;
+                _moveTimer = 5 * uint32(IN_MILLISECONDS);
                 _phase = PHASE_WAIT_IN_MIDDLE;
                 break;
             case WP_AT_FIRST_CHEST:
                 SetEscortPaused(true);
                 me->SetFacingTo(3.6316f);
-                _moveTimer = 0.2 * IN_MILLISECONDS;
+                _moveTimer = 0.2 * uint32(IN_MILLISECONDS);
                 _phase = PHASE_SEEK_IN_FIRST_CHEST_1;
                 break;
             case WP_AT_SECOND_CHEST:
                 SetEscortPaused(true);
-                _moveTimer = 0.2 * IN_MILLISECONDS;
+                _moveTimer = 0.2 * uint32(IN_MILLISECONDS);
                 _phase = PHASE_SEEK_IN_SECOND_CHEST_1;
                 break;
             case WP_AT_HOME:
-                _moveTimer = 0.2 * IN_MILLISECONDS;
+                _moveTimer = 0.2 * uint32(IN_MILLISECONDS);
                 _phase = PHASE_DESPAWN;
                 break;
             default:
@@ -1425,7 +1425,7 @@ public:
             }
 
             //achievement 10596 npc 88317
-            if (player->HasAchieved(10596) && player->GetQuestStatus(QUEST_THE_DALARAN_FOUNTAIN) == QUEST_STATE_COMPLETE )
+            if (player->HasAchieved(10596) && player->GetQuestStatus(QUEST_THE_DALARAN_FOUNTAIN) == QUEST_STATUS_COMPLETE )
             {
                 OnTempSummonNPC(NPC_NAT_PAGLE, player);
             }

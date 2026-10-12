@@ -935,7 +935,7 @@ class spell_mage_kindling : public AuraScript
         if (!caster)
             return;
 
-        caster->GetSpellHistory()->ModifyCooldown(SPELL_MAGE_COMBUSTION, -1 * IN_MILLISECONDS);
+        caster->GetSpellHistory()->ModifyCooldown(SPELL_MAGE_COMBUSTION, -1 * uint32(IN_MILLISECONDS));
     }
 
     void Register() override
@@ -1252,7 +1252,7 @@ class spell_mage_ice_lance : public SpellScript
         {
             if (Aura* icyVeins = caster->GetAura(SPELL_MAGE_ICY_VEINS))
             {
-                int32 increaseDuration = sSpellMgr->GetSpellInfo(SPELL_MAGE_THERMAL_VOID)->GetEffect(EFFECT_0)->BasePoints * IN_MILLISECONDS;
+                int32 increaseDuration = sSpellMgr->GetSpellInfo(SPELL_MAGE_THERMAL_VOID)->GetEffect(EFFECT_0)->BasePoints * uint32(IN_MILLISECONDS);
                 int32 newDuration = (icyVeins->GetDuration() + increaseDuration);
                 icyVeins->SetDuration(newDuration);
             }
@@ -1666,7 +1666,7 @@ class spell_mage_blizzard : public SpellScript
         if (caster->HasSpell(SPELL_MAGE_BLIZZARD_RANK_2))
         {
             if (caster->GetSpellHistory()->HasCooldown(SPELL_MAGE_FROZEN_ORB))
-                caster->GetSpellHistory()->ModifyCooldown(SPELL_MAGE_FROZEN_ORB, -0.5 * IN_MILLISECONDS);
+                caster->GetSpellHistory()->ModifyCooldown(SPELL_MAGE_FROZEN_ORB, -0.5 * uint32(IN_MILLISECONDS));
         }
 
         // Fingers of Frost
@@ -2350,7 +2350,7 @@ public:
             if (!caster)
                 return;
 
-            if (TempSummon* tempSumm = caster->SummonCreature(WORLD_TRIGGER, at->GetPosition(), TEMPSUMMON_TIMED_DESPAWN, 5 * IN_MILLISECONDS))
+            if (TempSummon* tempSumm = caster->SummonCreature(WORLD_TRIGGER, at->GetPosition(), TEMPSUMMON_TIMED_DESPAWN, 5 * uint32(IN_MILLISECONDS)))
             {
                 tempSumm->setFaction(caster->getFaction());
                 tempSumm->SetGuidValue(UNIT_FIELD_SUMMONEDBY, caster->GetGUID());
@@ -2366,7 +2366,7 @@ public:
             if (!caster)
                 return;
 
-            if (TempSummon* tempSumm = caster->SummonCreature(WORLD_TRIGGER, at->GetPosition(), TEMPSUMMON_TIMED_DESPAWN, 5 * IN_MILLISECONDS))
+            if (TempSummon* tempSumm = caster->SummonCreature(WORLD_TRIGGER, at->GetPosition(), TEMPSUMMON_TIMED_DESPAWN, 5 * uint32(IN_MILLISECONDS)))
             {
                 tempSumm->setFaction(caster->getFaction());
                 tempSumm->SetGuidValue(UNIT_FIELD_SUMMONEDBY, caster->GetGUID());

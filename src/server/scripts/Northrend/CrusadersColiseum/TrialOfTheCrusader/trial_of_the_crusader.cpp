@@ -303,7 +303,7 @@ class boss_lich_king_toc : public CreatureScript
             void Reset() override
             {
                 me->SetReactState(REACT_PASSIVE);
-                if (Creature* summoned = me->SummonCreature(NPC_TRIGGER, ToCCommonLoc[2].GetPositionX(), ToCCommonLoc[2].GetPositionY(), ToCCommonLoc[2].GetPositionZ(), 5, TEMPSUMMON_TIMED_DESPAWN, 1*MINUTE*IN_MILLISECONDS))
+                if (Creature* summoned = me->SummonCreature(NPC_TRIGGER, ToCCommonLoc[2].GetPositionX(), ToCCommonLoc[2].GetPositionY(), ToCCommonLoc[2].GetPositionZ(), 5, TEMPSUMMON_TIMED_DESPAWN, 1* uint32(MINUTE)* uint32(IN_MILLISECONDS)))
                 {
                     summoned->CastSpell(summoned, 51807, false);
                     summoned->SetDisplayId(summoned->GetCreatureTemplate()->Modelid2);
@@ -346,36 +346,36 @@ class boss_lich_king_toc : public CreatureScript
                     {
                         case 5010:
                             Talk(SAY_STAGE_4_02);
-                            _updateTimer = 3*IN_MILLISECONDS;
+                            _updateTimer = 3* uint32(IN_MILLISECONDS);
                             me->GetMotionMaster()->MovePoint(0, LichKingLoc[0]);
                             _instance->SetData(TYPE_EVENT, 5020);
                             break;
                         case 5030:
                             Talk(SAY_STAGE_4_04);
                             me->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_TALK);
-                            _updateTimer = 10*IN_MILLISECONDS;
+                            _updateTimer = 10* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 5040);
                             break;
                         case 5040:
                             me->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_ONESHOT_NONE);
                             me->GetMotionMaster()->MovePoint(1, LichKingLoc[1]);
-                            _updateTimer = 1*IN_MILLISECONDS;
+                            _updateTimer = 1* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 0);
                             break;
                         case 5050:
                             me->HandleEmoteCommand(EMOTE_ONESHOT_EXCLAMATION);
-                            _updateTimer = 3*IN_MILLISECONDS;
+                            _updateTimer = 3* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 5060);
                             break;
                         case 5060:
                             Talk(SAY_STAGE_4_05);
                             me->HandleEmoteCommand(EMOTE_ONESHOT_KNEEL);
-                            _updateTimer = 2.5*IN_MILLISECONDS;
+                            _updateTimer = 2.5* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 5070);
                             break;
                         case 5070:
                             me->CastSpell(me, 68198, false);
-                            _updateTimer = 1.5*IN_MILLISECONDS;
+                            _updateTimer = 1.5* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 5080);
                             break;
                         case 5080:
@@ -394,7 +394,7 @@ class boss_lich_king_toc : public CreatureScript
                             _instance->SetData(TYPE_EVENT, 0);
 
                             me->DespawnOrUnsummon();
-                            _updateTimer = 20*IN_MILLISECONDS;
+                            _updateTimer = 20* uint32(IN_MILLISECONDS);
                             break;
                         }
                         default:
@@ -459,7 +459,7 @@ class npc_fizzlebang_toc : public CreatureScript
                         me->SetWalk(false);
                         _instance->DoUseDoorOrButton(_instance->GetGuidData(GO_MAIN_GATE_DOOR));
                         _instance->SetData(TYPE_EVENT, 1120);
-                        _instance->SetData(TYPE_EVENT_TIMER, 1*IN_MILLISECONDS);
+                        _instance->SetData(TYPE_EVENT_TIMER, 1* uint32(IN_MILLISECONDS));
                         break;
                     default:
                         break;
@@ -486,12 +486,12 @@ class npc_fizzlebang_toc : public CreatureScript
                     {
                         case 1110:
                             _instance->SetData(TYPE_EVENT, 1120);
-                            _updateTimer = 4*IN_MILLISECONDS;
+                            _updateTimer = 4* uint32(IN_MILLISECONDS);
                             break;
                         case 1120:
                             Talk(SAY_STAGE_1_02);
                             _instance->SetData(TYPE_EVENT, 1130);
-                            _updateTimer = 12*IN_MILLISECONDS;
+                            _updateTimer = 12* uint32(IN_MILLISECONDS);
                             break;
                         case 1130:
                             me->GetMotionMaster()->MovementExpired();
@@ -505,12 +505,12 @@ class npc_fizzlebang_toc : public CreatureScript
                                 pTrigger->CastSpell(pTrigger, SPELL_WILFRED_PORTAL, false);
                             }
                             _instance->SetData(TYPE_EVENT, 1132);
-                            _updateTimer = 4*IN_MILLISECONDS;
+                            _updateTimer = 4* uint32(IN_MILLISECONDS);
                             break;
                         case 1132:
                             me->GetMotionMaster()->MovementExpired();
                             _instance->SetData(TYPE_EVENT, 1134);
-                            _updateTimer = 4*IN_MILLISECONDS;
+                            _updateTimer = 4* uint32(IN_MILLISECONDS);
                             break;
                         case 1134:
                             me->HandleEmoteCommand(EMOTE_ONESHOT_SPELL_CAST_OMNI);
@@ -521,12 +521,12 @@ class npc_fizzlebang_toc : public CreatureScript
                                 pPortal->CastSpell(pPortal, SPELL_WILFRED_PORTAL, false);
                                 _portalGUID = pPortal->GetGUID();
                             }
-                            _updateTimer = 4*IN_MILLISECONDS;
+                            _updateTimer = 4* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 1135);
                             break;
                         case 1135:
                             _instance->SetData(TYPE_EVENT, 1140);
-                            _updateTimer = 3*IN_MILLISECONDS;
+                            _updateTimer = 3* uint32(IN_MILLISECONDS);
                             break;
                         case 1140:
                             Talk(SAY_STAGE_1_04);
@@ -537,7 +537,7 @@ class npc_fizzlebang_toc : public CreatureScript
                                 jaraxxus->GetMotionMaster()->MovePoint(0, ToCCommonLoc[1].GetPositionX(), ToCCommonLoc[1].GetPositionY()-10, ToCCommonLoc[1].GetPositionZ());
                             }
                             _instance->SetData(TYPE_EVENT, 1142);
-                            _updateTimer = 5*IN_MILLISECONDS;
+                            _updateTimer = 5* uint32(IN_MILLISECONDS);
                             break;
                         case 1142:
                             if (Creature* jaraxxus = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(NPC_JARAXXUS)))
@@ -547,13 +547,13 @@ class npc_fizzlebang_toc : public CreatureScript
                             if (Creature* pPortal = ObjectAccessor::GetCreature(*me, _portalGUID))
                                 pPortal->DespawnOrUnsummon();
                             _instance->SetData(TYPE_EVENT, 1144);
-                            _updateTimer = 10*IN_MILLISECONDS;
+                            _updateTimer = 10* uint32(IN_MILLISECONDS);
                             break;
                         case 1144:
                             if (Creature* jaraxxus = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(NPC_JARAXXUS)))
                                 jaraxxus->AI()->Talk(SAY_STAGE_1_05);
                             _instance->SetData(TYPE_EVENT, 1150);
-                            _updateTimer = 5*IN_MILLISECONDS;
+                            _updateTimer = 5* uint32(IN_MILLISECONDS);
                             break;
                         case 1150:
                             if (Creature* jaraxxus = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(NPC_JARAXXUS)))
@@ -565,7 +565,7 @@ class npc_fizzlebang_toc : public CreatureScript
                                 jaraxxus->AI()->AttackStart(me);
                             }
                             _instance->SetData(TYPE_EVENT, 1160);
-                            _updateTimer = 3*IN_MILLISECONDS;
+                            _updateTimer = 3* uint32(IN_MILLISECONDS);
                             break;
                     }
                 }
@@ -619,13 +619,13 @@ class npc_tirion_toc : public CreatureScript
                         case 110:
                             me->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_ONESHOT_TALK);
                             Talk(SAY_STAGE_0_01);
-                            _updateTimer = 22*IN_MILLISECONDS;
+                            _updateTimer = 22* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 120);
                             break;
                         case 140:
                             me->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_ONESHOT_TALK);
                             Talk(SAY_STAGE_0_02);
-                            _updateTimer = 5*IN_MILLISECONDS;
+                            _updateTimer = 5* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 150);
                             break;
                         case 150:
@@ -634,20 +634,20 @@ class npc_tirion_toc : public CreatureScript
                             {
                                 _instance->DoUseDoorOrButton(_instance->GetGuidData(GO_MAIN_GATE_DOOR));
 
-                                if (Creature* gormok = me->SummonCreature(NPC_GORMOK, ToCSpawnLoc[0].GetPositionX(), ToCSpawnLoc[0].GetPositionY(), ToCSpawnLoc[0].GetPositionZ(), 5, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30*IN_MILLISECONDS))
+                                if (Creature* gormok = me->SummonCreature(NPC_GORMOK, ToCSpawnLoc[0].GetPositionX(), ToCSpawnLoc[0].GetPositionY(), ToCSpawnLoc[0].GetPositionZ(), 5, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30* uint32(IN_MILLISECONDS)))
                                 {
                                     gormok->GetMotionMaster()->MovePoint(0, ToCCommonLoc[5].GetPositionX(), ToCCommonLoc[5].GetPositionY(), ToCCommonLoc[5].GetPositionZ());
                                     gormok->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
                                     gormok->SetReactState(REACT_PASSIVE);
                                 }
                             }
-                            _updateTimer = 3*IN_MILLISECONDS;
+                            _updateTimer = 3* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 155);
                             break;
                         case 155:
                             // keep the raid in combat for the whole encounter, pauses included
                             me->SetInCombatWithZone();
-                            _updateTimer = 5*IN_MILLISECONDS;
+                            _updateTimer = 5* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 160);
                             break;
                         case 200:
@@ -662,7 +662,7 @@ class npc_tirion_toc : public CreatureScript
                                     dreadscale->SetReactState(REACT_PASSIVE);
                                 }
                             }
-                            _updateTimer = 5*IN_MILLISECONDS;
+                            _updateTimer = 5* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 220);
                             break;
                         case 220:
@@ -680,7 +680,7 @@ class npc_tirion_toc : public CreatureScript
                                     me->SetReactState(REACT_PASSIVE);
                                 }
                             }
-                            _updateTimer = 5*IN_MILLISECONDS;
+                            _updateTimer = 5* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 315);
                             break;
                         case 315:
@@ -689,68 +689,68 @@ class npc_tirion_toc : public CreatureScript
                         case 400:
                             Talk(SAY_STAGE_0_06);
                             me->getThreatManager().clearReferences();
-                            _updateTimer = 5*IN_MILLISECONDS;
+                            _updateTimer = 5* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 0);
                             break;
                         case 666:
                             Talk(SAY_STAGE_0_WIPE);
-                            _updateTimer = 5*IN_MILLISECONDS;
+                            _updateTimer = 5* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 0);
                             break;
                         case 1010:
                             Talk(SAY_STAGE_1_01);
-                            _updateTimer = 7*IN_MILLISECONDS;
+                            _updateTimer = 7* uint32(IN_MILLISECONDS);
                             _instance->DoUseDoorOrButton(_instance->GetGuidData(GO_MAIN_GATE_DOOR));
                             me->SummonCreature(NPC_FIZZLEBANG, ToCSpawnLoc[0].GetPositionX(), ToCSpawnLoc[0].GetPositionY(), ToCSpawnLoc[0].GetPositionZ(), 2, TEMPSUMMON_CORPSE_TIMED_DESPAWN, DESPAWN_TIME);
                             _instance->SetData(TYPE_EVENT, 0);
                             break;
                         case 1180:
                             Talk(SAY_STAGE_1_07);
-                            _updateTimer = 3*IN_MILLISECONDS;
+                            _updateTimer = 3* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 0);
                             break;
                         case 2000:
                             Talk(SAY_STAGE_1_08);
-                            _updateTimer = 18*IN_MILLISECONDS;
+                            _updateTimer = 18* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 2010);
                             break;
                         case 2030:
                             Talk(SAY_STAGE_1_11);
-                            _updateTimer = 5*IN_MILLISECONDS;
+                            _updateTimer = 5* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 0);
                             break;
                         case 3000:
                             Talk(SAY_STAGE_2_01);
-                            _updateTimer = 12*IN_MILLISECONDS;
+                            _updateTimer = 12* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 3050);
                             break;
                         case 3001:
                             Talk(SAY_STAGE_2_01);
-                            _updateTimer = 10*IN_MILLISECONDS;
+                            _updateTimer = 10* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 3051);
                             break;
                         case 3060:
                             Talk(SAY_STAGE_2_03);
-                            _updateTimer = 5*IN_MILLISECONDS;
+                            _updateTimer = 5* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 3070);
                             break;
                         case 3061:
                             Talk(SAY_STAGE_2_03);
-                            _updateTimer = 5*IN_MILLISECONDS;
+                            _updateTimer = 5* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 3071);
                             break;
                         //Summoning crusaders
                         case 3091:
                             if (Creature* pChampionController = me->SummonCreature(NPC_CHAMPIONS_CONTROLLER, ToCCommonLoc[1]))
                                 pChampionController->AI()->SetData(0, HORDE);
-                            _updateTimer = 3*IN_MILLISECONDS;
+                            _updateTimer = 3* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 3092);
                             break;
                         //Summoning crusaders
                         case 3090:
                             if (Creature* pChampionController = me->SummonCreature(NPC_CHAMPIONS_CONTROLLER, ToCCommonLoc[1]))
                                 pChampionController->AI()->SetData(0, ALLIANCE);
-                            _updateTimer = 3*IN_MILLISECONDS;
+                            _updateTimer = 3* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 3092);
                             break;
                         case 3092:
@@ -761,12 +761,12 @@ class npc_tirion_toc : public CreatureScript
                         //Crusaders battle end
                         case 3100:
                             Talk(SAY_STAGE_2_06);
-                            _updateTimer = 5*IN_MILLISECONDS;
+                            _updateTimer = 5* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 0);
                             break;
                         case 4000:
                             Talk(SAY_STAGE_3_01);
-                            _updateTimer = 13*IN_MILLISECONDS;
+                            _updateTimer = 13* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 4010);
                             break;
                         case 4010:
@@ -785,7 +785,7 @@ class npc_tirion_toc : public CreatureScript
                                 darkbane->SummonCreature(NPC_DARK_ESSENCE, TwinValkyrsLoc[2].GetPositionX(), TwinValkyrsLoc[2].GetPositionY(), TwinValkyrsLoc[2].GetPositionZ());
                                 darkbane->SummonCreature(NPC_DARK_ESSENCE, TwinValkyrsLoc[3].GetPositionX(), TwinValkyrsLoc[3].GetPositionY(), TwinValkyrsLoc[3].GetPositionZ());
                             }
-                            _updateTimer = 3*IN_MILLISECONDS;
+                            _updateTimer = 3* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 4015);
                             break;
                         case 4015:
@@ -800,7 +800,7 @@ class npc_tirion_toc : public CreatureScript
                                 darkbane->GetMotionMaster()->MovePoint(1, ToCCommonLoc[9].GetPositionX(), ToCCommonLoc[9].GetPositionY(), ToCCommonLoc[9].GetPositionZ());
                                 darkbane->SetVisible(true);
                             }
-                            _updateTimer = 10*IN_MILLISECONDS;
+                            _updateTimer = 10* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 4016);
                             break;
                         case 4016:
@@ -808,35 +808,35 @@ class npc_tirion_toc : public CreatureScript
                             _instance->SetData(TYPE_EVENT, 4017);
                             break;
                         case 4040:
-                            _updateTimer = 1*MINUTE*IN_MILLISECONDS;
+                            _updateTimer = 1* uint32(MINUTE)* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 5000);
                             break;
                         case 5000:
                             Talk(SAY_STAGE_4_01);
-                            _updateTimer = 10*IN_MILLISECONDS;
+                            _updateTimer = 10* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 5005);
                             break;
                         case 5005:
-                            _updateTimer = 8*IN_MILLISECONDS;
+                            _updateTimer = 8* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 5010);
                             me->SummonCreature(NPC_LICH_KING, ToCCommonLoc[2].GetPositionX(), ToCCommonLoc[2].GetPositionY(), ToCCommonLoc[2].GetPositionZ(), 5);
                             break;
                         case 5020:
                             Talk(SAY_STAGE_4_03);
-                            _updateTimer = 1*IN_MILLISECONDS;
+                            _updateTimer = 1* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 0);
                             break;
                         case 6000:
                             me->SummonCreature(NPC_TIRION_FORDRING, EndSpawnLoc[0]);
                             me->SummonCreature(NPC_ARGENT_MAGE, EndSpawnLoc[1]);
                             me->SummonGameObject(GO_PORTAL_TO_DALARAN, EndSpawnLoc[2], QuaternionData(), 0);
-                            _updateTimer = 20*IN_MILLISECONDS;
+                            _updateTimer = 20* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 6005);
                             break;
                         case 6005:
                             if (Creature* tirionFordring = ObjectAccessor::GetCreature((*me), _instance->GetGuidData(NPC_TIRION_FORDRING)))
                                 tirionFordring->AI()->Talk(SAY_STAGE_4_06);
-                            _updateTimer = 20*IN_MILLISECONDS;
+                            _updateTimer = 20* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 6010);
                             break;
                         case 6010:
@@ -844,7 +844,7 @@ class npc_tirion_toc : public CreatureScript
                             {
                                 if (Creature* tirionFordring = ObjectAccessor::GetCreature((*me), _instance->GetGuidData(NPC_TIRION_FORDRING)))
                                     tirionFordring->AI()->Talk(SAY_STAGE_4_07);
-                                _updateTimer = 1*MINUTE*IN_MILLISECONDS;
+                                _updateTimer = 1* uint32(MINUTE)* uint32(IN_MILLISECONDS);
                                 _instance->SetBossState(BOSS_ANUBARAK, SPECIAL);
                                 _instance->SetData(TYPE_EVENT, 6020);
                             }
@@ -853,7 +853,7 @@ class npc_tirion_toc : public CreatureScript
                             break;
                         case 6020:
                             me->DespawnOrUnsummon();
-                            _updateTimer = 5*IN_MILLISECONDS;
+                            _updateTimer = 5* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 6030);
                             break;
                         default:
@@ -906,37 +906,37 @@ class npc_garrosh_toc : public CreatureScript
                         case 130:
                             me->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_ONESHOT_TALK);
                             Talk(SAY_STAGE_0_03h);
-                            _updateTimer = 3*IN_MILLISECONDS;
+                            _updateTimer = 3* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 132);
                             break;
                         case 132:
                             me->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_NONE);
-                            _updateTimer = 5*IN_MILLISECONDS;
+                            _updateTimer = 5* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 140);
                             break;
                         case 2010:
                             Talk(SAY_STAGE_1_09);
-                            _updateTimer = 9*IN_MILLISECONDS;
+                            _updateTimer = 9* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 2020);
                             break;
                         case 3050:
                             Talk(SAY_STAGE_2_02h);
-                            _updateTimer = 15*IN_MILLISECONDS;
+                            _updateTimer = 15* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 3060);
                             break;
                         case 3070:
                             Talk(SAY_STAGE_2_04h);
-                            _updateTimer = 6*IN_MILLISECONDS;
+                            _updateTimer = 6* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 3080);
                             break;
                         case 3081:
                             Talk(SAY_STAGE_2_05h);
-                            _updateTimer = 3*IN_MILLISECONDS;
+                            _updateTimer = 3* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 3091);
                             break;
                         case 4030:
                             Talk(SAY_STAGE_3_03h);
-                            _updateTimer = 5*IN_MILLISECONDS;
+                            _updateTimer = 5* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 4040);
                             break;
                         default:
@@ -989,37 +989,37 @@ class npc_varian_toc : public CreatureScript
                         case 120:
                             me->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_ONESHOT_TALK);
                             Talk(SAY_STAGE_0_03a);
-                            _updateTimer = 2*IN_MILLISECONDS;
+                            _updateTimer = 2* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 122);
                             break;
                         case 122:
                             me->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_NONE);
-                            _updateTimer = 3*IN_MILLISECONDS;
+                            _updateTimer = 3* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 130);
                             break;
                         case 2020:
                             Talk(SAY_STAGE_1_10);
-                            _updateTimer = 5*IN_MILLISECONDS;
+                            _updateTimer = 5* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 2030);
                             break;
                         case 3051:
                             Talk(SAY_STAGE_2_02a);
-                            _updateTimer = 17*IN_MILLISECONDS;
+                            _updateTimer = 17* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 3061);
                             break;
                         case 3071:
                             Talk(SAY_STAGE_2_04a);
-                            _updateTimer = 5*IN_MILLISECONDS;
+                            _updateTimer = 5* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 3081);
                             break;
                         case 3080:
                             Talk(SAY_STAGE_2_05a);
-                            _updateTimer = 3*IN_MILLISECONDS;
+                            _updateTimer = 3* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 3090);
                             break;
                         case 4020:
                             Talk(SAY_STAGE_3_03a);
-                            _updateTimer = 5*IN_MILLISECONDS;
+                            _updateTimer = 5* uint32(IN_MILLISECONDS);
                             _instance->SetData(TYPE_EVENT, 4040);
                             break;
                         default:

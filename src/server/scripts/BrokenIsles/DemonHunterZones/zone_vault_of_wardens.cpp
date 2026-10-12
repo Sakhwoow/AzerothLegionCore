@@ -1919,13 +1919,13 @@ public:
                     {
                     case PHASE_CONTINUE:
                         SetEscortPaused(false);
-                        _moveTimer = 0 * IN_MILLISECONDS;
+                        _moveTimer = 0 * uint32(IN_MILLISECONDS);
                         _phase = PHASE_NONE;
                         break;
                     case PHASE_PEEK_WEAPONS_1:
                         // me->HandleEmoteCommand(EMOTE_STATE_KNEEL_2);
                         me->LoadEquipment(3);
-                        _moveTimer = 2 * IN_MILLISECONDS;
+                        _moveTimer = 2 * uint32(IN_MILLISECONDS);
                         _phase = PHASE_PEEK_WEAPONS_2;
                         break;
                     case PHASE_PEEK_WEAPONS_2:
@@ -1936,18 +1936,18 @@ public:
                             player->KilledMonsterCredit(KILL_CREDIT_ALTRUIS_PICKED_UP_WEAPONS, ObjectGuid::Empty);
                             player->KilledMonsterCredit(KILL_CREDIT_REUNION_FINISHED_ALTRUIS, ObjectGuid::Empty);
                         }   
-                        _moveTimer = 2 * IN_MILLISECONDS;
+                        _moveTimer = 2 * uint32(IN_MILLISECONDS);
                         _phase = PHASE_PEEK_WEAPONS_3;
                         break;
                     /*case PHASE_PEEK_WEAPONS_3:
                         me->HandleEmoteCommand(EMOTE_STATE_NONE);
-                        _moveTimer = 0.5 * IN_MILLISECONDS;
+                        _moveTimer = 0.5 * uint32(IN_MILLISECONDS);
                         _phase = PHASE_PEEK_WEAPONS_4;
                         break;*/
                     case PHASE_PEEK_WEAPONS_3:
                         me->HandleEmoteCommand(EMOTE_STATE_NONE);
                         SetEscortPaused(false);
-                        _moveTimer = 0 * IN_MILLISECONDS;
+                        _moveTimer = 0 * uint32(IN_MILLISECONDS);
                         _phase = PHASE_NONE;
                         break;
                     case PHASE_DESPAWN:
@@ -1971,7 +1971,7 @@ public:
              switch (waypointId)
             {
             case WP_START:
-                _moveTimer = 0 * IN_MILLISECONDS;
+                _moveTimer = 0 * uint32(IN_MILLISECONDS);
                 _phase = PHASE_NONE;
                 Talk(0);
                 break;
@@ -1979,11 +1979,11 @@ public:
                 SetEscortPaused(true);
                 me->SetOrientation(2.81188f);
                 me->HandleEmoteCommand(EMOTE_STATE_KNEEL_2);
-                _moveTimer = 0.2 * IN_MILLISECONDS;
+                _moveTimer = 0.2 * uint32(IN_MILLISECONDS);
                 _phase = PHASE_PEEK_WEAPONS_1;
                 break;
             case WP_AT_HOME:
-                _moveTimer = 0.2 * IN_MILLISECONDS;
+                _moveTimer = 0.2 * uint32(IN_MILLISECONDS);
                 _phase = PHASE_DESPAWN;
                 break;
             default:
@@ -2095,13 +2095,13 @@ public:
                     {
                     case PHASE_CONTINUE:
                         SetEscortPaused(false);
-                        _moveTimer = 0 * IN_MILLISECONDS;
+                        _moveTimer = 0 * uint32(IN_MILLISECONDS);
                         _phase = PHASE_NONE;
                         break;
                     case PHASE_PEEK_WEAPONS_1:
                         // me->HandleEmoteCommand(EMOTE_STATE_KNEEL_2);
                         me->LoadEquipment(3);
-                        _moveTimer = 2 * IN_MILLISECONDS;
+                        _moveTimer = 2 * uint32(IN_MILLISECONDS);
                         _phase = PHASE_PEEK_WEAPONS_2;
                         break;
                     case PHASE_PEEK_WEAPONS_2:
@@ -2112,18 +2112,18 @@ public:
                             player->KilledMonsterCredit(KILL_CREDIT_KAYN_PICKED_UP_WEAPONS, ObjectGuid::Empty);
                             player->KilledMonsterCredit(KILL_CREDIT_REUNION_FINISHED_KAYN, ObjectGuid::Empty);
                         }   
-                        _moveTimer = 2 * IN_MILLISECONDS;
+                        _moveTimer = 2 * uint32(IN_MILLISECONDS);
                         _phase = PHASE_PEEK_WEAPONS_3;
                         break;
                     /*case PHASE_PEEK_WEAPONS_3:
                         
-                        _moveTimer = 0.5 * IN_MILLISECONDS;
+                        _moveTimer = 0.5 * uint32(IN_MILLISECONDS);
                         _phase = PHASE_PEEK_WEAPONS_4;
                         break;*/
                     case PHASE_PEEK_WEAPONS_3:
                         me->HandleEmoteCommand(EMOTE_STATE_NONE);
                         SetEscortPaused(false);
-                        _moveTimer = 0 * IN_MILLISECONDS;
+                        _moveTimer = 0 * uint32(IN_MILLISECONDS);
                         _phase = PHASE_NONE;
                         break;
                     case PHASE_DESPAWN:
@@ -2147,7 +2147,7 @@ public:
              switch (waypointId)
             {
             case WP_START:
-                _moveTimer = 0 * IN_MILLISECONDS;
+                _moveTimer = 0 * uint32(IN_MILLISECONDS);
                 _phase = PHASE_NONE;
                 Talk(0);
                 break;
@@ -2155,11 +2155,11 @@ public:
                 SetEscortPaused(true);
                 me->SetOrientation(0.10776f);
                 me->HandleEmoteCommand(EMOTE_STATE_KNEEL_2);
-                _moveTimer = 0.2 * IN_MILLISECONDS;
+                _moveTimer = 0.2 * uint32(IN_MILLISECONDS);
                 _phase = PHASE_PEEK_WEAPONS_1;
                 break;
             case WP_AT_HOME:
-                _moveTimer = 0.2 * IN_MILLISECONDS;
+                _moveTimer = 0.2 * uint32(IN_MILLISECONDS);
                 _phase = PHASE_DESPAWN;
                 break;
             default:

@@ -193,9 +193,9 @@ public:
 
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
 
-            events.ScheduleEvent(EVENT_TAINT_OF_THE_SEA, 8 * IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_ORB_OF_CORRUPTION_CAST, 12 * IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_BILEWATER_BREATH, 25 * IN_MILLISECONDS);
+            events.ScheduleEvent(EVENT_TAINT_OF_THE_SEA, 8 * uint32(IN_MILLISECONDS));
+            events.ScheduleEvent(EVENT_ORB_OF_CORRUPTION_CAST, 12 * uint32(IN_MILLISECONDS));
+            events.ScheduleEvent(EVENT_BILEWATER_BREATH, 25 * uint32(IN_MILLISECONDS));
 
             Talk(SAY_COMBAT);
             me->setActive(true);
@@ -235,8 +235,8 @@ public:
             me->SetHealth(calcHealth);
             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-            events.ScheduleEvent(EVENT_TAINT_OF_THE_SEA, 8 * IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_ORB_OF_CORROSION, 12 * IN_MILLISECONDS);
+            events.ScheduleEvent(EVENT_TAINT_OF_THE_SEA, 8 * uint32(IN_MILLISECONDS));
+            events.ScheduleEvent(EVENT_ORB_OF_CORROSION, 12 * uint32(IN_MILLISECONDS));
             me->SetReactState(REACT_AGGRESSIVE);
             me->GetMotionMaster()->MoveTargetedHome();
         }
@@ -262,9 +262,9 @@ public:
                 events.CancelEvent(EVENT_BILEWATER_BREATH);
                 events.CancelEvent(EVENT_BILEWATER_SLIME_SUMMON);
 
-                events.ScheduleEvent(EVENT_MISTS_OF_HELHEIM, 1 * IN_MILLISECONDS);
-                events.ScheduleEvent(EVENT_TORRENT, 7 * IN_MILLISECONDS);
-                events.ScheduleEvent(EVENT_START_PHASE2, 5 * IN_MILLISECONDS);
+                events.ScheduleEvent(EVENT_MISTS_OF_HELHEIM, 1 * uint32(IN_MILLISECONDS));
+                events.ScheduleEvent(EVENT_TORRENT, 7 * uint32(IN_MILLISECONDS));
+                events.ScheduleEvent(EVENT_START_PHASE2, 5 * uint32(IN_MILLISECONDS));
 
                 me->AddUnitMovementFlag(MOVEMENTFLAG_ROOT);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
@@ -290,7 +290,7 @@ public:
             {
                 if (!isPhase2 && !me->IsWithinMeleeRange(target) && !isCorrosiveNova)
                 {
-                    events.ScheduleEvent(EVENT_CORROSIVE_NOVA, 3 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_CORROSIVE_NOVA, 3 * uint32(IN_MILLISECONDS));
                     isCorrosiveNova = true;
                 }
             }
@@ -325,7 +325,7 @@ public:
                             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 5.0f, true))
                                 target->CastSpell(target, SPELL_TAINT_OF_THE_SEA, true);
 
-                        events.ScheduleEvent(EVENT_TAINT_OF_THE_SEA, 8 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_TAINT_OF_THE_SEA, 8 * uint32(IN_MILLISECONDS));
                         break;
 
                     case EVENT_ORB_OF_CORRUPTION_CAST:
@@ -334,7 +334,7 @@ public:
 
                         me->CastSpell(me, SPELL_ORB_OF_CORRUPTION, true);
 
-                        events.ScheduleEvent(EVENT_ORB_OF_CORRUPTION, 1 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_ORB_OF_CORRUPTION, 1 * uint32(IN_MILLISECONDS));
                         break;
 
                     case EVENT_ORB_OF_CORRUPTION:
@@ -352,15 +352,15 @@ public:
                             }
                         }
 
-                        events.ScheduleEvent(EVENT_ORB_OF_CORRUPTION_CAST, 12 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_ORB_OF_CORRUPTION_CAST, 12 * uint32(IN_MILLISECONDS));
                         break;
 
                     case EVENT_BILEWATER_BREATH:
                         if (Unit* target = me->GetVictim())
                             me->CastSpell(target, SPELL_BILEWATER_BREATH, true);
 
-                        events.ScheduleEvent(EVENT_BILEWATER_SLIME_SUMMON, 1 * IN_MILLISECONDS);
-                        events.ScheduleEvent(EVENT_BILEWATER_BREATH, 25 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_BILEWATER_SLIME_SUMMON, 1 * uint32(IN_MILLISECONDS));
+                        events.ScheduleEvent(EVENT_BILEWATER_BREATH, 25 * uint32(IN_MILLISECONDS));
                         break;
 
                     case EVENT_BILEWATER_SLIME_SUMMON:
@@ -374,14 +374,14 @@ public:
                         me->SetFacingTo(4.29f);
                         furyOfTheMaw = true;
 
-                        events.ScheduleEvent(EVENT_FURY_OF_THE_MAW, 0.1 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_FURY_OF_THE_MAW, 0.1 * uint32(IN_MILLISECONDS));
                         break;
 
                     case EVENT_TORRENT:
                         if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 5.0f, true))
                             me->CastSpell(target, SPELL_TORRENT, true);
 
-                        events.ScheduleEvent(EVENT_TORRENT, 12 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_TORRENT, 12 * uint32(IN_MILLISECONDS));
                         break;
 
                     case EVENT_FURY_OF_THE_MAW:
@@ -438,7 +438,7 @@ public:
                         {
                             ++waveCount;
 
-                            events.ScheduleEvent(EVENT_FURY_OF_THE_MAW, 5 * IN_MILLISECONDS);
+                            events.ScheduleEvent(EVENT_FURY_OF_THE_MAW, 5 * uint32(IN_MILLISECONDS));
                         }
                         else
                         {
@@ -474,17 +474,17 @@ public:
 
                         if (isPhase2 && !furyOfTheMaw && me->GetPower(POWER_ALTERNATE_POWER) == 100)
                         {
-                            events.ScheduleEvent(EVENT_FURY_OF_THE_MAW, 1 * IN_MILLISECONDS);
+                            events.ScheduleEvent(EVENT_FURY_OF_THE_MAW, 1 * uint32(IN_MILLISECONDS));
                             furyOfTheMaw = true;
                         }
 
-                        events.ScheduleEvent(EVENT_MISTS_OF_HELHEIM, 0.8 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_MISTS_OF_HELHEIM, 0.8 * uint32(IN_MILLISECONDS));
                         break;
 
                     case EVENT_ORB_OF_CORROSION_CAST:
                         me->CastSpell(me, SPELL_ORB_OF_CORROSION_CAST, true);
 
-                        events.ScheduleEvent(EVENT_ORB_OF_CORROSION, 1 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_ORB_OF_CORROSION, 1 * uint32(IN_MILLISECONDS));
                         break;
 
                     case EVENT_ORB_OF_CORROSION:
@@ -509,7 +509,7 @@ public:
                             }
                         }
 
-                        events.ScheduleEvent(EVENT_ORB_OF_CORROSION, 12 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_ORB_OF_CORROSION, 12 * uint32(IN_MILLISECONDS));
                         break;
 
                     default:
@@ -769,12 +769,12 @@ public:
 
         void Reset() override
         {
-            events.ScheduleEvent(EVENT_LANTERN_OF_DARKNESS, 25 * IN_MILLISECONDS);
+            events.ScheduleEvent(EVENT_LANTERN_OF_DARKNESS, 25 * uint32(IN_MILLISECONDS));
 
             if (instance)
                 instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
 
-            events.ScheduleEvent(EVENT_JUMP_BOAT, 6.5 * IN_MILLISECONDS);
+            events.ScheduleEvent(EVENT_JUMP_BOAT, 6.5 * uint32(IN_MILLISECONDS));
         }
 
         void JustDied(Unit* /*killer*/) override
@@ -785,7 +785,7 @@ public:
 
         void EnterCombat(Unit* /*who*/) override
         {
-            events.ScheduleEvent(EVENT_GHOSTLY_RAGE, 6 * IN_MILLISECONDS);
+            events.ScheduleEvent(EVENT_GHOSTLY_RAGE, 6 * uint32(IN_MILLISECONDS));
 
             if (instance)
                 instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me);
@@ -802,20 +802,20 @@ public:
                     case EVENT_LANTERN_OF_DARKNESS:
                         DoCast(SPELL_LANTERN_OF_DARKNESS);
 
-                        events.ScheduleEvent(EVENT_LANTERN_OF_DARKNESS, 25 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_LANTERN_OF_DARKNESS, 25 * uint32(IN_MILLISECONDS));
                         break;
 
                     case EVENT_GHOSTLY_RAGE:
                         DoCast(SPELL_GHOSTLY_RAGE);
 
-                        events.ScheduleEvent(EVENT_GHOSTLY_RAGE, 12 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_GHOSTLY_RAGE, 12 * uint32(IN_MILLISECONDS));
                         break;
 
                     case EVENT_GIVE_NO_QUARTER:
                         if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 5.0f, true))
                             me->CastSpell(target, SPELL_GIVE_NO_QUARTER, true);
 
-                        events.ScheduleEvent(EVENT_GIVE_NO_QUARTER, 20 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_GIVE_NO_QUARTER, 20 * uint32(IN_MILLISECONDS));
                         break;
 
                     case EVENT_JUMP_BOAT:
@@ -871,7 +871,7 @@ public:
             if (instance)
                 instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
 
-            events.ScheduleEvent(EVENT_JUMP_BOAT, 6.5 * IN_MILLISECONDS);
+            events.ScheduleEvent(EVENT_JUMP_BOAT, 6.5 * uint32(IN_MILLISECONDS));
         }
 
         void JustDied(Unit* /*killer*/) override
@@ -882,9 +882,9 @@ public:
 
         void EnterCombat(Unit* /*who*/) override
         {
-            events.ScheduleEvent(EVENT_SLUDGE_NOVA, 15 * IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_ANCHOR_SLAM, 6 * IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_FETID_ROT, 30 * IN_MILLISECONDS);
+            events.ScheduleEvent(EVENT_SLUDGE_NOVA, 15 * uint32(IN_MILLISECONDS));
+            events.ScheduleEvent(EVENT_ANCHOR_SLAM, 6 * uint32(IN_MILLISECONDS));
+            events.ScheduleEvent(EVENT_FETID_ROT, 30 * uint32(IN_MILLISECONDS));
 
             if (instance)
                 instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me);
@@ -901,20 +901,20 @@ public:
                 case EVENT_SLUDGE_NOVA:
                     DoCast(SPELL_SLUDGE_NOVA);
 
-                    events.ScheduleEvent(EVENT_SLUDGE_NOVA, 25 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_SLUDGE_NOVA, 25 * uint32(IN_MILLISECONDS));
                     break;
 
                 case EVENT_ANCHOR_SLAM:
                     DoCast(SPELL_ANCHOR_SLAM);
 
-                    events.ScheduleEvent(EVENT_ANCHOR_SLAM, 12 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_ANCHOR_SLAM, 12 * uint32(IN_MILLISECONDS));
                     break;
 
                 case EVENT_FETID_ROT:
                     if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 70.0f, true))
                         me->CastSpell(target, SPELL_FETID_ROT, true);
 
-                    events.ScheduleEvent(EVENT_FETID_ROT, 20 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_FETID_ROT, 20 * uint32(IN_MILLISECONDS));
                     break;
 
                 case EVENT_JUMP_BOAT:
@@ -967,8 +967,8 @@ public:
         {
             targetGuid = ObjectGuid::Empty;
 
-            events.ScheduleEvent(EVENT_RABID, 1 * IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_VIGOR, 6 * IN_MILLISECONDS);
+            events.ScheduleEvent(EVENT_RABID, 1 * uint32(IN_MILLISECONDS));
+            events.ScheduleEvent(EVENT_VIGOR, 6 * uint32(IN_MILLISECONDS));
         }
 
         void UpdateAI(uint32 diff) override
@@ -993,7 +993,7 @@ public:
                 case EVENT_VIGOR:
                     DoCast(SPELL_VIGOR);
 
-                    events.ScheduleEvent(EVENT_VIGOR, 12 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_VIGOR, 12 * uint32(IN_MILLISECONDS));
                     break;
 
                 default:

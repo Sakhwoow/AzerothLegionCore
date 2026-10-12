@@ -2010,14 +2010,14 @@ class npc_train_wrecker : public CreatureScript
 
         struct npc_train_wreckerAI : public NullCreatureAI
         {
-            npc_train_wreckerAI(Creature* creature) : NullCreatureAI(creature), _isSearching(true), _nextAction(0), _timer(1 * IN_MILLISECONDS) { }
+            npc_train_wreckerAI(Creature* creature) : NullCreatureAI(creature), _isSearching(true), _nextAction(0), _timer(1 * uint32(IN_MILLISECONDS)) { }
 
             GameObject* VerifyTarget() const
             {
                 if (GameObject* target = ObjectAccessor::GetGameObject(*me, _target))
                     return target;
                 me->HandleEmoteCommand(EMOTE_ONESHOT_RUDE);
-                me->DespawnOrUnsummon(3 * IN_MILLISECONDS);
+                me->DespawnOrUnsummon(3 * uint32(IN_MILLISECONDS));
                 return nullptr;
             }
 
@@ -2037,7 +2037,7 @@ class npc_train_wrecker : public CreatureScript
                             me->GetMotionMaster()->MovePoint(MOVEID_CHASE, target->GetNearPosition(3.0f, target->GetAngle(me)));
                         }
                         else
-                            _timer = 3 * IN_MILLISECONDS;
+                            _timer = 3 * uint32(IN_MILLISECONDS);
                     }
                 }
                 else
@@ -2054,7 +2054,7 @@ class npc_train_wrecker : public CreatureScript
                             {
                                 me->SetFacingTo(target->GetOrientation());
                                 me->HandleEmoteCommand(EMOTE_ONESHOT_ATTACK1H);
-                                _timer = 1.5 * IN_MILLISECONDS;
+                                _timer = 1.5 * uint32(IN_MILLISECONDS);
                                 _nextAction = EVENT_DO_WRECK;
                             }
                             else
@@ -2070,7 +2070,7 @@ class npc_train_wrecker : public CreatureScript
                             {
                                 me->CastSpell(target, SPELL_WRECK_TRAIN, false);
                                 target->AI()->DoAction(ACTION_WRECKED);
-                                _timer = 2 * IN_MILLISECONDS;
+                                _timer = 2 * uint32(IN_MILLISECONDS);
                                 _nextAction = EVENT_DO_DANCE;
                             }
                             else
@@ -2084,7 +2084,7 @@ class npc_train_wrecker : public CreatureScript
                             }
                             me->UpdateEntry(NPC_EXULTING_WIND_UP_TRAIN_WRECKER);
                             me->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_ONESHOT_DANCE);
-                            me->DespawnOrUnsummon(5 * IN_MILLISECONDS);
+                            me->DespawnOrUnsummon(5 * uint32(IN_MILLISECONDS));
                             _nextAction = 0;
                             break;
                         default:

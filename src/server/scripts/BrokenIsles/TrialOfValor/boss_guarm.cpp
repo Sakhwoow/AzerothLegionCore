@@ -118,11 +118,11 @@ public:
                 instance->SetBossState(DATA_GUARM, IN_PROGRESS);
             }
 
-            events.ScheduleEvent(EVENT_GUARDIANS_BREATH, 20.5 * IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_FLASHING_FANGS, 6 * IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_ROARING_LEAP, 45 * IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_HEADLONG_CHARGE, 60 * IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_LICK, 22 * IN_MILLISECONDS);
+            events.ScheduleEvent(EVENT_GUARDIANS_BREATH, 20.5 * uint32(IN_MILLISECONDS));
+            events.ScheduleEvent(EVENT_FLASHING_FANGS, 6 * uint32(IN_MILLISECONDS));
+            events.ScheduleEvent(EVENT_ROARING_LEAP, 45 * uint32(IN_MILLISECONDS));
+            events.ScheduleEvent(EVENT_HEADLONG_CHARGE, 60 * uint32(IN_MILLISECONDS));
+            events.ScheduleEvent(EVENT_LICK, 22 * uint32(IN_MILLISECONDS));
 
             //Talk(SAY_COMBAT);
             me->setActive(true);
@@ -199,11 +199,11 @@ public:
                 if (Unit* target = me->GetVictim())
                     me->CanStartAttack(target, true);
 
-                events.ScheduleEvent(EVENT_GUARDIANS_BREATH, 30.5 * IN_MILLISECONDS);
-                events.ScheduleEvent(EVENT_FLASHING_FANGS, 12 * IN_MILLISECONDS);
-                events.ScheduleEvent(EVENT_ROARING_LEAP, 45 * IN_MILLISECONDS);
-                events.ScheduleEvent(EVENT_HEADLONG_CHARGE, 45 * IN_MILLISECONDS);
-                events.ScheduleEvent(EVENT_LICK, 22 * IN_MILLISECONDS);
+                events.ScheduleEvent(EVENT_GUARDIANS_BREATH, 30.5 * uint32(IN_MILLISECONDS));
+                events.ScheduleEvent(EVENT_FLASHING_FANGS, 12 * uint32(IN_MILLISECONDS));
+                events.ScheduleEvent(EVENT_ROARING_LEAP, 45 * uint32(IN_MILLISECONDS));
+                events.ScheduleEvent(EVENT_HEADLONG_CHARGE, 45 * uint32(IN_MILLISECONDS));
+                events.ScheduleEvent(EVENT_LICK, 22 * uint32(IN_MILLISECONDS));
 
                 count = 0;
 
@@ -247,8 +247,8 @@ public:
                         if (AreaTrigger* areaTrigger = me->GetAreaTrigger(232805))
                             atPos = areaTrigger->GetPosition();
 
-                        events.ScheduleEvent(EVENT_GUARDIANS_BREATH, 32 * IN_MILLISECONDS);
-                        events.ScheduleEvent(EVENT_GUARDIANS_BREATH_DMG, 5 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_GUARDIANS_BREATH, 32 * uint32(IN_MILLISECONDS));
+                        events.ScheduleEvent(EVENT_GUARDIANS_BREATH_DMG, 5 * uint32(IN_MILLISECONDS));
                         break;
 
                     case EVENT_GUARDIANS_BREATH_DMG:
@@ -280,7 +280,7 @@ public:
                         if (Unit* target = me->GetVictim())
                             me->CastSpell(target, SPELL_FLASHING_FANGS, true);
 
-                        events.ScheduleEvent(EVENT_FLASHING_FANGS, 12 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_FLASHING_FANGS, 12 * uint32(IN_MILLISECONDS));
                         break;
 
                     case EVENT_ROARING_LEAP:
@@ -292,7 +292,7 @@ public:
                         if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 50.0f, true))
                             me->CastSpell(target, SPELL_ROARING_LEAP_JUMP, true);
 
-                        events.ScheduleEvent(EVENT_ROARING_LEAP, 24 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_ROARING_LEAP, 24 * uint32(IN_MILLISECONDS));
                         break;
 
                     case EVENT_HEADLONG_CHARGE:
@@ -314,7 +314,7 @@ public:
                                     if (player->IsAlive() && player->GetDistance(me) >= 5.0f)
                                         me->CastSpell(player, ChooseRandomLick(), true);
 
-                        events.ScheduleEvent(EVENT_LICK, 22 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_LICK, 22 * uint32(IN_MILLISECONDS));
                         break;
 
                     default:

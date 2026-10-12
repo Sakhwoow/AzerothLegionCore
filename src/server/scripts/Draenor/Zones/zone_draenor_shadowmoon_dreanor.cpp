@@ -605,7 +605,7 @@ public:
                             Omra->SetSpeed(MOVE_RUN, 0.4f);
                             Omra->GetMotionMaster()->MovePoint(1, BurialEventPos[1], true);
                         }
-                        events.ScheduleEvent(EVENT_SOUL_EFFIGY_02, 4.5 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_SOUL_EFFIGY_02, 4.5 * uint32(IN_MILLISECONDS));
 
                         break;
                     }
@@ -616,7 +616,7 @@ public:
                             Omra->Say(SAY_OMRA_01, LANG_UNIVERSAL, Omra);
                             Omra->GetMotionMaster()->MovePoint(1, BurialEventPos[2], true);
                         }
-                        events.ScheduleEvent(EVENT_SOUL_EFFIGY_03, 4 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_SOUL_EFFIGY_03, 4 * uint32(IN_MILLISECONDS));
 
                         break;
                     }
@@ -628,7 +628,7 @@ public:
                             Omra->HandleEmoteCommand(16 /*EMOTE_ONESHOT_KNEEL*/);
                         }
 
-                        events.ScheduleEvent(EVENT_SOUL_EFFIGY_04, 8 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_SOUL_EFFIGY_04, 8 * uint32(IN_MILLISECONDS));
 
                         break;
                     }
@@ -637,7 +637,7 @@ public:
                         if (TempSummon* Omra = GetOmra())
                             Omra->Say(SAY_OMRA_03, LANG_UNIVERSAL, Omra);
 
-                        events.ScheduleEvent(EVENT_SOUL_EFFIGY_05, 11 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_SOUL_EFFIGY_05, 11 * uint32(IN_MILLISECONDS));
 
                         break;
                     }
@@ -646,7 +646,7 @@ public:
                         if (TempSummon* Omra = GetOmra())
                             Omra->Say(SAY_OMRA_04, LANG_UNIVERSAL, Omra);
 
-                        events.ScheduleEvent(EVENT_SOUL_EFFIGY_06, 7.5 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_SOUL_EFFIGY_06, 7.5 * uint32(IN_MILLISECONDS));
 
                         break;
                     }
@@ -657,7 +657,7 @@ public:
                             Omra->Say(SAY_OMRA_05, LANG_UNIVERSAL, Omra);
                             Omra->CastSpell(Omra, SPELL_SOULSTONE_VISUAL);
                         }
-                        events.ScheduleEvent(EVENT_SOUL_EFFIGY_07, 2 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_SOUL_EFFIGY_07, 2 * uint32(IN_MILLISECONDS));
                         if (TempSummon* Xan = go->SummonCreature(NPC_XAN, BurialEventPos[3], TEMPSUMMON_MANUAL_DESPAWN))
                         {
                             xanGuid = Xan->GetGUID();
@@ -675,7 +675,7 @@ public:
                         if (TempSummon* Xan = GetXan())
                             Xan->Say(SAY_XAN_01, LANG_UNIVERSAL, Xan);
 
-                        events.ScheduleEvent(EVENT_SOUL_EFFIGY_08, 6 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_SOUL_EFFIGY_08, 6 * uint32(IN_MILLISECONDS));
 
                         break;
                     }
@@ -686,7 +686,7 @@ public:
 
                         if (Creature* gara = go->FindNearestCreature(NPC_GARA_BURIAL, 15, true))
                             gara->CastSpell(gara, SPELL_VOID_EFFECT);
-                        events.ScheduleEvent(EVENT_SOUL_EFFIGY_END, 4 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_SOUL_EFFIGY_END, 4 * uint32(IN_MILLISECONDS));
 
                         break;
                     }
@@ -846,7 +846,7 @@ public:
                     break;
                     case EVENT_GARA_01:
                     {
-                        if (TempSummon* Xan = me->SummonCreature(NPC_XAN, VoidRealmEventPos[0], TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 60 * 60 * IN_MILLISECONDS))
+                        if (TempSummon* Xan = me->SummonCreature(NPC_XAN, VoidRealmEventPos[0], TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 60 * 60 * uint32(IN_MILLISECONDS)))
                         {
                             Xan->setFaction(14);
                             Xan->SetReactState(REACT_AGGRESSIVE);
@@ -858,7 +858,7 @@ public:
                         events.CancelEvent(EVENT_CHECK_PLAYER);
                         me->GetMotionMaster()->MovePoint(2, VoidRealmEventPos[1], true);
                         me->CastSpell(me, SPELL_VOID_EFFECT);
-                        events.ScheduleEvent(EVENT_GARA_03, 10 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_GARA_03, 10 * uint32(IN_MILLISECONDS));
                     }
                         break;
                     case EVENT_GARA_03:
@@ -888,7 +888,7 @@ public:
                             return;
 
                         if (gara_teamable->IsInCombat())
-                            events.ScheduleEvent(EVENT_GARA_05, 2 * IN_MILLISECONDS);
+                            events.ScheduleEvent(EVENT_GARA_05, 2 * uint32(IN_MILLISECONDS));
                         else events.ScheduleEvent(EVENT_GARA_04, 300);
                     }
                         break;
@@ -897,7 +897,7 @@ public:
                         if (Omra)
                             Omra->Say(SAY_OMRA_12, LANG_UNIVERSAL, Omra);
 
-                        events.ScheduleEvent(EVENT_GARA_06, 11 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_GARA_06, 11 * uint32(IN_MILLISECONDS));
                     }
                         break;
                     case EVENT_GARA_06:
@@ -905,7 +905,7 @@ public:
                         if (Omra)
                             Omra->CastSpell(Omra, SPELL_SOULSTONE_VISUAL);
 
-                        events.ScheduleEvent(EVENT_GARA_END, 1 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_GARA_END, 1 * uint32(IN_MILLISECONDS));
                     }
                         break;
                     case EVENT_GARA_END:
@@ -953,15 +953,15 @@ public:
 
             if (me->GetEntry() == NPC_ELDER_VOIDCALLER)
             {
-                events.ScheduleEvent(EVENT_NEGATE, urand(30, 40) * IN_MILLISECONDS);
-                events.ScheduleEvent(EVENT_TWIST_REALITY, urand(2, 10) * IN_MILLISECONDS);
-                events.ScheduleEvent(EVENT_VOID_BOLT, urand(2, 5) * IN_MILLISECONDS);
+                events.ScheduleEvent(EVENT_NEGATE, urand(30, 40) * uint32(IN_MILLISECONDS));
+                events.ScheduleEvent(EVENT_TWIST_REALITY, urand(2, 10) * uint32(IN_MILLISECONDS));
+                events.ScheduleEvent(EVENT_VOID_BOLT, urand(2, 5) * uint32(IN_MILLISECONDS));
             }
             else
             {
-                events.ScheduleEvent(EVENT_CONSUMING_VOID, urand(40, 60) * IN_MILLISECONDS);
-                events.ScheduleEvent(EVENT_GRIP_OF_THE_VOID, urand(10, 20) * IN_MILLISECONDS);
-                events.ScheduleEvent(EVENT_SINGULARITY, urand(5, 15) * IN_MILLISECONDS);
+                events.ScheduleEvent(EVENT_CONSUMING_VOID, urand(40, 60) * uint32(IN_MILLISECONDS));
+                events.ScheduleEvent(EVENT_GRIP_OF_THE_VOID, urand(10, 20) * uint32(IN_MILLISECONDS));
+                events.ScheduleEvent(EVENT_SINGULARITY, urand(5, 15) * uint32(IN_MILLISECONDS));
             }
         }
 
@@ -984,7 +984,7 @@ public:
                         if (Unit* victim = SelectTarget(SELECT_TARGET_TOPAGGRO, 0, 100.0f, true))
                             me->CastSpell(victim, SPELL_CONSUMING_VOID);
 
-                        events.ScheduleEvent(EVENT_CONSUMING_VOID, urand(40, 60) * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_CONSUMING_VOID, urand(40, 60) * uint32(IN_MILLISECONDS));
                         break;
                     }
                     case EVENT_GRIP_OF_THE_VOID:
@@ -992,7 +992,7 @@ public:
                         if (Unit* victim = SelectTarget(SELECT_TARGET_TOPAGGRO, 0, 50.0f, true))
                             me->CastSpell(victim, SPELL_GRIP_OF_THE_VOID);
 
-                        events.ScheduleEvent(EVENT_GRIP_OF_THE_VOID, urand(20, 30) * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_GRIP_OF_THE_VOID, urand(20, 30) * uint32(IN_MILLISECONDS));
                         break;
                     }
                     case EVENT_NEGATE:
@@ -1000,7 +1000,7 @@ public:
                         if (Unit* victim = SelectTarget(SELECT_TARGET_TOPAGGRO, 0, 10.0f, true))
                             me->CastSpell(victim, SPELL_NEGATE);
 
-                        events.ScheduleEvent(EVENT_NEGATE, urand(10, 25) * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_NEGATE, urand(10, 25) * uint32(IN_MILLISECONDS));
                         break;
                     }
                     case EVENT_SINGULARITY:
@@ -1012,13 +1012,13 @@ public:
                         for (auto player : players)
                             player->CastSpell(me, SPELL_SINGULARITY_PULL);
 
-                        events.ScheduleEvent(EVENT_SINGULARITY, urand(5, 15) * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_SINGULARITY, urand(5, 15) * uint32(IN_MILLISECONDS));
                         break;
                     }
                     case EVENT_TWIST_REALITY:
                     {
                         DoCast(SPELL_TWIST_REALITY);
-                        events.ScheduleEvent(EVENT_TWIST_REALITY, urand(2, 6) * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_TWIST_REALITY, urand(2, 6) * uint32(IN_MILLISECONDS));
                         break;
                     }
                     case EVENT_VOID_BOLT:
@@ -1026,7 +1026,7 @@ public:
                         if (Unit* victim = SelectTarget(SELECT_TARGET_TOPAGGRO, 0, 40.0f))
                             me->CastSpell(victim, SPELL_VOID_BOLT);
 
-                        events.ScheduleEvent(EVENT_VOID_BOLT, urand(2, 6) * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_VOID_BOLT, urand(2, 6) * uint32(IN_MILLISECONDS));
                         break;
                     }
                 }
@@ -1062,12 +1062,12 @@ public:
 
         void EnterCombat(Unit* /*who*/) override
         {
-            events.ScheduleEvent(EVENT_CONSUMING_VOID, urand(40, 60) * IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_GRIP_OF_THE_VOID, urand(10, 20) * IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_NEGATE, urand(5, 10) * IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_SINGULARITY, urand(15, 30) * IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_TWIST_REALITY, urand(5, 10) * IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_VOID_BOLT, urand(2, 5) * IN_MILLISECONDS);
+            events.ScheduleEvent(EVENT_CONSUMING_VOID, urand(40, 60) * uint32(IN_MILLISECONDS));
+            events.ScheduleEvent(EVENT_GRIP_OF_THE_VOID, urand(10, 20) * uint32(IN_MILLISECONDS));
+            events.ScheduleEvent(EVENT_NEGATE, urand(5, 10) * uint32(IN_MILLISECONDS));
+            events.ScheduleEvent(EVENT_SINGULARITY, urand(15, 30) * uint32(IN_MILLISECONDS));
+            events.ScheduleEvent(EVENT_TWIST_REALITY, urand(5, 10) * uint32(IN_MILLISECONDS));
+            events.ScheduleEvent(EVENT_VOID_BOLT, urand(2, 5) * uint32(IN_MILLISECONDS));
         }
 
         void UpdateAI(uint32 diff) override
@@ -1089,7 +1089,7 @@ public:
                         if (Unit* victim = SelectTarget(SELECT_TARGET_TOPAGGRO, 0, 100.0f, true))
                             me->CastSpell(victim, SPELL_CONSUMING_VOID);
 
-                        events.ScheduleEvent(EVENT_CONSUMING_VOID, urand(40, 60) * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_CONSUMING_VOID, urand(40, 60) * uint32(IN_MILLISECONDS));
                         break;
                     }
                     case EVENT_GRIP_OF_THE_VOID:
@@ -1097,7 +1097,7 @@ public:
                         if (Unit* victim = SelectTarget(SELECT_TARGET_TOPAGGRO, 0, 50.0f, true))
                             me->CastSpell(victim, SPELL_GRIP_OF_THE_VOID);
 
-                        events.ScheduleEvent(EVENT_GRIP_OF_THE_VOID, urand(30, 35) * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_GRIP_OF_THE_VOID, urand(30, 35) * uint32(IN_MILLISECONDS));
                         break;
                     }
                     case EVENT_NEGATE:
@@ -1105,7 +1105,7 @@ public:
                         if (Unit* victim = SelectTarget(SELECT_TARGET_TOPAGGRO, 0, 10.0f, true))
                             me->CastSpell(victim, SPELL_NEGATE);
 
-                        events.ScheduleEvent(EVENT_NEGATE, urand(20, 25) * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_NEGATE, urand(20, 25) * uint32(IN_MILLISECONDS));
                         break;
                     }
                     case EVENT_SINGULARITY:
@@ -1117,13 +1117,13 @@ public:
                         for (auto player : players)
                             player->CastSpell(me, SPELL_SINGULARITY_PULL);
 
-                        events.ScheduleEvent(EVENT_SINGULARITY, urand(15, 40) * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_SINGULARITY, urand(15, 40) * uint32(IN_MILLISECONDS));
                         break;
                     }
                     case EVENT_TWIST_REALITY:
                     {
                         DoCast(SPELL_TWIST_REALITY);
-                        events.ScheduleEvent(EVENT_TWIST_REALITY, urand(2, 9) * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_TWIST_REALITY, urand(2, 9) * uint32(IN_MILLISECONDS));
                         break;
                     }
                     case EVENT_VOID_BOLT:
@@ -1131,7 +1131,7 @@ public:
                         if (Unit* victim = SelectTarget(SELECT_TARGET_TOPAGGRO, 0, 40.0f))
                             me->CastSpell(victim, SPELL_VOID_BOLT);
 
-                        events.ScheduleEvent(EVENT_VOID_BOLT, urand(2, 5) * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_VOID_BOLT, urand(2, 5) * uint32(IN_MILLISECONDS));
                         break;
                     }
                 }

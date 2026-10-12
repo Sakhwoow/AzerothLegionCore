@@ -117,16 +117,16 @@ public:
             DespawnGolem();
             m_lGolemGUIDList.clear();
             events.SetPhase(PHASE_INTRO);
-            events.ScheduleEvent(EVENT_FORGE_CAST, 2 * IN_MILLISECONDS, 0, PHASE_INTRO);
+            events.ScheduleEvent(EVENT_FORGE_CAST, 2 * uint32(IN_MILLISECONDS), 0, PHASE_INTRO);
         }
 
         void EnterCombat(Unit* /*who*/) override
         {
             Talk(SAY_AGGRO);
             events.SetPhase(PHASE_NORMAL);
-            events.ScheduleEvent(EVENT_PAUSE,            3.5 * IN_MILLISECONDS, 0, PHASE_NORMAL);
-            events.ScheduleEvent(EVENT_SHATTERING_STOMP,   0 * IN_MILLISECONDS, 0, PHASE_NORMAL);
-            events.ScheduleEvent(EVENT_SHATTER,            5 * IN_MILLISECONDS, 0, PHASE_NORMAL);
+            events.ScheduleEvent(EVENT_PAUSE,            3.5 * uint32(IN_MILLISECONDS), 0, PHASE_NORMAL);
+            events.ScheduleEvent(EVENT_SHATTERING_STOMP,   0 * uint32(IN_MILLISECONDS), 0, PHASE_NORMAL);
+            events.ScheduleEvent(EVENT_SHATTER,            5 * uint32(IN_MILLISECONDS), 0, PHASE_NORMAL);
             _EnterCombat();
         }
 
@@ -249,7 +249,7 @@ public:
 
                             m_bHasTemper = false;
                             m_bIsStriking = false;
-                            events.ScheduleEvent(EVENT_PAUSE, 3.5 * IN_MILLISECONDS, 0, PHASE_NORMAL);
+                            events.ScheduleEvent(EVENT_PAUSE, 3.5 * uint32(IN_MILLISECONDS), 0, PHASE_NORMAL);
                         }
                         break;
                     case EVENT_SHATTERING_STOMP:
@@ -261,7 +261,7 @@ public:
                             DoCast(me, SPELL_SHATTERING_STOMP);
 
                             Talk(EMOTE_SHATTER);
-                            events.ScheduleEvent(EVENT_SHATTERING_STOMP, 30 * IN_MILLISECONDS, 0, PHASE_NORMAL);
+                            events.ScheduleEvent(EVENT_SHATTERING_STOMP, 30 * uint32(IN_MILLISECONDS), 0, PHASE_NORMAL);
                             m_bCanShatterGolem = true;
                         }
                         break;
@@ -269,13 +269,13 @@ public:
                         if (m_bCanShatterGolem)
                         {
                             ShatterGolem();
-                            events.ScheduleEvent(EVENT_SHATTER, 3 * IN_MILLISECONDS, 0, PHASE_NORMAL);
+                            events.ScheduleEvent(EVENT_SHATTER, 3 * uint32(IN_MILLISECONDS), 0, PHASE_NORMAL);
                             m_bCanShatterGolem = false;
                         }
                         break;
                     case EVENT_FORGE_CAST:
                         DoCast(me, SPELL_FORGE_VISUAL);
-                        events.ScheduleEvent(EVENT_FORGE_CAST, 15 * IN_MILLISECONDS, 0, PHASE_INTRO);
+                        events.ScheduleEvent(EVENT_FORGE_CAST, 15 * uint32(IN_MILLISECONDS), 0, PHASE_INTRO);
                         break;
                     default:
                         break;
@@ -394,8 +394,8 @@ public:
         void Initialize()
         {
             m_bIsFrozen = false;
-            events.ScheduleEvent(EVENT_BLAST,      20 * IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_IMMOLATION,  5 * IN_MILLISECONDS);
+            events.ScheduleEvent(EVENT_BLAST,      20 * uint32(IN_MILLISECONDS));
+            events.ScheduleEvent(EVENT_IMMOLATION,  5 * uint32(IN_MILLISECONDS));
         }
 
         bool m_bIsFrozen;
@@ -462,11 +462,11 @@ public:
                 {
                     case EVENT_BLAST:
                         DoCast(me, SPELL_BLAST_WAVE);
-                        events.ScheduleEvent(EVENT_BLAST, 20 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_BLAST, 20 * uint32(IN_MILLISECONDS));
                         break;
                     case EVENT_IMMOLATION:
                         DoCastVictim(SPELL_IMMOLATION_STRIKE);
-                        events.ScheduleEvent(EVENT_BLAST, 5 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_BLAST, 5 * uint32(IN_MILLISECONDS));
                         break;
                     default:
                         break;
