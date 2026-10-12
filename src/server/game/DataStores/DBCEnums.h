@@ -78,7 +78,7 @@ enum AchievementFaction
     ACHIEVEMENT_FACTION_ANY             = -1
 };
 
-static const uint16 BATTLE_PET_SPECIES_MAX_ID = 2164;
+static const uint16 BATTLE_PET_SPECIES_MAX_ID = 10000;
 
 enum AchievementFlags
 {
