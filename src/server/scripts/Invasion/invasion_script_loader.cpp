@@ -19,7 +19,31 @@
 
 void AddSC_invasion_point_world_bosses();
 
+void AddSC_InvasionAzsuna();
+void AddSC_instance_InvasionAzsuna();
+
+void AddSC_InvasionHM();
+void AddSC_instance_invasion_HM();
+
+void AddSC_InvasionStormheim();
+void AddSC_instance_invasion_stormheim();
+
+void AddSC_InvasionValshara();
+void AddSC_instance_invasion_valshara();
+
 void AddInvasionScripts()
 {
     AddSC_invasion_point_world_bosses();
+
+    AddSC_InvasionAzsuna();
+    AddSC_instance_InvasionAzsuna();
+
+    AddSC_InvasionHM();
+    AddSC_instance_invasion_HM();
+
+    AddSC_InvasionStormheim();
+    AddSC_instance_invasion_stormheim();
+
+    AddSC_InvasionValshara();
+    AddSC_instance_invasion_valshara();
 }
