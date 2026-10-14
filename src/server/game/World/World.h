@@ -851,6 +851,7 @@ class TC_GAME_API World
         void InitGuildResetTime();
         void InitCurrencyResetTime();
         void InitChallengeKeyResetTime();
+        void InitAutoRestartTime();
         void DailyReset();
         void ResetWeeklyQuests();
         void ResetMonthlyQuests();
@@ -925,6 +926,12 @@ class TC_GAME_API World
         time_t m_NextGuildReset;
         time_t m_NextCurrencyReset;
         time_t m_NextChallengeKeyReset;
+
+        // ServerAutoShutdown.* - scheduled daily/weekly server restart, computed once at startup
+        // by InitAutoRestartTime(). Index 0 = ServerAutoShutdown.Time, 1 = ServerAutoShutdown.Time2.
+        // 0 means that slot is disabled (not configured, invalid, or already fired this run).
+        time_t m_NextAutoRestartPreAnnounce[2];
+        uint32 m_AutoRestartAnnounceSeconds[2];
 
         //Player Queue
         Queue m_QueuedPlayer;

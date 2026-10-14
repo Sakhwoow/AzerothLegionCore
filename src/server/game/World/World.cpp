@@ -106,6 +106,7 @@
 #include "PathfindingMgr.h"
 #include "ToolSocket.h"
 #include "SHA1.h"
+#include <cstdio>
 #include <boost/algorithm/string.hpp>
 #include "CustomTalkMenu.h"
 
@@ -2697,6 +2698,9 @@ void World::SetInitialWorldSettings()
     TC_LOG_INFO("server.loading", "Calculate guild limitation(s) reset time...");
     InitGuildResetTime();
 
+    TC_LOG_INFO("server.loading", "Calculate next automatic server restart time...");
+    InitAutoRestartTime();
+
     TC_LOG_INFO("server.loading", "Calculate next currency reset time...");
     InitCurrencyResetTime();
 
@@ -3485,6 +3489,20 @@ void World::_UpdateGameTime()
             ShutdownMsg();
         }
     }
+
+    ///- ServerAutoShutdown.*: scheduled daily/weekly restart. The pre-announce moment for each
+    /// slot was computed once at startup by InitAutoRestartTime(); once reached, just hand off to
+    /// the engine's own ShutdownServ/ShutdownTimer/ShutdownMsg machinery above - nothing custom to
+    /// tick here otherwise. Guard against refiring every tick while shut down is pending by
+    /// clearing the slot back to 0 (its "disabled" sentinel) immediately after firing.
+    for (uint8 i = 0; i < 2; ++i)
+    {
+        if (m_NextAutoRestartPreAnnounce[i] != 0 && thisTime >= m_NextAutoRestartPreAnnounce[i])
+        {
+            m_NextAutoRestartPreAnnounce[i] = 0;
+            ShutdownServ(m_AutoRestartAnnounceSeconds[i], SHUTDOWN_MASK_RESTART, SHUTDOWN_EXIT_CODE);
+        }
+    }
 }
 
 /// Shutdown the server
@@ -3788,6 +3806,113 @@ void World::InitGuildResetTime()
 
     if (!gtime)
         sWorld->setWorldState(WS_GUILD_DAILY_RESET_TIME, uint32(m_NextGuildReset));
+}
+
+namespace
+{
+    // Computes the one-shot pre-announce time point for one ServerAutoShutdown.* restart slot.
+    // Core-native equivalent of mod-server-auto-shutdown's ScheduleRestartAtConfiguredTime, minus
+    // the TaskScheduler bit: this engine already ticks its own shutdown countdown/announce
+    // machinery (World::_UpdateGameTime/ShutdownMsg) once ShutdownServ() is called, so all that's
+    // needed here is "when should ShutdownServ() be called, and with how many seconds of notice".
+    // Returns false (slot left disabled) on any config error - a bad Time2 must never take down
+    // the Time slot, since Time was already validated and scheduled by the time this runs for it.
+    bool ComputeAutoRestartPreAnnounce(char const* configKey, std::string const& configTime, int32 weekday,
+        uint32 everyDays, uint32 preAnnounceSeconds, time_t now, time_t& preAnnounceAt, uint32& announceSeconds)
+    {
+        uint32 hour, minute, second;
+        if (sscanf(configTime.c_str(), "%u:%u:%u", &hour, &minute, &second) != 3 ||
+            hour > 23 || minute > 59 || second > 59)
+        {
+            TC_LOG_ERROR("server.loading", "World::InitAutoRestartTime: invalid value for %s ('%s'), this restart slot is disabled.",
+                configKey, configTime.c_str());
+            return false;
+        }
+
+        tm localTm;
+        localtime_r(&now, &localTm);
+        localTm.tm_hour = int32(hour);
+        localTm.tm_min = int32(minute);
+        localTm.tm_sec = int32(second);
+
+        bool useWeekday = (weekday >= 0 && weekday <= 6);
+        time_t nextShutdown;
+        if (useWeekday)
+        {
+            int32 daysUntil = (weekday - localTm.tm_wday + 7) % 7;
+            localTm.tm_mday += daysUntil;
+            nextShutdown = mktime(&localTm);
+            if (nextShutdown <= now)
+            {
+                localTm.tm_mday += 7;
+                nextShutdown = mktime(&localTm);
+            }
+        }
+        else
+        {
+            nextShutdown = mktime(&localTm);
+            if (nextShutdown <= now)
+            {
+                localTm.tm_mday += int32(everyDays);
+                nextShutdown = mktime(&localTm);
+            }
+        }
+
+        uint32 diffToShutdown = uint32(nextShutdown - now);
+        if (diffToShutdown < 10)
+        {
+            localTm.tm_mday += useWeekday ? 7 : int32(everyDays);
+            nextShutdown = mktime(&localTm);
+            diffToShutdown = uint32(nextShutdown - now);
+        }
+
+        announceSeconds = preAnnounceSeconds;
+        preAnnounceAt = nextShutdown - time_t(announceSeconds);
+        if (diffToShutdown < announceSeconds)
+        {
+            // too close to fit a full pre-announce window - announce right away with whatever time is left
+            preAnnounceAt = now + 1;
+            announceSeconds = diffToShutdown;
+        }
+
+        TC_LOG_INFO("server.loading", "World::InitAutoRestartTime: %s -> next restart in %s, pre-announce in %s",
+            configKey, secsToTimeString(diffToShutdown).c_str(), secsToTimeString(uint64(preAnnounceAt - now)).c_str());
+        return true;
+    }
+}
+
+void World::InitAutoRestartTime()
+{
+    m_NextAutoRestartPreAnnounce[0] = 0;
+    m_NextAutoRestartPreAnnounce[1] = 0;
+    m_AutoRestartAnnounceSeconds[0] = 0;
+    m_AutoRestartAnnounceSeconds[1] = 0;
+
+    if (!sConfigMgr->GetBoolDefault("ServerAutoShutdown.Enabled", false))
+        return;
+
+    int32 weekday = sConfigMgr->GetIntDefault("ServerAutoShutdown.Weekday", -1);
+    uint32 everyDays = uint32(sConfigMgr->GetIntDefault("ServerAutoShutdown.EveryDays", 1));
+    if (!(weekday >= 0 && weekday <= 6) && (everyDays < 1 || everyDays > 365))
+    {
+        TC_LOG_ERROR("server.loading", "World::InitAutoRestartTime: invalid ServerAutoShutdown.EveryDays (%u), automatic restart disabled.", everyDays);
+        return;
+    }
+
+    uint32 preAnnounceSeconds = uint32(sConfigMgr->GetIntDefault("ServerAutoShutdown.PreAnnounce.Seconds", HOUR));
+    if (preAnnounceSeconds > DAY)
+        preAnnounceSeconds = HOUR;
+
+    time_t now = time(nullptr);
+
+    std::string configTime = sConfigMgr->GetStringDefault("ServerAutoShutdown.Time", "04:00:00");
+    ComputeAutoRestartPreAnnounce("ServerAutoShutdown.Time", configTime, weekday, everyDays, preAnnounceSeconds, now,
+        m_NextAutoRestartPreAnnounce[0], m_AutoRestartAnnounceSeconds[0]);
+
+    std::string configTime2 = sConfigMgr->GetStringDefault("ServerAutoShutdown.Time2", "");
+    if (!configTime2.empty())
+        ComputeAutoRestartPreAnnounce("ServerAutoShutdown.Time2", configTime2, weekday, everyDays, preAnnounceSeconds, now,
+            m_NextAutoRestartPreAnnounce[1], m_AutoRestartAnnounceSeconds[1]);
 }
 
 void World::InitCurrencyResetTime()
