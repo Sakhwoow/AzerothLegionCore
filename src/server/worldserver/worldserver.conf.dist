@@ -19,6 +19,7 @@
 #    CREATURE SETTINGS
 #    CHAT SETTINGS
 #    GAME MASTER SETTINGS
+#    AUTOMATIC SERVER RESTART SETTINGS
 #    SUPPORT SETTINGS
 #    VISIBILITY AND DISTANCES
 #    SERVER RATES
@@ -2012,6 +2013,11 @@ GM.LowerSecurity = 0
 
 GM.ForceShutdownThreshold = 30
 
+#
+###################################################################################################
+
+###################################################################################################
+# AUTOMATIC SERVER RESTART SETTINGS
 #
 #    ServerAutoShutdown.Enabled
 #        Описание: Включает автоматическую перезагрузку сервера по расписанию (каждый день,
