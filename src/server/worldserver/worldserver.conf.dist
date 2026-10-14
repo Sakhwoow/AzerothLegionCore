@@ -2052,7 +2052,7 @@ ServerAutoShutdown.Weekday = -1
 #        Описание: Время перезагрузки (в формате ЧЧ:ММ:СС, 24-часовой формат).
 #        По умолчанию: 04:00:00
 
-ServerAutoShutdown.Time = "04:00:00"
+ServerAutoShutdown.Time = "07:00:00"
 
 #
 #    ServerAutoShutdown.Time2
@@ -2063,7 +2063,7 @@ ServerAutoShutdown.Time = "04:00:00"
 #        Пример:    "20:00:00" - второй рестарт в 20:00
 #        По умолчанию: "" - Не используется
 
-ServerAutoShutdown.Time2 = ""
+ServerAutoShutdown.Time2 = "19:00:00"
 
 #
 #    ServerAutoShutdown.PreAnnounce.Seconds
@@ -2073,7 +2073,7 @@ ServerAutoShutdown.Time2 = ""
 #                  86400 секунд (24 часа).
 #        По умолчанию: 3600 - 1 час
 
-ServerAutoShutdown.PreAnnounce.Seconds = 3600
+ServerAutoShutdown.PreAnnounce.Seconds = 300
 
 #
 ###################################################################################################

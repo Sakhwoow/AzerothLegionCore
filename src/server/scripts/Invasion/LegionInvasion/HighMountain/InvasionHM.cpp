@@ -5,6 +5,8 @@
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "CreatureTextMgr.h"
+#include "Conversation.h"
+#include "Vehicle.h"
 
 // 119850
 class npc_invasion_hm_mayla : public CreatureScript
@@ -30,7 +32,7 @@ public:
          {
             me->AddDelayedEvent(3000, [this]() -> void
             {
-                me->CreateConversation(4684);
+                Conversation::CreateConversation(4684, me, me->GetPosition(), { me->GetGUID() });
             });
             me->RemoveAura(68442);
             me->GetMotionMaster()->MovePath(10993802, false); // 12
@@ -45,7 +47,7 @@ public:
             if (!_introDone && me->IsWithinDistInMap(who, 20.0f))
             {
                 _introDone = true;
-                who->ToPlayer()->UpdateAchievementCriteria(CRITERIA_TYPE_SCRIPT_EVENT, 57177);
+                who->ToPlayer()->UpdateCriteria(CRITERIA_TYPE_SEND_EVENT, 57177);
                 Talk(0);
             }
         }
@@ -67,7 +69,7 @@ public:
                 if (id == 13)
                     Talk(5);
                 if (id == 26)
-                    me->CreateConversation(4962);
+                    Conversation::CreateConversation(4962, me, me->GetPosition(), { me->GetGUID() });
             }
         }
 
@@ -92,7 +94,7 @@ public:
             if (who->IsPlayer())
             {
                 me->GetMotionMaster()->MovePath(10993801, false);
-                who->ToPlayer()->UpdateAchievementCriteria(CRITERIA_TYPE_SCRIPT_EVENT_2, 57189);
+                who->ToPlayer()->UpdateCriteria(CRITERIA_TYPE_SEND_EVENT, 57189);
             }
         }
 
@@ -106,7 +108,7 @@ public:
                 if (Unit* passenger = me->GetVehicleKit()->GetPassenger(0))
                 {
                     if (passenger->IsPlayer())
-                        passenger->ToPlayer()->UpdateAchievementCriteria(CRITERIA_TYPE_SCRIPT_EVENT_2, 57209);
+                        passenger->ToPlayer()->UpdateCriteria(CRITERIA_TYPE_SEND_EVENT, 57209);
                     passenger->AddAura(55001, passenger);
                     me->GetVehicleKit()->RemoveAllPassengers();
                     me->DespawnOrUnsummon(500);
@@ -136,16 +138,16 @@ public:
     {
         npc_invasion_hm_miscAI(Creature* creature) : ScriptedAI(creature) {}
 
-        void OnSpellClick(Unit* clicker) override
+        void OnSpellClick(Unit* clicker, bool& /*result*/) override
         {
             if (!clicker->IsPlayer())
                 return;
 
-            me->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+            me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
 
             if (me->GetEntry() == 119994)
             {
-                clicker->ToPlayer()->UpdateAchievementCriteria(CRITERIA_TYPE_SCRIPT_EVENT_2, 57210);
+                clicker->ToPlayer()->UpdateCriteria(CRITERIA_TYPE_SEND_EVENT, 57210);
                 if (Creature* tauren = me->FindNearestCreature(119993, 10.0f, true))
                 {
                     tauren->SetWalk(false);
@@ -156,7 +158,7 @@ public:
             }
             else if (me->GetEntry() == 119981)
             {
-                clicker->ToPlayer()->UpdateAchievementCriteria(CRITERIA_TYPE_SCRIPT_EVENT_2, 57211);
+                clicker->ToPlayer()->UpdateCriteria(CRITERIA_TYPE_SEND_EVENT, 57211);
                 me->RemoveAura(164141);
             }
         }

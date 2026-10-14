@@ -4,6 +4,7 @@
 
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
+#include "Conversation.h"
 
 class instance_InvasionAzsuna : public InstanceMapScript
 {
@@ -19,7 +20,6 @@ public:
     {
         instance_InvasionAzsuna_InstanceMapScript(InstanceMap* map) : InstanceScript(map) {}
 
-        WorldLocation loc_res_pla;  // for respawn
         ObjectGuid bombarder_guid;
         uint32 BombsTimer;
 
@@ -45,29 +45,18 @@ public:
             
             player->AddDelayedEvent(5000, [player]() -> void
             {
-                player->CreateConversation(4587);
+                Conversation::CreateConversation(4587, player, player->GetPosition(), { player->GetGUID() });
             });
         }
 
-        WorldLocation* GetClosestGraveYard(float x, float y, float z) override
-        // OnPlayerDeath
+        void OnPlayerDeath(Player* player) override
         {
-            // Init data
-            loc_res_pla.WorldRelocate(1705, x, y, z);
+            InstanceScript::OnPlayerDeath(player);
 
-            uint32 graveyardId = 0;
-
-            if (getScenarionStep() >= 3)
-                graveyardId = 5918;
-            else
-                graveyardId = 5917;
+            uint32 graveyardId = (m_ScenarioStep >= 3) ? 5918 : 5917;
 
             if (WorldSafeLocsEntry const* gy = sWorldSafeLocsStore.LookupEntry(graveyardId))
-            {
-                loc_res_pla.WorldRelocate(gy->MapID, gy->Loc.X, gy->Loc.Y, gy->Loc.Z);
-            }
-
-            return &loc_res_pla;
+                player->TeleportTo(gy->MapID, gy->Loc.X, gy->Loc.Y, gy->Loc.Z, player->GetOrientation());
         }
 
         void OnUnitDeath(Unit* creature) override
@@ -92,9 +81,9 @@ public:
                 return;
 
             for (Map::PlayerList::const_iterator i = PlList.begin(); i != PlList.end(); ++i)
-                if (Player* player = i->getSource())
+                if (Player* player = i->GetSource())
                 {
-                    player->UpdateAchievementCriteria(CRITERIA_TYPE_SCRIPT_EVENT_2, objective);
+                    player->UpdateCriteria(CRITERIA_TYPE_SEND_EVENT, objective);
                     break;
                 }
         }
@@ -107,21 +96,21 @@ public:
 
         void Update(uint32 diff) override
         {
-            if (getScenarionStep() >= 2)
+            if (m_ScenarioStep >= 2)
                 return;
 
             if (BombsTimer <= diff)
             {
                 if (Creature* bomber = instance->GetCreature(bombarder_guid))
                 {
-                    bomber->AI()->ZoneTalk(0);
+                    bomber->AI()->Talk(0);
                     Map::PlayerList const& players = instance->GetPlayers();
 
                     for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
                     {
-                        if (Player* player = itr->getSource())
+                        if (Player* player = itr->GetSource())
                         {
-                            if (player->IsAlive() && !player->isGameMaster())
+                            if (player->IsAlive() && !player->IsGameMaster())
                                 bomber->CastSpell(player, 235084);
                         }
                     }

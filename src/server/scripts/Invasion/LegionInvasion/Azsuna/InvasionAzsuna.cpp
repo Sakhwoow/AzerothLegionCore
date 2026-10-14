@@ -6,6 +6,8 @@
 #include "ScriptedCreature.h"
 #include "CreatureTextMgr.h"
 #include "GameObjectAI.h"
+#include "Conversation.h"
+#include "Vehicle.h"
 
 // 119454 119483
 class npc_invasion_azsuna_misc : public CreatureScript
@@ -22,15 +24,15 @@ public:
     {
         npc_invasion_azsuna_miscAI(Creature* creature) : ScriptedAI(creature) {}
         
-        void OnSpellClick(Unit* clicker) override
+        void OnSpellClick(Unit* clicker, bool& /*result*/) override
         {
             if (!clicker->IsPlayer())
                 return;
-            
-            me->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
-            
+
+            me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+
             uint32 criteria = 0;
-            
+
             switch(me->GetEntry())
             {
                 case 119483:
@@ -41,7 +43,7 @@ public:
                     break;
             }
             if (criteria)
-                clicker->ToPlayer()->UpdateAchievementCriteria(CRITERIA_TYPE_SCRIPT_EVENT_2, 56889);
+                clicker->ToPlayer()->UpdateCriteria(CRITERIA_TYPE_SEND_EVENT, criteria);
             me->DespawnOrUnsummon(10);
 
         }
@@ -58,50 +60,50 @@ public:
     {
         npc_invasion_azsuna_dragonsAI(Creature* creature) : ScriptedAI(creature)
         {
-            me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+            me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
             _introDone = false;
         }
-        
+
         bool _introDone;
 
         void Reset() override
         {
-            me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+            me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
         }
 
-        void OnSpellClick(Unit* clicker) override
+        void OnSpellClick(Unit* clicker, bool& /*result*/) override
         {
             if (me->GetEntry() == 119459)
-                clicker->ToPlayer()->UpdateAchievementCriteria(CRITERIA_TYPE_SCRIPT_EVENT_2, 56885);
+                clicker->ToPlayer()->UpdateCriteria(CRITERIA_TYPE_SEND_EVENT, 56885);
             else
                 clicker->CastSpell(me, 52391, true); //Ride Veh
         }
-        
+
         void PassengerBoarded(Unit* who, int8 /*seatId*/, bool apply) override
         {
             SetFlyMode(true);
             if (who->IsPlayer())
-            {                
+            {
                 me->GetMotionMaster()->MovePath(10993803, false);
-                who->ToPlayer()->UpdateAchievementCriteria(CRITERIA_TYPE_SCRIPT_EVENT_2, 56891);
+                who->ToPlayer()->UpdateCriteria(CRITERIA_TYPE_SEND_EVENT, 56891);
             }
         }
-        
+
         void MoveInLineOfSight(Unit* who) override
-        {  
+        {
             if (who->GetTypeId() != TYPEID_PLAYER)
                 return;
-            
+
             if (!_introDone)
                 if (InstanceScript *script = me->GetInstanceScript())
-                    if (script->getScenarionStep() == 1)
+                    if (script->m_ScenarioStep == 1)
                         if (me->IsWithinDistInMap(who, 5.0f) && !who->IsOnVehicle())
                         {
                             _introDone = true;
                             who->ToPlayer()->CastSpell(me, 52391, true); //Ride Veh
                         }
         }
-        
+
         void MovementInform(uint32 moveType, uint32 pointId) override
         {
             if (moveType != WAYPOINT_MOTION_TYPE)
@@ -111,8 +113,8 @@ public:
             {
                 if (Unit* passenger = me->GetVehicleKit()->GetPassenger(0))
                 {
-                    passenger->CreateConversation(4590);
-                    passenger->ToPlayer()->UpdateAchievementCriteria(CRITERIA_TYPE_SCRIPT_EVENT_2, 56892);
+                    Conversation::CreateConversation(4590, passenger, passenger->GetPosition(), { passenger->GetGUID() });
+                    passenger->ToPlayer()->UpdateCriteria(CRITERIA_TYPE_SEND_EVENT, 56892);
                     passenger->AddAura(55001, passenger);
                     me->GetVehicleKit()->RemoveAllPassengers();
                     me->DespawnOrUnsummon(500);
@@ -202,14 +204,19 @@ class npc_invasion_azsuna_acstris : public CreatureScript
 public:
     npc_invasion_azsuna_acstris() : CreatureScript("npc_invasion_azsuna_acstris") { }
         
+    enum InvasionAzsunaAcstrisEvents
+    {
+        EVENT_1 = 1
+    };
+
     struct npc_invasion_azsuna_acstrisAI : ScriptedAI
     {
-        npc_invasion_azsuna_acstrisAI(Creature* creature) : ScriptedAI(creature) 
+        npc_invasion_azsuna_acstrisAI(Creature* creature) : ScriptedAI(creature)
         {
             ResummonAdds = true;
             TimerAdds = urand(1000, 3000);
         }
-        
+
         EventMap events;
         bool ResummonAdds;
         uint32 TimerAdds;
@@ -229,8 +236,8 @@ public:
         {
             if (Player* pl = me->FindNearestPlayer(50.0f))
             {
-                pl->UpdateAchievementCriteria(CRITERIA_TYPE_SCRIPT_EVENT_2, 56893);
-                pl->CreateConversation(4591);
+                pl->UpdateCriteria(CRITERIA_TYPE_SEND_EVENT, 56893);
+                Conversation::CreateConversation(4591, pl, pl->GetPosition(), { pl->GetGUID() });
             }
         }
     

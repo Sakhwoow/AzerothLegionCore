@@ -6,6 +6,10 @@
 #include "ScriptedCreature.h"
 #include "ScenarioMgr.h"
 #include "Scenario.h"
+#include "InstanceScenario.h"
+#include "Conversation.h"
+#include "GameObject.h"
+#include "DB2Stores.h"
 
 class instance_invasion_valshara : public InstanceMapScript
 {
@@ -20,8 +24,7 @@ public:
     struct instance_invasion_valshara_InstanceMapScript : public InstanceScript
     {
         instance_invasion_valshara_InstanceMapScript(InstanceMap* map) : InstanceScript(map) {}
-        
-        WorldLocation loc_res_pla;  // for respawn
+
         GuidList StartedGroup;
         ObjectGuid StalkerTarget;
         
@@ -48,28 +51,22 @@ public:
 
             player->AddDelayedEvent(5000, [player]() -> void
             {
-                player->CreateConversation(4587);
+                Conversation::CreateConversation(4587, player, player->GetPosition(), { player->GetGUID() });
             });
         }
 
-        WorldLocation* GetClosestGraveYard(float x, float y, float z) override
-        // OnPlayerDeath
-        {            
-            // Init data
-            loc_res_pla.WorldRelocate(1704, x, y, z);
+        void OnPlayerDeath(Player* player) override
+        {
+            InstanceScript::OnPlayerDeath(player);
 
             uint32 graveyardId = 5885;
-            if (getScenarionStep() >= 1 && getScenarionStep() <= 6)
+            if (m_ScenarioStep >= 1 && m_ScenarioStep <= 6)
                 graveyardId = 5887;
-            else if(getScenarionStep() >= 7)
+            else if (m_ScenarioStep >= 7)
                 graveyardId = 5888;
 
             if (WorldSafeLocsEntry const* gy = sWorldSafeLocsStore.LookupEntry(graveyardId))
-            {
-                loc_res_pla.WorldRelocate(gy->MapID, gy->Loc.X, gy->Loc.Y, gy->Loc.Z);
-            }
-            
-            return &loc_res_pla;
+                player->TeleportTo(gy->MapID, gy->Loc.X, gy->Loc.Y, gy->Loc.Z, player->GetOrientation());
         }
 
         void OnCreatureCreate(Creature* creature) override
@@ -90,11 +87,14 @@ public:
         {     
             if (creature->GetEntry() == 118180)
             {
-                // if (InstanceMap* instance = map->ToInstanceMap()) // some hack
-                {
-                    if(Scenario* progress = sScenarioMgr->GetScenario(instance->GetInstanceId()))
-                        progress->SetCurrentStep(8);
-                }
+                if (InstanceScenario* scenario = instance->GetInstanceScenario())
+                    if (ScenarioEntry const* scenarioEntry = scenario->GetEntry())
+                        for (ScenarioStepEntry const* step : sScenarioStepStore)
+                            if (step->ScenarioID == scenarioEntry->ID && step->ID == 8)
+                            {
+                                scenario->SetStep(step);
+                                break;
+                            }
             }
         }
         
@@ -107,17 +107,17 @@ public:
                 return;
             
             for (Map::PlayerList::const_iterator i = PlList.begin(); i != PlList.end(); ++i)
-                if (Player* player = i->getSource())
+                if (Player* player = i->GetSource())
                 {
                     if (objective > 0)
-                        player->UpdateAchievementCriteria(CRITERIA_TYPE_SCRIPT_EVENT_2, objective);
+                        player->UpdateCriteria(CRITERIA_TYPE_SEND_EVENT, uint32(objective));
                     else
-                        player->CreateConversation(abs(objective));
+                        Conversation::CreateConversation(uint32(abs(objective)), player, player->GetPosition(), { player->GetGUID() });
                     break;
                 }
         }
-        
-        void onScenarionNextStep(uint32 newStep) override
+
+        void onScenarionNextStep(uint32 newStep)
         {
             switch(newStep)
             {

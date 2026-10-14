@@ -6,6 +6,7 @@
 #include "ScriptedCreature.h"
 #include "ScenarioMgr.h"
 #include "Scenario.h"
+#include "Conversation.h"
 
 class instance_invasion_stormheim : public InstanceMapScript
 {
@@ -20,27 +21,17 @@ public:
     struct instance_invasion_stormheim_InstanceMapScript : public InstanceScript
     {
         instance_invasion_stormheim_InstanceMapScript(InstanceMap* map) : InstanceScript(map) {}
-        
-        WorldLocation loc_res_pla;  // for respawn
 
-        WorldLocation* GetClosestGraveYard(float x, float y, float z) override
-        // OnPlayerDeath
-        {            
-            // Init data
-            loc_res_pla.WorldRelocate(1707, x, y, z);
+        void OnPlayerDeath(Player* player) override
+        {
+            InstanceScript::OnPlayerDeath(player);
 
-            uint32 graveyardId = 5913;
-            if (getScenarionStep() >= 2)
-                graveyardId = 5911;
+            uint32 graveyardId = (m_ScenarioStep >= 2) ? 5911 : 5913;
 
             if (WorldSafeLocsEntry const* gy = sWorldSafeLocsStore.LookupEntry(graveyardId))
-            {
-                loc_res_pla.WorldRelocate(gy->MapID, gy->Loc.X, gy->Loc.Y, gy->Loc.Z);
-            }
-            
-            return &loc_res_pla;
-        }   
-        
+                player->TeleportTo(gy->MapID, gy->Loc.X, gy->Loc.Y, gy->Loc.Z, player->GetOrientation());
+        }
+
         void OnPlayerEnter(Player* player) override
         {
             if (!player)
@@ -57,7 +48,7 @@ public:
 
             player->AddDelayedEvent(5000, [player] () -> void
             {
-                player->CreateConversation(4527);
+                Conversation::CreateConversation(4527, player, player->GetPosition(), { player->GetGUID() });
             });
         }
 
@@ -87,17 +78,17 @@ public:
                 return;
             
             for (Map::PlayerList::const_iterator i = PlList.begin(); i != PlList.end(); ++i)
-                if (Player* player = i->getSource())
+                if (Player* player = i->GetSource())
                 {
                     if (objective > 0)
-                        player->UpdateAchievementCriteria(CRITERIA_TYPE_SCRIPT_EVENT_2, objective);
+                        player->UpdateCriteria(CRITERIA_TYPE_SEND_EVENT, uint32(objective));
                     else
-                        player->CreateConversation(abs(objective));
+                        Conversation::CreateConversation(uint32(abs(objective)), player, player->GetPosition(), { player->GetGUID() });
                     break;
                 }
         }
-        
-        void onScenarionNextStep(uint32 newStep) override
+
+        void onScenarionNextStep(uint32 newStep)
         {
             switch(newStep)
             {

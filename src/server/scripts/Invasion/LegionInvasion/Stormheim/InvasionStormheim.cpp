@@ -6,7 +6,8 @@
 #include "ScriptedCreature.h"
 #include "ScriptedEscortAI.h"
 #include "CreatureTextMgr.h"
-#include "QuestData.h"
+#include "Conversation.h"
+#include "Vehicle.h"
 
 // 116867
 class npc_invasion_stormheim_vetir : public CreatureScript
@@ -54,7 +55,7 @@ public:
             switch(i)
             {
                 case 20:
-                    if (Unit* unit = me->GetAnyOwner())
+                    if (Unit* unit = me->GetOwner())
                         if (Player* player = unit->ToPlayer())
                         {
                             if (Vehicle* vehicle = me->GetVehicleKit())
@@ -95,6 +96,12 @@ class npc_invasion_stormheim_aleksis : public CreatureScript
 public:
     npc_invasion_stormheim_aleksis() : CreatureScript("npc_invasion_stormheim_aleksis") { }
         
+    enum InvasionStormheimAleksisEvents
+    {
+        EVENT_1 = 1,
+        EVENT_2 = 2
+    };
+
     struct npc_invasion_stormheim_aleksisAI : ScriptedAI
     {
         npc_invasion_stormheim_aleksisAI(Creature* creature) : ScriptedAI(creature) {}
@@ -146,7 +153,7 @@ public:
                                     player->AddDelayedEvent(18000, [player] () -> void
                                     {
                                         player->KilledMonsterCredit(118566);
-                                        player->CreateConversation(4193);
+                                        Conversation::CreateConversation(4193, player, player->GetPosition(), { player->GetGUID() });
                                     });
                                 }
                         });
@@ -211,7 +218,7 @@ public:
                         player->SetClientControl(me, false);                        
                         me->AddDelayedEvent(3000, [this] () -> void
                         {
-                            me->GetMotionMaster()->MovePath((urand(1, 2) == 1 ? 10993814 : 10993815), true, irand(-20, 20), irand(-20, 20));
+                            me->GetMotionMaster()->MovePath((urand(1, 2) == 1 ? 10993814 : 10993815), true);
                         });
                     });
                 }
@@ -230,7 +237,7 @@ public:
             {
                 if (Unit* passenger = me->GetVehicleKit()->GetPassenger(0))
                 {
-                    passenger->ToPlayer()->UpdateAchievementCriteria(CRITERIA_TYPE_SCRIPT_EVENT_2, 56604);
+                    passenger->ToPlayer()->UpdateCriteria(CRITERIA_TYPE_SEND_EVENT, 56604);
                     passenger->AddAura(55001, passenger);
                     me->GetVehicleKit()->RemoveAllPassengers();
                     me->DespawnOrUnsummon(500);
@@ -244,9 +251,9 @@ public:
             {
                 if (timerforcheck <= diff)
                 {
-                    if (me->GetAnyOwner())
+                    if (me->GetOwner())
                         if (InstanceScript* instance = me->GetInstanceScript())
-                            if (instance->getScenarionStep() == 2)
+                            if (instance->m_ScenarioStep == 2)
                             {
                                 check = true;
                                 me->GetMotionMaster()->MovePath(10993816, false);
@@ -297,7 +304,7 @@ class spell_invasion_teleport_misc : public SpellScriptLoader
 
             void Register() override
             {
-                AfterEffectRemove += AuraEffectRemoveFn(spell_invasion_teleport_misc_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_ACTIVATE_SCENE, AURA_EFFECT_HANDLE_REAL);
+                AfterEffectRemove += AuraEffectRemoveFn(spell_invasion_teleport_misc_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_PLAY_SCENE, AURA_EFFECT_HANDLE_REAL);
             }
         };
 

@@ -5,6 +5,14 @@
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "CreatureTextMgr.h"
+#include "Conversation.h"
+#include "Vehicle.h"
+
+enum InvasionValsharaEvents
+{
+    EVENT_1 = 1,
+    EVENT_2 = 2
+};
 
 // 117838
 class npc_crushfist : public CreatureScript
@@ -38,7 +46,7 @@ public:
             events.RescheduleEvent(EVENT_2, 8000); // 234446 + 15
         }
         
-        void EnterEvadeMode() override
+        void EnterEvadeMode(EvadeReason /*why*/) override
         {
             _introDone = false;
         }
@@ -128,7 +136,7 @@ public:
             if (!_introDone && me->IsWithinDistInMap(who, 35.0f))
             {
                 _introDone = true;
-                who->ToPlayer()->UpdateAchievementCriteria(CRITERIA_TYPE_SCRIPT_EVENT_2, 56399);
+                who->ToPlayer()->UpdateCriteria(CRITERIA_TYPE_SEND_EVENT, 56399);
             }
         }
     
@@ -180,9 +188,9 @@ public:
             if (who->IsPlayer())
             {                
                 if (InstanceScript* instance = me->GetInstanceScript())
-                    if (instance->getScenarionStep() == 6)
+                    if (instance->m_ScenarioStep == 6)
                         me->GetMotionMaster()->MovePath(9859007, false);
-                    else if (instance->getScenarionStep() == 8)
+                    else if (instance->m_ScenarioStep == 8)
                         me->GetMotionMaster()->MovePath(9859008, false);
             }
         }
@@ -193,7 +201,7 @@ public:
                 return;
             
             if (InstanceScript* instance = me->GetInstanceScript())
-                if (instance->getScenarionStep() == 8)
+                if (instance->m_ScenarioStep == 8)
                 {
                     if (Unit* passenger = me->GetVehicleKit()->GetPassenger(0))
                     {
@@ -211,8 +219,8 @@ public:
                 if (Unit* passenger = me->GetVehicleKit()->GetPassenger(0))
                 {
                     if (passenger->IsPlayer())
-                        passenger->ToPlayer()->UpdateAchievementCriteria(CRITERIA_TYPE_SCRIPT_EVENT_2, 56400);
-                    passenger->CreateConversation(4984);
+                        passenger->ToPlayer()->UpdateCriteria(CRITERIA_TYPE_SEND_EVENT, 56400);
+                    Conversation::CreateConversation(4984, passenger, passenger->GetPosition(), { passenger->GetGUID() });
                     passenger->AddAura(55001, passenger);
                     me->GetVehicleKit()->RemoveAllPassengers();
                     me->DespawnOrUnsummon(500);
@@ -246,7 +254,7 @@ class player_scripts_for_inv_val : public PlayerScript
                     if (player)
                         if (player->GetMapId() == 1704)
                             if (InstanceScript* instance = player->GetInstanceScript())
-                                if (instance->getScenarionStep() == 8)
+                                if (instance->m_ScenarioStep == 8)
                                     if (player->GetPositionZ() <= 232.90f)
                                         if (Creature* gryphon = player->SummonCreature(118687, player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), 0.0f))
                                         {   

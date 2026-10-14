@@ -4,6 +4,7 @@
 
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
+#include "Conversation.h"
 
 class instance_invasion_HM : public InstanceMapScript
 {
@@ -18,8 +19,6 @@ public:
     struct instance_invasion_HM_InstanceMapScript : public InstanceScript
     {
         instance_invasion_HM_InstanceMapScript(InstanceMap* map) : InstanceScript(map) {}
-
-        WorldLocation loc_res_pla;  // for respawn
 
         uint32 countAdds;
         uint32 NumWave;
@@ -50,29 +49,18 @@ public:
 
             player->AddDelayedEvent(5000, [player]() -> void
             {
-                player->CreateConversation(4676);
+                Conversation::CreateConversation(4676, player, player->GetPosition(), { player->GetGUID() });
             });
         }
 
-        WorldLocation* GetClosestGraveYard(float x, float y, float z) override
-        // OnPlayerDeath
+        void OnPlayerDeath(Player* player) override
         {
-            // Init data
-            loc_res_pla.WorldRelocate(1706, x, y, z);
+            InstanceScript::OnPlayerDeath(player);
 
-            uint32 graveyardId = 0;
-
-            if (getScenarionStep() <= 5)
-                graveyardId = 5945;
-            else
-                graveyardId = 5946;
+            uint32 graveyardId = (m_ScenarioStep <= 5) ? 5945 : 5946;
 
             if (WorldSafeLocsEntry const* gy = sWorldSafeLocsStore.LookupEntry(graveyardId))
-            {
-                loc_res_pla.WorldRelocate(gy->MapID, gy->Loc.X, gy->Loc.Y, gy->Loc.Z);
-            }
-
-            return &loc_res_pla;
+                player->TeleportTo(gy->MapID, gy->Loc.X, gy->Loc.Y, gy->Loc.Z, player->GetOrientation());
         }
 
         void OnCreatureCreate(Creature* creature) override
@@ -97,7 +85,7 @@ public:
                     break;
                 case 120060:
                 case 119860:
-                    if (getScenarionStep() == 2)
+                    if (m_ScenarioStep == 2)
                     {
                         countAdds--;
                         if (countAdds == 0)
@@ -118,17 +106,17 @@ public:
                 return;
 
             for (Map::PlayerList::const_iterator i = PlList.begin(); i != PlList.end(); ++i)
-                if (Player* player = i->getSource())
+                if (Player* player = i->GetSource())
                 {
                     if (objective > 0)
-                        player->UpdateAchievementCriteria(CRITERIA_TYPE_SCRIPT_EVENT_2, objective);
+                        player->UpdateCriteria(CRITERIA_TYPE_SEND_EVENT, uint32(objective));
                     else
-                        player->CreateConversation(abs(objective));
+                        Conversation::CreateConversation(uint32(abs(objective)), player, player->GetPosition(), { player->GetGUID() });
                     break;
                 }
         }
 
-        void onScenarionNextStep(uint32 newStep) override
+        void onScenarionNextStep(uint32 newStep)
         {
             switch (newStep)
             {
