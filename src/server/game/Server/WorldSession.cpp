@@ -520,6 +520,11 @@ void WorldSession::LogoutPlayer(bool save)
 
     if (_player)
     {
+        // Mark as going away before anything else in this sequence runs, so any packet-send
+        // triggered by the logout teardown itself (aura removal side effects, a lagging kill's
+        // XP reward, etc.) can bail out via SendDirectMessage instead of racing session teardown.
+        _player->SetDelete();
+
         if (!_player->GetLootGUID().IsEmpty())
             DoLootReleaseAll();
 

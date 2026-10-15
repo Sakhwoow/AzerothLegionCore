@@ -123,6 +123,11 @@ class TC_GAME_API Object
 
         bool IsInWorld() const { return m_inWorld; }
 
+        // Set once logout/removal has started (see WorldSession::LogoutPlayer) - lets packet-
+        // send paths (SendDirectMessage) bail out cleanly instead of racing the session teardown.
+        bool IsDelete() const { return m_delete; }
+        void SetDelete() { m_delete = true; }
+
         virtual void AddToWorld();
         virtual void RemoveFromWorld();
 
@@ -341,6 +346,7 @@ class TC_GAME_API Object
 
     private:
         bool m_inWorld;
+        bool m_delete;
 
         // for output helpfull error messages from asserts
         bool PrintIndexError(uint32 index, bool set) const;
