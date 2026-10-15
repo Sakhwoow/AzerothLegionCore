@@ -2809,7 +2809,8 @@ void Player::GiveXP(uint32 xp, Unit* victim, float group_rate)
     packet.Amount = xp;
     packet.GroupBonus = group_rate;
     packet.ReferAFriendBonusType = recruitAFriend ? 1 : 0;
-    GetSession()->SendPacket(packet.Write());
+    if (WorldSession* session = GetSession())
+        session->SendPacket(packet.Write());
 
     uint32 curXP = GetUInt32Value(PLAYER_XP);
     uint32 nextLvlXP = GetUInt32Value(PLAYER_NEXT_LEVEL_XP);
@@ -2866,7 +2867,8 @@ void Player::GiveLevel(uint8 level)
 
     packet.Cp = std::find(rowLevels, rowLevels + MAX_TALENT_TIERS, level) != (rowLevels + MAX_TALENT_TIERS);
 
-    GetSession()->SendPacket(packet.Write());
+    if (WorldSession* session = GetSession())
+        session->SendPacket(packet.Write());
 
     SetUInt32Value(PLAYER_NEXT_LEVEL_XP, sObjectMgr->GetXPForLevel(level));
 

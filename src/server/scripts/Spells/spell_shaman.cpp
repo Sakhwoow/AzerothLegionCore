@@ -1771,40 +1771,24 @@ public:
         bool Load() override
         {
             averagePercentage = 0.0f;
-            TC_LOG_ERROR("spells.shaman.spirit_link", "SpiritLink::Load this=%p caster=%s",
-                (void*)this, GetCaster() ? GetCaster()->GetGUID().ToString().c_str() : "no-caster");
             return true;
         }
 
-        // Temporary diagnostic instrumentation for the 15.10.2026 crash investigation (segfault
-        // resolved via debug symbols to this function). Pulled once the root cause is confirmed
-        // or ruled out - grep "spells.shaman.spirit_link" to find every line added for this.
         void FilterTargets(std::list<WorldObject*>& unitList)
         {
-            TC_LOG_ERROR("spells.shaman.spirit_link", "SpiritLink::FilterTargets enter this=%p unitList.size=%zu",
-                (void*)this, unitList.size());
-
             uint32 targetCount = 0;
             for (std::list<WorldObject*>::const_iterator itr = unitList.begin(); itr != unitList.end(); ++itr)
             {
                 if (!*itr)
-                {
-                    TC_LOG_ERROR("spells.shaman.spirit_link", "SpiritLink::FilterTargets null WorldObject* in unitList");
                     continue;
-                }
 
                 if (Unit* target = (*itr)->ToUnit())
                 {
-                    TC_LOG_ERROR("spells.shaman.spirit_link", "SpiritLink::FilterTargets target=%s healthPct=%.1f",
-                        target->GetGUID().ToString().c_str(), target->GetHealthPct());
                     targets[target->GetGUID()] = target->GetHealthPct();
                     averagePercentage += target->GetHealthPct();
                     ++targetCount;
                 }
             }
-
-            TC_LOG_ERROR("spells.shaman.spirit_link", "SpiritLink::FilterTargets this=%p done targetCount=%u averagePercentage=%.1f",
-                (void*)this, targetCount, averagePercentage);
 
             // Area select can legitimately come back empty (e.g. caster alone, or every raid
             // member already filtered out upstream) - dividing by 0 here produced NaN, which
@@ -1820,17 +1804,10 @@ public:
 
         void HandleOnHit()
         {
-            TC_LOG_ERROR("spells.shaman.spirit_link", "SpiritLink::HandleOnHit enter this=%p caster=%s",
-                (void*)this, GetCaster() ? GetCaster()->GetGUID().ToString().c_str() : "no-caster");
-
             if (Unit* target = GetHitUnit())
             {
                 if (targets.find(target->GetGUID()) == targets.end())
-                {
-                    TC_LOG_ERROR("spells.shaman.spirit_link", "SpiritLink::HandleOnHit target=%s not in targets map, skipping",
-                        target->GetGUID().ToString().c_str());
                     return;
-                }
 
                 int32 bp0 = 0;
                 int32 bp1 = 0;
@@ -1841,11 +1818,8 @@ public:
                     bp1 = desiredHp - currentHp;
                 else
                     bp0 = currentHp - desiredHp;
-                TC_LOG_ERROR("spells.shaman.spirit_link", "SpiritLink::HandleOnHit target=%s percentage=%.1f averagePercentage=%.1f bp0=%d bp1=%d",
-                    target->GetGUID().ToString().c_str(), percentage, averagePercentage, bp0, bp1);
                 GetCaster()->CastCustomSpell(target, 98021, &bp0, &bp1, NULL, false);
             }
-
         }
 
         void Register() override
