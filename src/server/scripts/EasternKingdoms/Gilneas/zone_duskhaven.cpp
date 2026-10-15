@@ -262,12 +262,17 @@ public:
                     }
                     case EVENT_TALK_PART_01:
                     {
+                        // Crash investigation 15.10.2026: Creature::AI() is not guaranteed
+                        // non-null (a creature can exist with no AI assigned, e.g. mid-respawn
+                        // or if its script failed to bind) - calling ->Talk() straight off it
+                        // crashed the whole worldserver, reproduced twice in this exact cutscene.
                         if (Player* player = ObjectAccessor::GetPlayer(*me, m_playerGUID))
                             if (Creature* lord = ObjectAccessor::GetCreature(*me, m_godfreyGUID))
-                            {
-                                player->CastSpell(player, SPELL_CATACLYSM_1);
-                                lord->AI()->Talk(0, player);
-                            }
+                                if (CreatureAI* lordAI = lord->AI())
+                                {
+                                    player->CastSpell(player, SPELL_CATACLYSM_1);
+                                    lordAI->Talk(0, player);
+                                }
                         m_events.ScheduleEvent(EVENT_TALK_PART_02, 8s);
                         break;
                     }
@@ -275,10 +280,11 @@ public:
                     {
                         if (Player* player = ObjectAccessor::GetPlayer(*me, m_playerGUID))
                             if (Creature* king = ObjectAccessor::GetCreature(*me, m_kingGUID))
-                            {
-                                player->CastSpell(player, SPELL_CATACLYSM_2);
-                                king->AI()->Talk(0, player);
-                            }
+                                if (CreatureAI* kingAI = king->AI())
+                                {
+                                    player->CastSpell(player, SPELL_CATACLYSM_2);
+                                    kingAI->Talk(0, player);
+                                }
                         m_events.ScheduleEvent(EVENT_TALK_PART_03, 9s);
                         break;
                     }
@@ -286,10 +292,11 @@ public:
                     {
                         if (Player* player = ObjectAccessor::GetPlayer(*me, m_playerGUID))
                             if (Creature* king = ObjectAccessor::GetCreature(*me, m_kingGUID))
-                            {
-                                player->CastSpell(player, SPELL_CATACLYSM_3);
-                                king->AI()->Talk(1, player);
-                            }
+                                if (CreatureAI* kingAI = king->AI())
+                                {
+                                    player->CastSpell(player, SPELL_CATACLYSM_3);
+                                    kingAI->Talk(1, player);
+                                }
                         m_events.ScheduleEvent(EVENT_TALK_PART_04, 8s);
                         break;
                     }
