@@ -12179,8 +12179,8 @@ InventoryResult Player::CanBankItem(uint8 bag, uint8 slot, ItemPosCountVec &dest
 
     // not specific slot or have space for partly store only in specific slot
 
-    uint8 slotItemStart = reagentBank ? REAGENT_SLOT_START : BANK_SLOT_ITEM_START;
-    uint8 slotItemEnd   = reagentBank ? REAGENT_SLOT_END   : BANK_SLOT_ITEM_END;
+    uint8 slotItemStart = reagentBank ? uint8(REAGENT_SLOT_START) : uint8(BANK_SLOT_ITEM_START);
+    uint8 slotItemEnd   = reagentBank ? uint8(REAGENT_SLOT_END)   : uint8(BANK_SLOT_ITEM_END);
 
     // in specific bag
     if (bag != NULL_BAG)
