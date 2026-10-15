@@ -1778,12 +1778,26 @@ public:
         {
             uint32 targetCount = 0;
             for (std::list<WorldObject*>::const_iterator itr = unitList.begin(); itr != unitList.end(); ++itr)
+            {
+                if (!*itr)
+                    continue;
+
                 if (Unit* target = (*itr)->ToUnit())
                 {
                     targets[target->GetGUID()] = target->GetHealthPct();
                     averagePercentage += target->GetHealthPct();
                     ++targetCount;
                 }
+            }
+
+            // Area select can legitimately come back empty (e.g. caster alone, or every raid
+            // member already filtered out upstream) - dividing by 0 here produced NaN, which
+            // HandleOnHit would then feed straight into CastCustomSpell's base points.
+            if (targetCount == 0)
+            {
+                averagePercentage = 0.0f;
+                return;
+            }
 
             averagePercentage /= targetCount;
         }
