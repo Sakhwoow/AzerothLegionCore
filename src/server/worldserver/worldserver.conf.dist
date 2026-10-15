@@ -4334,6 +4334,27 @@ SoloLFG.Enable = 1
 SoloLFG.Announce = 1
 
 #
+#    XpRateCommand.Enable
+#        Description: Allow players to set their own personal XP rate via ".xp rate <value>"
+#                     (replaces the old npc_rate_xp_modifier gossip NPC).
+#        Default:     0  - (Disabled)
+#                     1  - (Enabled)
+
+XpRateCommand.Enable = 0
+
+#    XpRateCommand.Min
+#        Description: Lowest value a player may select with ".xp rate <value>".
+#        Default:     1
+
+XpRateCommand.Min = 1
+
+#    XpRateCommand.Max
+#        Description: Highest value a player may select with ".xp rate <value>".
+#        Default:     5
+
+XpRateCommand.Max = 5
+
+#
 ###################################################################################################
 
 ###################################################################################################

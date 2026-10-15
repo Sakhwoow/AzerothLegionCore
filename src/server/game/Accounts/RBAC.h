@@ -815,6 +815,7 @@ enum RBACPermissions
 	RBAC_PREM_COMMAND_SELFBOT                                = 1527,
 	RBAC_PREM_COMMAND_GUILDTASK                              = 1528,
 	RBAC_PREM_COMMAND_ALTBOT                                 = 1529,
+	RBAC_PREM_COMMAND_XPRATE                                 = 1530,
 
     // ashamane permissions 2000+
     RBAC_PERM_COMMAND_DEBUG_MOVEMENT_FORCE                   = 2000,
