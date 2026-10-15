@@ -725,7 +725,7 @@ class boss_earthbreaker_haromm : public CreatureScript
                         break;
                     case EVENT_FOUL_STREAM:
                     {
-                        Unit* target = SelectTarget(SELECT_TARGET_RANDOM, -20.0f, 0.0f, true, -SPELL_TOXIC_MIST);
+                        Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, -20.0f, true, -SPELL_TOXIC_MIST);
                         if (!target)
                             target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.0f, true, -SPELL_TOXIC_MIST);
                         if (!target)

@@ -4370,9 +4370,14 @@ void Spell::SendSpellStart()
     {
         castData.RemainingRunes.emplace();
 
-        //TODO: There is a crash caused by a spell with CAST_FLAG_RUNE_LIST casted by a creature
-        //The creature is the mover of a player, so HandleCastSpellOpcode uses it as the caster
-        if (Player* player = m_caster->ToPlayer())
+        // The caster can be a creature that is the mover of a player (e.g. vehicle control) -
+        // HandleCastSpellOpcode uses the creature as the caster in that case, but the rune state
+        // that matters for the UI belongs to the controlling player, if there is one.
+        Player* player = m_caster->ToPlayer();
+        if (!player)
+            player = m_caster->GetCharmerOrOwnerPlayerOrPlayerItself();
+
+        if (player)
         {
             castData.RemainingRunes->Start = m_runesState; // runes state before
             castData.RemainingRunes->Count = player->GetRunesState(); // runes state after
@@ -4387,8 +4392,6 @@ void Spell::SendSpellStart()
         {
             castData.RemainingRunes->Start = 0;
             castData.RemainingRunes->Count = 0;
-            for (uint8 i = 0; i < player->GetMaxPower(POWER_RUNES); ++i)
-                castData.RemainingRunes->Cooldowns.push_back(0);
         }
     }
 
@@ -4488,9 +4491,14 @@ void Spell::SendSpellGo()
     {
         castData.RemainingRunes.emplace();
 
-        //TODO: There is a crash caused by a spell with CAST_FLAG_RUNE_LIST casted by a creature
-        //The creature is the mover of a player, so HandleCastSpellOpcode uses it as the caster
-        if (Player* player = m_caster->ToPlayer())
+        // The caster can be a creature that is the mover of a player (e.g. vehicle control) -
+        // HandleCastSpellOpcode uses the creature as the caster in that case, but the rune state
+        // that matters for the UI belongs to the controlling player, if there is one.
+        Player* player = m_caster->ToPlayer();
+        if (!player)
+            player = m_caster->GetCharmerOrOwnerPlayerOrPlayerItself();
+
+        if (player)
         {
             castData.RemainingRunes->Start = m_runesState; // runes state before
             castData.RemainingRunes->Count = player->GetRunesState(); // runes state after
@@ -4505,8 +4513,6 @@ void Spell::SendSpellGo()
         {
             castData.RemainingRunes->Start = 0;
             castData.RemainingRunes->Count = 0;
-            for (uint8 i = 0; i < player->GetMaxPower(POWER_RUNES); ++i)
-                castData.RemainingRunes->Cooldowns.push_back(0);
         }
     }
 

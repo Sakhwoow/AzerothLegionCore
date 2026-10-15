@@ -5094,6 +5094,7 @@ struct spell_area_paragons_of_the_klaxxi_reaction_yellow : AreaTriggerAI
     bool OnRemoveTarget(Unit* target, bool /*byExpire*/)
     {
         target->RemoveAura(SPELL_NOXIOUS_VAPORS);
+        return true;
     }
 };
 
@@ -5142,6 +5143,7 @@ struct spell_area_paragons_of_the_klaxxi_sonic_projection : AreaTriggerAI
     bool OnRemoveTarget(Unit* target, bool /*byExpire*/)
     {
         target->RemoveAura(SPELL_SONIC_PROJECTION_DMG);
+        return true;
     }
 };
 

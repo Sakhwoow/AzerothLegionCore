@@ -3350,6 +3350,8 @@ struct spell_area_siegecrafter_blackfuse_laser_ground_effect : AreaTriggerAI
 
     bool OnRemoveTarget(Unit* target, bool /*byExpire*/)
     {
+        target->RemoveAura(SPELL_SUPERHEATED_AURA);
+        return true;
     }
 };
 

@@ -1086,13 +1086,16 @@ void Garrison::CalculateMissonBonusRoll(uint32 garrMissionId)
 
 void Garrison::RewardMission(Mission* mission, bool withOvermaxReward)
 {
-    auto rewardLists = { mission->Rewards };
+    // Re-assigning a std::initializer_list does NOT lifetime-extend its backing array (only the
+    // original declaration-time binding does) - the pair-of-vectors case previously iterated an
+    // already-destroyed temporary. Hold pointers to the two real member vectors instead.
+    std::vector<std::vector<WorldPackets::Garrison::GarrisonMissionReward> const*> rewardLists = { &mission->Rewards };
     if (withOvermaxReward)
-        rewardLists = { mission->Rewards, mission->BonusRewards };
+        rewardLists.push_back(&mission->BonusRewards);
 
-    for (auto rewards : rewardLists)
+    for (auto const* rewards : rewardLists)
     {
-        for (WorldPackets::Garrison::GarrisonMissionReward reward : rewards)
+        for (WorldPackets::Garrison::GarrisonMissionReward const& reward : *rewards)
         {
             if (reward.ItemID)
                 GetOwner()->AddItem(reward.ItemID, reward.ItemQuantity);

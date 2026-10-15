@@ -3309,16 +3309,19 @@ void ObjectMgr::LoadGarrssionMissionReward()
 
 std::vector<GarrssionMissionReward>* ObjectMgr::GetGarrssionMissionReward(uint32 id)
 {
-    std::vector<GarrssionMissionReward> _reward;
-    for (auto& __reward : GarrssionMissionRewardMap)
+    // Filtered per-call result, used immediately by the single caller - a plain local vector
+    // would dangle on return, so this reuses a thread-local buffer instead of taking the address
+    // of a stack object.
+    static thread_local std::vector<GarrssionMissionReward> reward;
+    reward.clear();
+    for (auto& entry : GarrssionMissionRewardMap)
     {
-        if (__reward.MissionId == id)
-            _reward.push_back(__reward);
+        if (entry.MissionId == id)
+            reward.push_back(entry);
     }
-    if (_reward.size() > 0)
-        return &_reward;
-    else
+    if (reward.empty())
         return nullptr;
+    return &reward;
 }
 
 void ObjectMgr::LoadVehicleTemplateAccessories()

@@ -3,6 +3,16 @@ target_compile_definitions(trinity-compile-option-interface
   INTERFACE
     -D_BUILD_DIRECTIVE="$<CONFIG>")
 
+# See cmake/compiler/gcc/settings.cmake for the full rationale: C++20 deprecates implicit
+# enum<->enum and enum<->float arithmetic (P1120R0); this is pervasive in old ported script
+# content and is not itself a bug. Suppressed unconditionally, same as the GCC settings.
+target_compile_options(trinity-compile-option-interface
+  INTERFACE
+    -Wno-deprecated-enum-enum-conversion
+    -Wno-deprecated-enum-float-conversion
+    -Wno-deprecated-declarations
+    -Wno-deprecated)
+
 if(WITH_WARNINGS)
   target_compile_options(trinity-warning-interface
     INTERFACE
