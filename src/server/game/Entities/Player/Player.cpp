@@ -16196,7 +16196,16 @@ void Player::RewardQuest(Quest const* quest, uint32 reward, Object* questGiver, 
 {
     //this THING should be here to protect code from quest, which cast on player far teleport as a reward
     //should work fine, cause far teleport will be executed in Player::Update()
-    SetCanDelayTeleport(true);
+    // Crash investigation 15.10.2026: this function's own tail (the CRITERIA_TREE auto-complete
+    // loop below) can call CompleteQuest()->RewardQuest() again before this outer call reaches
+    // its own SetCanDelayTeleport(false) - the inner call's (false) stomps the outer call's
+    // (true) while it's still mid-flight on a reward that teleports the player (reproduced twice
+    // on the Gilneas "Last Stand" -> Duskhaven quest chain, segfaulted the whole worldserver).
+    // m_isRewardingQuest makes the outer call win: nested calls skip the teleport-flag dance.
+    bool const isNestedCall = m_isRewardingQuest;
+    m_isRewardingQuest = true;
+    if (!isNestedCall)
+        SetCanDelayTeleport(true);
 
     uint32 quest_id = quest->GetQuestId();
     QuestStatus oldStatus = GetQuestStatus(quest_id);
@@ -16427,7 +16436,11 @@ void Player::RewardQuest(Quest const* quest, uint32 reward, Object* questGiver, 
     SendQuestGiverStatusMultiple();
 
     //lets remove flag for delayed teleports
-    SetCanDelayTeleport(false);
+    // Only the outermost call owns this flag - see m_isRewardingQuest comment at the top of this
+    // function. A nested call resetting it to false here would do so while the outer call (the
+    // one that may actually be mid-teleport-reward) is still running.
+    if (!isNestedCall)
+        SetCanDelayTeleport(false);
 
     sScriptMgr->OnQuestStatusChange(this, quest_id);
     sScriptMgr->OnQuestReward(this, quest);
@@ -16451,6 +16464,7 @@ void Player::RewardQuest(Quest const* quest, uint32 reward, Object* questGiver, 
 
     sScriptMgr->OnQuestStatusChange(this, quest, oldStatus, QUEST_STATUS_REWARDED);
 
+    m_isRewardingQuest = isNestedCall;
 }
 
 void Player::SetRewardedQuest(uint32 quest_id)

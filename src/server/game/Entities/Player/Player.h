@@ -3092,6 +3092,15 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         uint32 m_DelayedOperations;
         bool m_bCanDelayTeleport;
         bool m_bHasDelayedTeleport;
+        // Reentrancy guard for RewardQuest() - crash investigation 15.10.2026 (Gilneas "Last
+        // Stand" -> Duskhaven cutscene, reproduced twice). RewardQuest's own auto-complete loop
+        // (CRITERIA_TREE objectives) can call CompleteQuest()->RewardQuest() again on the same
+        // player while the outer RewardQuest call is still mid-flight - the outer call's
+        // SetCanDelayTeleport(true)/(false) bracket (meant to protect a teleport granted as this
+        // quest's own reward) gets stomped by the inner call's own (false) at its end, before the
+        // outer call's teleport-sensitive work is done. Segfaulted the whole worldserver, not
+        // just this player.
+        bool m_isRewardingQuest = false;
 
         // Temporary removed pet cache
         uint32 m_temporaryUnsummonedPetNumber;
