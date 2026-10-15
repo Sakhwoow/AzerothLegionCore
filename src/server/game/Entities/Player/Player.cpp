@@ -6455,7 +6455,8 @@ void Player::SendMessageToSet(WorldPacket const* data, Player const* skipped_rcv
 
 void Player::SendDirectMessage(WorldPacket const* data) const
 {
-    m_session->SendPacket(data);
+    if (m_session)
+        m_session->SendPacket(data);
 }
 
 void Player::SendCinematicStart(uint32 CinematicSequenceId) const
