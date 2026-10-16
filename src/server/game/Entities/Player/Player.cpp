@@ -23328,11 +23328,11 @@ void Player::SendSpellModifiers() const
             pctMod.ModifierData[j].ModifierValue = 1.0f;
 
             for (SpellModifier* mod : m_spellMods[i][SPELLMOD_FLAT])
-                if (mod->mask & mask)
+                if (mod && (mod->mask & mask))
                     flatMod.ModifierData[j].ModifierValue += mod->value;
 
             for (SpellModifier* mod : m_spellMods[i][SPELLMOD_PCT])
-                if (mod->mask & mask)
+                if (mod && (mod->mask & mask))
                     pctMod.ModifierData[j].ModifierValue *= 1.0f + CalculatePct(1.0f, mod->value);
         }
 
