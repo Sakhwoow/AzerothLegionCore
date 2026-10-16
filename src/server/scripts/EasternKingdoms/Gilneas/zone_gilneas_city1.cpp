@@ -4207,12 +4207,10 @@ public:
             if (player->HasAura(SPELL_INFECTED_BITE))
                 player->RemoveAura(SPELL_INFECTED_BITE);
             player->AddAura(SPELL_HIDEOUS_BITE_WOUND, player);
-            // SPELL_HIDEOUS_BITE_WOUND phases the player into the Wrathful Hunter combat phase
-            // (179), which drops the phase (172) that keeps Crowley/Tobias visible - and the only
-            // other thing that would restore 172 (spell_area row for spell 59087) only re-casts on
-            // an area transition, which never happens while the player stays in this one room.
-            // Re-grant 172 directly so Crowley stays reachable for the eventual turn-in.
-            player->CastSpell(player, 59087, true);
+            // Removing SPELL_INFECTED_BITE drops phase 172 (Crowley/rebels), SPELL_HIDEOUS_BITE_WOUND
+            // adds the combat phase 179. 172 is kept for the rest of the quest by the spell_area row
+            // (59087, area 4755) - a manual CastSpell(59087) cannot do it: Spell::CheckCast and
+            // Player::UpdateAreaDependentAuras reject the aura unless some spell_area row fits.
             return true;
         }
         return false;
