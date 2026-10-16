@@ -31,6 +31,13 @@
 
 MailSender::MailSender(Object* sender, MailStationery stationery) : m_stationery(stationery)
 {
+    if (!sender)
+    {
+        m_messageType = MAIL_NORMAL;
+        m_senderId = UI64LIT(0);
+        return;
+    }
+
     switch (sender->GetTypeId())
     {
         case TYPEID_UNIT:
