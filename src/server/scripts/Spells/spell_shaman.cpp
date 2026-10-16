@@ -1771,6 +1771,7 @@ public:
         bool Load() override
         {
             averagePercentage = 0.0f;
+            targets.clear();
             return true;
         }
 
@@ -1804,6 +1805,10 @@ public:
 
         void HandleOnHit()
         {
+            Unit* caster = GetCaster();
+            if (!caster)
+                return;
+
             if (Unit* target = GetHitUnit())
             {
                 if (targets.find(target->GetGUID()) == targets.end())
@@ -1818,7 +1823,7 @@ public:
                     bp1 = desiredHp - currentHp;
                 else
                     bp0 = currentHp - desiredHp;
-                GetCaster()->CastCustomSpell(target, 98021, &bp0, &bp1, NULL, false);
+                caster->CastCustomSpell(target, 98021, &bp0, &bp1, NULL, false);
             }
         }
 
