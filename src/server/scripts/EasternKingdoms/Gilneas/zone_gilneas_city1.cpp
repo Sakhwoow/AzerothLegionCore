@@ -3266,7 +3266,7 @@ public:
                             if (CreatureAI* krennanAI = krennan->AI())
                                 krennanAI->Talk(0);
                             krennan->NearTeleportTo(-1771.03f, 1433.41f, 19.85f, 3.598f);
-                            if (CreatureAI* krennanAI = krennan->GetAI())
+                            if (UnitAI* krennanAI = krennan->GetAI())
                                 krennanAI->DoAction(0);
                         }
                         me->DespawnOrUnsummon(25);
@@ -3409,7 +3409,7 @@ public:
             player->CastSpell(player, SPELL_GILNEAS_CANNON_CAMERA);
             player->SaveToDB();
             if (Creature* cannon = GetClosestCreatureWithEntry(godfrey, NPC_COMMANDEERED_CANNON, 50.0f))
-                if (CreatureAI* cannonAI = cannon->GetAI())
+                if (UnitAI* cannonAI = cannon->GetAI())
                     cannonAI->DoAction(ACTION_STARTING_EVENT);
         }
         return true;
