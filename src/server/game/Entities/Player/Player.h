@@ -3102,6 +3102,15 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         // just this player.
         bool m_isRewardingQuest = false;
 
+        // Crash investigation 16.10.2026 (core dump, confirmed via gdb bt full - 15000+ stack
+        // frames, genuine stack overflow): spell 93477 has effect SPELL_EFFECT_UPDATE_ZONE_AURAS_
+        // AND_PHASES, which calls UpdateAreaDependentAuras() from inside its own hit handler. That
+        // function's area-autocast logic finds the player is missing the aura for spell 93477 -
+        // the aura hasn't been applied yet this far into the same cast's pipeline - and casts
+        // 93477 again, recursing forever. The existing !HasAura() guard can't help: it's checking
+        // state that won't exist until later in the very call it's trying to prevent.
+        bool m_isUpdatingAreaAuras = false;
+
         // Temporary removed pet cache
         uint32 m_temporaryUnsummonedPetNumber;
         uint32 m_oldpetspell;

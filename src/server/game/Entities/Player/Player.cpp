@@ -26865,6 +26865,13 @@ void Player::UpdateAreaDependentAuras()
     if (!GetArea())
         return;
 
+    // Reentrancy guard - see m_isUpdatingAreaAuras comment in Player.h. A spell whose own hit
+    // effect calls back into this function (SPELL_EFFECT_UPDATE_ZONE_AURAS_AND_PHASES) before its
+    // own aura is registered would otherwise recurse here forever and overflow the stack.
+    if (m_isUpdatingAreaAuras)
+        return;
+    m_isUpdatingAreaAuras = true;
+
     for (Area* area : GetArea()->GetTree())
     {
         SpellAreaForAreaMapBounds saBounds = sSpellMgr->GetSpellAreaForAreaMapBounds(area->GetId());
@@ -26884,6 +26891,8 @@ void Player::UpdateAreaDependentAuras()
                 ++iter;
         }
     }
+
+    m_isUpdatingAreaAuras = false;
 }
 
 uint32 Player::GetCorpseReclaimDelay(bool pvp) const
