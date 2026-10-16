@@ -43,7 +43,11 @@ public:
 
     void operator()(Player const* player) const
     {
-        LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
+        WorldSession* session = player->GetSession();
+        if (!session)
+            return;
+
+        LocaleConstant loc_idx = session->GetSessionDbLocaleIndex();
         WorldPackets::Chat::Chat* messageTemplate;
 
         // create if not cached yet

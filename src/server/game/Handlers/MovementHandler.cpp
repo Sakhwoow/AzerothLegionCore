@@ -255,7 +255,8 @@ void WorldSession::HandleMoveTeleportAck(WorldPackets::Movement::MoveTeleportAck
 {
     TC_LOG_DEBUG("network", "CMSG_MOVE_TELEPORT_ACK: Guid: %s, Sequence: %u, Time: %u", packet.MoverGUID.ToString().c_str(), packet.AckIndex, packet.MoveTime);
 
-    Player* plMover = _player->m_unitMovedByMe->ToPlayer();
+    Unit* mover = _player->m_unitMovedByMe;
+    Player* plMover = mover ? mover->ToPlayer() : nullptr;
 
     if (!plMover || !plMover->IsBeingTeleportedNear())
         return;

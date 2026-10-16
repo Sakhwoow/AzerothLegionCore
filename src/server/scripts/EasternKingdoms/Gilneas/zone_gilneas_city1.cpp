@@ -328,7 +328,8 @@ struct npc_gilneas_city_guard_gate_34864 : public ScriptedAI
                 case EVENT_TALK_WITH_CITIZEN_1:
                 {
                     if (Creature* npc = ObjectAccessor::GetCreature(*me, m_citizenGUID))
-                        npc->AI()->Talk(m_say);
+                        if (CreatureAI* npcAI = npc->AI())
+                            npcAI->Talk(m_say);
 
                     m_events.ScheduleEvent(EVENT_TALK_WITH_CITIZEN_2, 5s);
                     break;
@@ -390,7 +391,8 @@ public:
     {
         if (quest->GetQuestId() == QUEST_LOCKDOWN)
             if (Creature* citizen = creature->FindNearestCreature(NPC_PANICKED_CITIZEN, 20.0f))
-                citizen->AI()->Talk(PANICKED_CITIZEN_TEXT_00);
+                if (CreatureAI* citizenAI = citizen->AI())
+                    citizenAI->Talk(PANICKED_CITIZEN_TEXT_00);
         return true;
     }
 
@@ -644,7 +646,8 @@ struct npc_rampaging_worgen_35660 : public ScriptedAI
                         me->SetReactState(REACT_AGGRESSIVE);
                         me->Attack(liam, true);
                         liam->Attack(me, true);
-                        liam->AI()->Talk(LIAM_ATTACK_WORGEN_TEXT);
+                        if (CreatureAI* liamAI = liam->AI())
+                            liamAI->Talk(LIAM_ATTACK_WORGEN_TEXT);
                     }
                     break;
                 }
@@ -1678,14 +1681,24 @@ public:
                         {
                             uint32 w1 = RAND(NPC_WORGEN_RUNT_C1, NPC_WORGEN_RUNT_C2, NPC_WORGEN_ALPHA_C1, NPC_WORGEN_ALPHA_C2);
                             uint32 w2 = RAND(NPC_WORGEN_RUNT_C1, NPC_WORGEN_RUNT_C2, NPC_WORGEN_ALPHA_C1, NPC_WORGEN_ALPHA_C2);
-                            Creature* creature1 = me->SummonCreature(w1, -1610.39f, 1507.16f, 74.99f, 3.94f, TEMPSUMMON_TIMED_DESPAWN, 120000);
-                            m_summons.Summon(creature1);
-                            creature1->AI()->SetGUID(m_playerGUID);
-                            creature1->AI()->DoAction(1);
-                            Creature* creature2 = me->SummonCreature(w2, -1718.01f, 1516.81f, 55.40f, 4.6f, TEMPSUMMON_TIMED_DESPAWN, 120000);
-                            m_summons.Summon(creature2);
-                            creature2->AI()->SetGUID(m_playerGUID);
-                            creature2->AI()->DoAction(2);
+                            if (Creature* creature1 = me->SummonCreature(w1, -1610.39f, 1507.16f, 74.99f, 3.94f, TEMPSUMMON_TIMED_DESPAWN, 120000))
+                            {
+                                m_summons.Summon(creature1);
+                                if (CreatureAI* ai1 = creature1->AI())
+                                {
+                                    ai1->SetGUID(m_playerGUID);
+                                    ai1->DoAction(1);
+                                }
+                            }
+                            if (Creature* creature2 = me->SummonCreature(w2, -1718.01f, 1516.81f, 55.40f, 4.6f, TEMPSUMMON_TIMED_DESPAWN, 120000))
+                            {
+                                m_summons.Summon(creature2);
+                                if (CreatureAI* ai2 = creature2->AI())
+                                {
+                                    ai2->SetGUID(m_playerGUID);
+                                    ai2->DoAction(2);
+                                }
+                            }
                         }
 
                         m_events.ScheduleEvent(EVENT_SUMMON_NEXT_WAVE, 30s);
@@ -2685,7 +2698,8 @@ public:
             if (Pet* pet = player->GetPet())
                 player->RemovePet(pet, PET_SAVE_CURRENT_STATE, true);
             player->CastSpell(player, SPELL_SUMMON_GILNEAN_MASTIFF);
-            creature->AI()->Talk(0);
+            if (CreatureAI* creatureAI = creature->AI())
+                creatureAI->Talk(0);
         }
         return true;
     }
@@ -3230,11 +3244,12 @@ public:
                         {
                             if (Creature* krennan = ObjectAccessor::GetCreature(*me, m_krennanTreeGUID))
                                 if (Player* player = ObjectAccessor::GetPlayer(*me, m_playerGUID))
-                                {
-                                    krennan->AI()->Talk(SAY_KRENNAN_TREE_HELP, player);
-                                    m_events.ScheduleEvent(EVENT_SAY_KRENNAN_HELP, 6s, 9s);
-                                    break;
-                                }
+                                    if (CreatureAI* krennanAI = krennan->AI())
+                                    {
+                                        krennanAI->Talk(SAY_KRENNAN_TREE_HELP, player);
+                                        m_events.ScheduleEvent(EVENT_SAY_KRENNAN_HELP, 6s, 9s);
+                                        break;
+                                    }
                             m_events.ScheduleEvent(EVENT_SAY_KRENNAN_HELP, 500ms);
                         }
                         break;
@@ -3248,9 +3263,11 @@ public:
                     {
                         if (Creature* krennan = ObjectAccessor::GetCreature(*me, m_krennanHorseGUID))
                         {
-                            krennan->AI()->Talk(0);
+                            if (CreatureAI* krennanAI = krennan->AI())
+                                krennanAI->Talk(0);
                             krennan->NearTeleportTo(-1771.03f, 1433.41f, 19.85f, 3.598f);
-                            krennan->GetAI()->DoAction(0);
+                            if (CreatureAI* krennanAI = krennan->GetAI())
+                                krennanAI->DoAction(0);
                         }
                         me->DespawnOrUnsummon(25);
                         break;
@@ -3385,13 +3402,15 @@ public:
     {
         if (quest->GetQuestId() == QUEST_SAVE_KRENNAN_ARANAS)
         {
-            godfrey->AI()->Talk(SAY_LORD_GODFREY_P4);
+            if (CreatureAI* godfreyAI = godfrey->AI())
+                godfreyAI->Talk(SAY_LORD_GODFREY_P4);
             player->RemoveAura(SPELL_WORGEN_BITE);
             godfrey->AddAura(SPELL_INFECTED_BITE, player);
             player->CastSpell(player, SPELL_GILNEAS_CANNON_CAMERA);
             player->SaveToDB();
             if (Creature* cannon = GetClosestCreatureWithEntry(godfrey, NPC_COMMANDEERED_CANNON, 50.0f))
-                cannon->GetAI()->DoAction(ACTION_STARTING_EVENT);
+                if (CreatureAI* cannonAI = cannon->GetAI())
+                    cannonAI->DoAction(ACTION_STARTING_EVENT);
         }
         return true;
     }
@@ -3473,7 +3492,8 @@ public:
                     {
                         if (Player* player = ObjectAccessor::GetPlayer(*me, m_playerGUID))
                             if (Creature* king = ObjectAccessor::GetCreature(*me, m_kingGUID))
-                                king->AI()->Talk(0, player);
+                                if (CreatureAI* kingAI = king->AI())
+                                    kingAI->Talk(0, player);
                         m_events.ScheduleEvent(EVENT_TALK_PART_01, 9s);
                         break;
                     }
@@ -3488,7 +3508,8 @@ public:
                     {
                         if (Player* player = ObjectAccessor::GetPlayer(*me, m_playerGUID))
                             if (Creature* prince = ObjectAccessor::GetCreature(*me, m_princeGUID))
-                                prince->AI()->Talk(0, player);
+                                if (CreatureAI* princeAI = prince->AI())
+                                    princeAI->Talk(0, player);
                         m_events.ScheduleEvent(EVENT_TALK_PART_03, 6s);
                         break;
                     }
@@ -3510,7 +3531,8 @@ public:
                     {
                         if (Player* player = ObjectAccessor::GetPlayer(*me, m_playerGUID))
                             if (Creature* king = ObjectAccessor::GetCreature(*me, m_kingGUID))
-                                king->AI()->Talk(2, player);
+                                if (CreatureAI* kingAI = king->AI())
+                                    kingAI->Talk(2, player);
                         m_events.RescheduleEvent(EVENT_TALK_PART_06, 30s, 45s);
                         break;
                     }
@@ -3634,7 +3656,8 @@ public:
                             if (Player* player = ObjectAccessor::GetPlayer(*me, m_playerGUID))
                                 if (Creature* darius = ObjectAccessor::GetCreature(*me, m_dariusGUID))
                                 {
-                                    darius->AI()->Talk(0, player);
+                                    if (CreatureAI* dariusAI = darius->AI())
+                                        dariusAI->Talk(0, player);
                                     m_events.ScheduleEvent(EVENT_TALK_PERIODIC, 6s);
                                 }
                         break;
@@ -3738,7 +3761,8 @@ public:
                     {
                         if (Player* player = ObjectAccessor::GetPlayer(*me, m_playerGUID))
                             if (Creature* darius = ObjectAccessor::GetCreature(*me, m_dariusGUID))
-                                darius->AI()->Talk(1, player);
+                                if (CreatureAI* dariusAI = darius->AI())
+                                    dariusAI->Talk(1, player);
                         if (m_movePart < 5)
                             m_events.ScheduleEvent(EVENT_TALK_PERIODIC, 5s, 8s);
                         break;
@@ -4196,8 +4220,11 @@ public:
             player->CastSpell(player, SPELL_ALTERED_FORM, true);
             player->CastSpell(player, SPELL_FORCE_WORGEN_ALTERED_FORM, true);
             player->CastSpell(player, SPELL_ALTERED_FORM2, true);
-            creature->AI()->SetGUID(player->GetGUID(), PLAYER_GUID);
-            creature->AI()->DoAction(EVENT_START_MOVIE);
+            if (CreatureAI* ai = creature->AI())
+            {
+                ai->SetGUID(player->GetGUID(), PLAYER_GUID);
+                ai->DoAction(EVENT_START_MOVIE);
+            }
             return true;
         }
         return false;

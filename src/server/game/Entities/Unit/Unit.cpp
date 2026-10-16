@@ -8550,7 +8550,7 @@ int64 Unit::ModifyHealth(int64 dVal)
         packet.Health = GetHealth();
 
         if (Player* player = GetCharmerOrOwnerPlayerOrPlayerItself())
-            player->GetSession()->SendPacket(packet.Write());
+            player->SendDirectMessage(packet.Write());
     }
 
     return gain;
@@ -11476,7 +11476,7 @@ void Unit::SendDurabilityLoss(Player* receiver, uint32 percent)
 {
     WorldPackets::Misc::DurabilityDamageDeath packet;
     packet.Percent = percent;
-    receiver->GetSession()->SendPacket(packet.Write());
+    receiver->SendDirectMessage(packet.Write());
 }
 
 void Unit::PlayOneShotAnimKitId(uint16 animKitId)
@@ -12784,7 +12784,7 @@ void Unit::SendMoveKnockBack(Player* player, float speedXY, float speedZ, float 
     moveKnockBack.Speeds.HorzSpeed = speedXY;
     moveKnockBack.Speeds.VertSpeed = speedZ;
     moveKnockBack.Direction = Position(vcos, vsin);
-    player->GetSession()->SendPacket(moveKnockBack.Write());
+    player->SendDirectMessage(moveKnockBack.Write());
 }
 
 void Unit::KnockbackFrom(float x, float y, float speedXY, float speedZ, Movement::SpellEffectExtraData const* spellEffectExtraData /*= nullptr*/)

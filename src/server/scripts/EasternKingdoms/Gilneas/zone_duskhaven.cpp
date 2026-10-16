@@ -2462,7 +2462,8 @@ public:
                         if (Player* player = ObjectAccessor::GetPlayer(*me, m_playerGUID))
                             if (Creature* koroth = ObjectAccessor::GetCreature(*me, m_korothGUID))
                             {
-                                koroth->AI()->Talk(0, player);
+                                if (CreatureAI* korothAI = koroth->AI())
+                                    korothAI->Talk(0, player);
                                 Talk(0, player);
                             }
 
@@ -2494,7 +2495,8 @@ public:
                     {
                         if (Player* player = ObjectAccessor::GetPlayer(*me, m_playerGUID))
                             if (Creature* asther = me->FindNearestCreature(37806, 50.0f))
-                                asther->AI()->Talk(0, player);
+                                if (CreatureAI* astherAI = asther->AI())
+                                    astherAI->Talk(0, player);
 
                         m_events.ScheduleEvent(EVENT_TALK_PART_05, 5s);
                         break;
@@ -2669,7 +2671,8 @@ public:
                     {
                         if (Creature* koroth = ObjectAccessor::GetCreature(*go, m_korothGUID))
                             if (Player* player = ObjectAccessor::GetPlayer(*go, m_playerGUID))
-                                koroth->AI()->Talk(0, player);
+                                if (CreatureAI* korothAI = koroth->AI())
+                                    korothAI->Talk(0, player);
 
                         m_events.ScheduleEvent(EVENT_TALK_PART_01, 6s);
                         break;
@@ -2678,7 +2681,8 @@ public:
                     {
                         if (Creature* koroth = ObjectAccessor::GetCreature(*go, m_korothGUID))
                             if (Player* player = ObjectAccessor::GetPlayer(*go, m_playerGUID))
-                                koroth->AI()->Talk(1, player);
+                                if (CreatureAI* korothAI = koroth->AI())
+                                    korothAI->Talk(1, player);
                         break;
                     }
                 }
