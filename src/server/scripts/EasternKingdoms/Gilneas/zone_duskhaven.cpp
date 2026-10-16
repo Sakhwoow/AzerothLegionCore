@@ -373,7 +373,9 @@ public:
     {
         if (quest->GetQuestId() == QUEST_KILL_OR_BE_KILLED)
         {
-            player->RemoveAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_06);
+            // Phase 181 (the village: Gwen, Krennan, Godfrey...) is kept next to 182 (the attack) until
+            // As the Land Shatters (14396): Gwen is the turn-in NPC of Holding Steady (14366), and the
+            // spell_area rows of 68481 end exactly at 14396, where Godfrey's script swaps both for 183.
             player->CastSpell(player, SPELL_PHASE_QUEST_ZONE_SPECIFIC_07);
             return true;
         }
