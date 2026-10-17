@@ -97,7 +97,7 @@ enum eDuskHaven
     QUEST_AT_OUR_DOORSTEP                       = 24627,
     QUEST_PUSH_THEM_OUT                         = 24676,
     QUEST_FLANK_THE_FORSAKEN                    = 24677,
-    QUEST_THE_HUNGRY_ETTIN                      = 54416,
+    QUEST_THE_HUNGRY_ETTIN                      = 14416,
 
     SPELL_RANDOM_POINT_POISON                   = 42266,
     SPELL_RANDOM_POINT_BONE                     = 42267,
@@ -1532,6 +1532,51 @@ public:
     CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_mountain_horse_36540AI(creature);
+    }
+};
+
+// 36540 (vehicle hooks)
+// The horse's seat has VEHICLE_SEAT_FLAG_CAN_CONTROL, so while a player rides it Unit::UpdateCharmAI replaces the creature's
+// AI with PossessedAI: the scripted AI above (its PassengerBoarded hook and the EVENT_CHECK_HEALTH_AND_LORNA loop) never runs
+// and the quest credit was never given. The vehicle script hooks are called regardless of the AI, so the credit is given here:
+// the player has to ride the horse to Lorna and get off next to her.
+class vehicle_mountain_horse_36540 : public VehicleScript
+{
+public:
+    vehicle_mountain_horse_36540() : VehicleScript("npc_mountain_horse_36540") { }
+
+    enum eVehicle
+    {
+        NPC_MOUNTAIN_HORSE_CREDIT               = 36560
+    };
+
+    void OnAddPassenger(Vehicle* veh, Unit* passenger, int8 /*seatId*/) override
+    {
+        if (passenger->GetTypeId() != TYPEID_PLAYER)
+            return;
+
+        // what the scripted AI did: the horse must survive the ride
+        Unit* horse = veh->GetBase();
+        horse->SetMaxHealth(250);
+        horse->SetFullHealth();
+    }
+
+    void OnRemovePassenger(Vehicle* veh, Unit* passenger) override
+    {
+        Player* player = passenger->ToPlayer();
+        Creature* horse = veh->GetBase()->ToCreature();
+        if (!player || !horse)
+            return;
+
+        if (player->GetQuestStatus(QUEST_THE_HUNGRY_ETTIN) != QUEST_STATUS_INCOMPLETE)
+            return;
+
+        // dropped off next to Lorna (the search takes the phase of the horse into account)
+        if (!horse->FindNearestCreature(NPC_LORNA_CROWLEY, 12.0f))
+            return;
+
+        player->KilledMonsterCredit(NPC_MOUNTAIN_HORSE_CREDIT);
+        horse->DespawnOrUnsummon(1s);
     }
 };
 
@@ -3405,6 +3450,7 @@ void AddSC_zone_gilneas_duskhaven()
     new npc_forsaken_castaway_36488();
     new npc_mountain_horse_36555();
     new npc_mountain_horse_36540();
+    new vehicle_mountain_horse_36540();
     new spell_round_up_horse_68903();
     new npc_gwen_armstead_36452();
     new go_gate_196399();
