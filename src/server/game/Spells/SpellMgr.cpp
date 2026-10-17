@@ -2076,6 +2076,10 @@ void SpellMgr::LoadSpellAreas()
     uint32 oldMSTime = getMSTime();
 
     mSpellAreaMap.clear();                                  // need for reload case
+    // these two keep SpellArea const* into mSpellAreaMap: without clearing them a reload left dangling pointers
+    // and doubled every entry
+    mSpellAreaForAreaMap.clear();
+    mSpellAreaForQuestAreaMap.clear();
     mSpellAreaForQuestMap.clear();
     mSpellAreaForQuestEndMap.clear();
     mSpellAreaForAuraMap.clear();
