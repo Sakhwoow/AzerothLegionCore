@@ -795,6 +795,8 @@ public:
     {
         TC_LOG_INFO("misc", "Re-Loading SpellArea Data...");
         sSpellMgr->LoadSpellAreas();
+        // online players keep the phases they had until their next area change: recalculate them right away
+        sWorld->UpdateAreaDependentAuras();
         handler->SendGlobalGMSysMessage("DB table `spell_area` (spell dependences from area/quest/auras state) reloaded.");
         return true;
     }
@@ -1102,6 +1104,8 @@ public:
     {
         TC_LOG_INFO("misc", "Re-Loading Conditions...");
         sConditionMgr->LoadConditions(true);
+        // the cast conditions of phase spells (SourceType 17) decide whether the area auras can be (re)applied
+        sWorld->UpdateAreaDependentAuras();
         handler->SendGlobalGMSysMessage("Conditions reloaded.");
         return true;
     }
