@@ -73,6 +73,7 @@ enum eDuskHaven
     NPC_CARRIAGE_43337                          = 43337,
     NPC_STAGECOACH_CARRIAGE                     = 44928,
     NPC_LORNA_CRAWLEY                           = 51409,
+    NPC_SWAMP_CROCOLISK_CREDIT                  = 37078,
 
     GO_BALL_AND_CHAIN                           = 201775,
 
@@ -90,6 +91,7 @@ enum eDuskHaven
     QUEST_THE_KINGS_OBSERVATORY                 = 14466,
     QUEST_ALAS_GILNEAS                          = 14467,
     QUEST_EXODUS                                = 24438,
+    QUEST_STRANDED_AT_THE_MARSH                 = 24468,
     QUEST_INTRODUCTIONS_ARE_IN_ORDER            = 24472,
     QUEST_STORMGLEN                             = 24483,
     QUEST_LIBERATION_DAY                        = 24575,
@@ -2561,6 +2563,23 @@ class npc_crash_survivor_37067 : public CreatureScript
 {
 public:
     npc_crash_survivor_37067() : CreatureScript("npc_crash_survivor_37067") { }
+
+    // Quest 24468 "Stranded at the Marsh": a survivor is rescued by talking to him (the quest credit is the Swamp Crocolisk 37078
+    // entry). The database design with crocolisks that attack the survivors (SmartAI of 37067/36882, switched off) is not used.
+    bool OnGossipHello(Player* player, Creature* creature) override
+    {
+        if (player->GetQuestStatus(QUEST_STRANDED_AT_THE_MARSH) != QUEST_STATUS_INCOMPLETE)
+            return true;
+
+        creature->RemoveFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);   // rescued only once, the second click comes before the despawn
+        player->KilledMonsterCredit(NPC_SWAMP_CROCOLISK_CREDIT);
+
+        if (CreatureAI* ai = creature->AI())
+            ai->Talk(3, player);
+
+        creature->DespawnOrUnsummon(3s, 120s);
+        return true;
+    }
 
     struct npc_crash_survivor_37067AI : public ScriptedAI
     {
