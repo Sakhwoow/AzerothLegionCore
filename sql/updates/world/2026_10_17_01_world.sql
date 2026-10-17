@@ -1,0 +1,16 @@
+-- Тёмная Гавань: игрок после "Вторжения" (14321) не получал обратно фазу деревни (181, спелл 68481),
+-- хотя строки spell_area уже держат её до принятия "Как земля раскололась" (14396), и без неё Гвен
+-- Армстед (сдаёт "Удержание позиций", 14366) не видна.
+--
+-- Причина: условия КАСТА спелла лежат в таблице conditions (SourceTypeOrReferenceId=17,
+-- CONDITION_SOURCE_TYPE_SPELL) и проверяются в Spell::CheckCast, в том числе для triggered-кастов,
+-- то есть и для автокаста из spell_area (UpdateAreaDependentAuras). Для 68481 там стояло "в карте 654
+-- и НЕ сдан квест 14313". Квест 14313 ("Among Humans Again") сдаётся раньше "Вторжения", поэтому
+-- после его сдачи каст фазы 181 всегда возвращал SPELL_FAILED_CASTER_AURASTATE (25): автокаст не мог
+-- вернуть уже снятую фазу. Подтверждено диагностическим логом на живом сервере: fits=1, но
+-- prepare(68481) result=25.
+--
+-- Граница сдвинута на тот же квест, где фаза 181 заканчивается по spell_area и по скрипту Годфри
+-- (npc_lord_godfrey_36290: при принятии 14396 снимает 181/182 и вешает 183): "НЕ сдан 14396".
+-- Остальные условия (ветка "не в карте 654" и "в карте 654") не меняются.
+UPDATE `conditions` SET `ConditionValue1`=14396, `Comment`='(AND) spell if NOT rewarded quest 14396 (As the Land Shatters): village phase 181 lasts until then' WHERE `SourceTypeOrReferenceId`=17 AND `SourceGroup`=0 AND `SourceEntry`=68481 AND `ElseGroup`=1 AND `ConditionTypeOrReference`=8 AND `ConditionValue1`=14313 AND `NegativeCondition`=1;
