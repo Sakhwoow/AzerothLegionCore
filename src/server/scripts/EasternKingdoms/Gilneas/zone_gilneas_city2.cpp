@@ -796,6 +796,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 uiAction) override
     {
+        TC_LOG_ERROR("scripts", "GilneasBattle: Krennan %s gets the gossip option %u", creature->GetGUID().ToString().c_str(), uiAction);
         player->PlayerTalkClass->ClearMenus();
         switch (uiAction)
         {
@@ -1064,6 +1065,10 @@ public:
         float     m_checkDistance;
         bool      m_doneA, m_doneB;
         uint32    m_ai_counter;
+        uint32    m_stallWave = 0;
+        uint32    m_stallPoint = 0;
+        uint32    m_stallSeconds = 0;
+        uint32    m_syncWaits = 0;
 
         void Initialize()
         {
@@ -1187,6 +1192,7 @@ public:
                         {
                             check->AI()->DoAction(ACTION_INITIALIZE_DONE);
                             m_prince1GUID = guid;
+                            TC_LOG_ERROR("scripts", "GilneasBattle: Sister Almyra gets to know %s (entry %d)", guid.ToString().c_str(), id);
                         }
                     break;
                 }
@@ -1197,6 +1203,7 @@ public:
                         {
                             check->AI()->DoAction(ACTION_INITIALIZE_DONE);
                             m_prince2GUID = guid;
+                            TC_LOG_ERROR("scripts", "GilneasBattle: Sister Almyra gets to know %s (entry %d)", guid.ToString().c_str(), id);
                         }
                     break;
                 }
@@ -1207,6 +1214,7 @@ public:
                         {
                             check->AI()->DoAction(ACTION_INITIALIZE_DONE);
                             m_myriamGUID = guid;
+                            TC_LOG_ERROR("scripts", "GilneasBattle: Sister Almyra gets to know %s (entry %d)", guid.ToString().c_str(), id);
                         }
                     break;
                 }
@@ -1217,6 +1225,7 @@ public:
                         {
                             check->AI()->DoAction(ACTION_INITIALIZE_DONE);
                             m_lornaGUID = guid;
+                            TC_LOG_ERROR("scripts", "GilneasBattle: Sister Almyra gets to know %s (entry %d)", guid.ToString().c_str(), id);
                         }
                     break;
                 }
@@ -1227,6 +1236,7 @@ public:
                         {
                             check->AI()->DoAction(ACTION_INITIALIZE_DONE);
                             m_dariusGUID = guid;
+                            TC_LOG_ERROR("scripts", "GilneasBattle: Sister Almyra gets to know %s (entry %d)", guid.ToString().c_str(), id);
                         }
                     break;
                 }
@@ -1237,6 +1247,7 @@ public:
                         {
                             check->AI()->DoAction(ACTION_INITIALIZE_DONE);
                             m_kingGUID = guid;
+                            TC_LOG_ERROR("scripts", "GilneasBattle: Sister Almyra gets to know %s (entry %d)", guid.ToString().c_str(), id);
                         }
                     break;
                 }
@@ -1247,6 +1258,7 @@ public:
                         {
                             check->AI()->DoAction(ACTION_INITIALIZE_DONE);
                             m_sylvanaGUID = guid;
+                            TC_LOG_ERROR("scripts", "GilneasBattle: Sister Almyra gets to know %s (entry %d)", guid.ToString().c_str(), id);
                         }
                     break;
                 }
@@ -1342,6 +1354,19 @@ public:
                                 m_events.RescheduleEvent(EVENT_FIGHT_WAVE, m_shootCoolDown);
                         }
 
+                        if (m_stallWave != m_wave || m_stallPoint != m_point)
+                        {
+                            m_stallWave = m_wave;
+                            m_stallPoint = m_point;
+                            m_stallSeconds = 0;
+                        }
+                        else if (m_wave != 5 && m_wave != 7 && ++m_stallSeconds >= 60)
+                        {
+                            TC_LOG_ERROR("scripts", "GilneasBattle: %s does not make any progress at the point %u of the wave %u and goes on", me->GetGUID().ToString().c_str(), m_point, m_wave);
+                            m_stallSeconds = 0;
+                            m_point += 1;
+                            m_events.RescheduleEvent(EVENT_MOVE_WAVE, 10);
+                        }
                     }
                     m_events.ScheduleEvent(EVENT_CHECK_FOR_TIMER, 1000);
                     break;
@@ -1411,7 +1436,7 @@ public:
                 case EVENT_SYNC_BEFORE_NEXT_WAVE:
                 {
                     m_ai_counter = 0;
-                    uint32 mask;
+                    uint32 mask = 0;
                     switch (m_wave)
                     {
                         case 1:
@@ -1435,6 +1460,8 @@ public:
 
                         if ((m_arrivedMask & mask) == mask)
                         {
+                            m_syncWaits = 0;
+                            TC_LOG_ERROR("scripts", "GilneasBattle: the groups have arrived, the wave %u is over (mask %u)", m_wave, m_arrivedMask);
                             switch (m_wave)
                             {
                                 case 1: // running over marketplace
@@ -1483,7 +1510,16 @@ public:
                             }
                         }
                         else
+                        {
+                            // a group which does not arrive within a minute is not waited for any longer (the player has to be there anyway: the bit 128)
+                            if (++m_syncWaits >= 24)
+                            {
+                                TC_LOG_ERROR("scripts", "GilneasBattle: the wave %u waits too long, mask %u of %u: the missing groups are not waited for", m_wave, m_arrivedMask, mask);
+                                m_arrivedMask |= (mask & 127);
+                                m_syncWaits = 0;
+                            }
                             m_events.ScheduleEvent(EVENT_SYNC_BEFORE_NEXT_WAVE, 2500);
+                        }
                         break;
                     }
                     case EVENT_SYLVANAS_HAS_ENOUGH:
@@ -1776,6 +1812,9 @@ public:
         float     m_checkDistance;
         bool      m_doneA, m_doneB;
         uint32    m_ai_counter;
+        uint32    m_stallWave = 0;
+        uint32    m_stallPoint = 0;
+        uint32    m_stallSeconds = 0;
 
         void Initialize()
         {
@@ -2057,6 +2096,19 @@ public:
                             if (m_ai_counter > 30)
                                 m_events.RescheduleEvent(EVENT_FIGHT_WAVE, m_shootCoolDown);
                         }
+                        if (m_stallWave != m_wave || m_stallPoint != m_point)
+                        {
+                            m_stallWave = m_wave;
+                            m_stallPoint = m_point;
+                            m_stallSeconds = 0;
+                        }
+                        else if (m_wave != 5 && m_wave != 7 && ++m_stallSeconds >= 60)
+                        {
+                            TC_LOG_ERROR("scripts", "GilneasBattle: %s does not make any progress at the point %u of the wave %u and goes on", me->GetGUID().ToString().c_str(), m_point, m_wave);
+                            m_stallSeconds = 0;
+                            m_point += 1;
+                            m_events.RescheduleEvent(EVENT_MOVE_WAVE, 10);
+                        }
                     }
                     m_events.ScheduleEvent(EVENT_CHECK_FOR_TIMER, 1000);
                     break;
@@ -2286,6 +2338,9 @@ public:
         float     m_checkDistance;
         bool      m_doneA, m_doneB;
         uint32    m_ai_counter;
+        uint32    m_stallWave = 0;
+        uint32    m_stallPoint = 0;
+        uint32    m_stallSeconds = 0;
 
         void Initialize()
         {
@@ -2492,6 +2547,19 @@ public:
                             if (m_ai_counter > 30)
                                 m_events.RescheduleEvent(EVENT_FIGHT_WAVE, m_shootCoolDown);
                         }
+                        if (m_stallWave != m_wave || m_stallPoint != m_point)
+                        {
+                            m_stallWave = m_wave;
+                            m_stallPoint = m_point;
+                            m_stallSeconds = 0;
+                        }
+                        else if (m_wave != 5 && m_wave != 7 && ++m_stallSeconds >= 60)
+                        {
+                            TC_LOG_ERROR("scripts", "GilneasBattle: %s does not make any progress at the point %u of the wave %u and goes on", me->GetGUID().ToString().c_str(), m_point, m_wave);
+                            m_stallSeconds = 0;
+                            m_point += 1;
+                            m_events.RescheduleEvent(EVENT_MOVE_WAVE, 10);
+                        }
                     }
                     m_events.ScheduleEvent(EVENT_CHECK_FOR_TIMER, 1000);
                     break;
@@ -2694,6 +2762,9 @@ public:
         float     m_checkDistance;
         bool      m_doneA, m_doneB;
         uint32    m_ai_counter;
+        uint32    m_stallWave = 0;
+        uint32    m_stallPoint = 0;
+        uint32    m_stallSeconds = 0;
 
         void Initialize()
         {
@@ -2864,7 +2935,7 @@ public:
                     if (!m_isInitialised)
                     {
                         if (!m_almyraGUID)
-                            if (Creature* almyra = me->FindNearestCreature(NPC_SISTER_ALMYRA, 100.0f))
+                            if (Creature* almyra = me->FindNearestCreature(NPC_SISTER_ALMYRA, 1000.0f))
                                 m_almyraGUID = almyra->GetGUID();
 
                         if (Creature* almyra = ObjectAccessor::GetCreature(*me, m_almyraGUID))
@@ -2891,6 +2962,19 @@ public:
                             m_ai_counter += 1;
                             if (m_ai_counter > 30)
                                 m_events.RescheduleEvent(EVENT_FIGHT_WAVE, m_shootCoolDown);
+                        }
+                        if (m_stallWave != m_wave || m_stallPoint != m_point)
+                        {
+                            m_stallWave = m_wave;
+                            m_stallPoint = m_point;
+                            m_stallSeconds = 0;
+                        }
+                        else if (m_wave != 5 && m_wave != 7 && ++m_stallSeconds >= 60)
+                        {
+                            TC_LOG_ERROR("scripts", "GilneasBattle: %s does not make any progress at the point %u of the wave %u and goes on", me->GetGUID().ToString().c_str(), m_point, m_wave);
+                            m_stallSeconds = 0;
+                            m_point += 1;
+                            m_events.RescheduleEvent(EVENT_MOVE_WAVE, 10);
                         }
                     }
                     m_events.ScheduleEvent(EVENT_CHECK_FOR_TIMER, 1000);
@@ -3186,6 +3270,9 @@ public:
         float     m_checkDistance;
         bool      m_doneA, m_doneB;
         uint32    m_ai_counter;
+        uint32    m_stallWave = 0;
+        uint32    m_stallPoint = 0;
+        uint32    m_stallSeconds = 0;
 
         void Initialize()
         {
@@ -3333,7 +3420,7 @@ public:
                         if (!m_isInitialised)
                         {
                             if (!m_almyraGUID)
-                                if (Creature* almyra = me->FindNearestCreature(NPC_SISTER_ALMYRA, 100.0f))
+                                if (Creature* almyra = me->FindNearestCreature(NPC_SISTER_ALMYRA, 1000.0f))
                                     m_almyraGUID = almyra->GetGUID();
 
                             if (Creature* almyra = ObjectAccessor::GetCreature(*me, m_almyraGUID))
@@ -3360,6 +3447,19 @@ public:
                                 m_ai_counter += 1;
                                 if (m_ai_counter > 30)
                                     m_events.RescheduleEvent(EVENT_FIGHT_WAVE, m_shootCoolDown);
+                            }
+                            if (m_stallWave != m_wave || m_stallPoint != m_point)
+                            {
+                                m_stallWave = m_wave;
+                                m_stallPoint = m_point;
+                                m_stallSeconds = 0;
+                            }
+                            else if (m_wave != 5 && m_wave != 7 && ++m_stallSeconds >= 60)
+                            {
+                                TC_LOG_ERROR("scripts", "GilneasBattle: %s does not make any progress at the point %u of the wave %u and goes on", me->GetGUID().ToString().c_str(), m_point, m_wave);
+                                m_stallSeconds = 0;
+                                m_point += 1;
+                                m_events.RescheduleEvent(EVENT_MOVE_WAVE, 10);
                             }
                         }
                         m_events.ScheduleEvent(EVENT_CHECK_FOR_TIMER, 1000);
@@ -3561,6 +3661,9 @@ public:
         float     m_checkDistance;
         bool      m_doneA, m_doneB;
         uint32    m_ai_counter;
+        uint32    m_stallWave = 0;
+        uint32    m_stallPoint = 0;
+        uint32    m_stallSeconds = 0;
 
         void Initialize()
         {
@@ -3684,7 +3787,7 @@ public:
                     if (!m_isInitialised)
                     {
                         if (!m_almyraGUID)
-                            if (Creature* almyra = me->FindNearestCreature(NPC_SISTER_ALMYRA, 100.0f))
+                            if (Creature* almyra = me->FindNearestCreature(NPC_SISTER_ALMYRA, 1000.0f))
                                 m_almyraGUID = almyra->GetGUID();
 
                         if (Creature* almyra = ObjectAccessor::GetCreature(*me, m_almyraGUID))
@@ -3710,6 +3813,19 @@ public:
                             if (m_ai_counter > 30)
                                 m_events.RescheduleEvent(EVENT_FIGHT_WAVE, m_shootCoolDown);
                         }
+                        if (m_stallWave != m_wave || m_stallPoint != m_point)
+                        {
+                            m_stallWave = m_wave;
+                            m_stallPoint = m_point;
+                            m_stallSeconds = 0;
+                        }
+                        else if (m_wave != 5 && m_wave != 7 && ++m_stallSeconds >= 60)
+                        {
+                            TC_LOG_ERROR("scripts", "GilneasBattle: %s does not make any progress at the point %u of the wave %u and goes on", me->GetGUID().ToString().c_str(), m_point, m_wave);
+                            m_stallSeconds = 0;
+                            m_point += 1;
+                            m_events.RescheduleEvent(EVENT_MOVE_WAVE, 10);
+                        }
                     }
                     m_events.ScheduleEvent(EVENT_CHECK_FOR_TIMER, 1000);
                     break;
@@ -3722,7 +3838,7 @@ public:
                         me->GetMotionMaster()->MovePoint(2000 + m_wave, GetWavePosition());
                     }
                     else if (Creature* almyra = ObjectAccessor::GetCreature(*me, m_almyraGUID))
-                        almyra->AI()->DoAction(ACTION_LORNA_ARRIVED);
+                        almyra->AI()->DoAction(ACTION_GENN_ARRIVED);
                     break;
                 }
                 case EVENT_FIGHT_WAVE:
@@ -3993,7 +4109,7 @@ public:
                     if (!m_isInitialised)
                     {
                         if (!m_almyraGUID)
-                            if (Creature* almyra = me->FindNearestCreature(NPC_SISTER_ALMYRA, 100.0f))
+                            if (Creature* almyra = me->FindNearestCreature(NPC_SISTER_ALMYRA, 1000.0f))
                                 m_almyraGUID = almyra->GetGUID();
 
                         if (Creature* almyra = ObjectAccessor::GetCreature(*me, m_almyraGUID))
