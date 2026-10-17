@@ -1444,102 +1444,13 @@ public:
     }
 };
 
-// 36540
-class npc_mountain_horse_36540 : public CreatureScript
-{
-public:
-    npc_mountain_horse_36540() : CreatureScript("npc_mountain_horse_36540") { }
-
-    enum eNpc
-    {
-        EVENT_CHECK_HEALTH_AND_LORNA            = 901
-    };
-
-    struct npc_mountain_horse_36540AI : public ScriptedAI
-    {
-        npc_mountain_horse_36540AI(Creature* creature) : ScriptedAI(creature) { }
-
-        EventMap m_events;
-        ObjectGuid m_playerGUID;
-        ObjectGuid m_lornaGUID;
-        float m_dist;
-        float m_angle;
-        float m_size;
-        Position m_oldPosition;
-        bool m_lornaIsNear;
-
-        void Reset() override
-        {
-            m_events.Reset();
-            m_playerGUID = ObjectGuid::Empty;
-            m_lornaGUID = ObjectGuid::Empty;
-            m_lornaIsNear = false;
-        }
-
-        void PassengerBoarded(Unit* passenger, int8 /*seatId*/, bool apply) override
-        {
-            if (apply)
-            {
-                if (Player* player = passenger->ToPlayer())
-                {
-                    m_playerGUID = player->GetGUID();
-                    me->SetMaxHealth(250);
-                }
-
-                m_events.ScheduleEvent(EVENT_CHECK_HEALTH_AND_LORNA, 1s);
-            }
-            else if (Player* player = ObjectAccessor::GetPlayer(*me, m_playerGUID))
-            {
-                if (m_lornaIsNear)
-                {
-                    player->KilledMonsterCredit(36560);
-                    me->DespawnOrUnsummon(1s);
-                }
-            }
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            m_events.Update(diff);
-
-            while (uint32 eventId = m_events.ExecuteEvent())
-            {
-                switch (eventId)
-                {
-                    case EVENT_CHECK_HEALTH_AND_LORNA:
-                        me->SetHealth(me->GetMaxHealth());
-
-                        if (!m_lornaGUID)
-                            if (Creature* lorna = me->FindNearestCreature(NPC_LORNA_CROWLEY, 100.0f))
-                                m_lornaGUID = lorna->GetGUID();
-
-                        if (Creature* lorna = ObjectAccessor::GetCreature(*me, m_lornaGUID))
-                            if (Player* player = ObjectAccessor::GetPlayer(*me, m_playerGUID))
-                            {
-                                m_lornaIsNear = player->GetDistance(lorna) < 7.0f;
-
-                                if (m_lornaIsNear)
-                                    player->ExitVehicle();
-                            }
-
-                            m_events.ScheduleEvent(EVENT_CHECK_HEALTH_AND_LORNA, 1s);
-                            break;
-                }
-            }
-        }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_mountain_horse_36540AI(creature);
-    }
-};
-
-// 36540 (vehicle hooks)
+// 36540 (Mountain Horse, quest 14416)
 // The horse's seat has VEHICLE_SEAT_FLAG_CAN_CONTROL, so while a player rides it Unit::UpdateCharmAI replaces the creature's
-// AI with PossessedAI: the scripted AI above (its PassengerBoarded hook and the EVENT_CHECK_HEALTH_AND_LORNA loop) never runs
-// and the quest credit was never given. The vehicle script hooks are called regardless of the AI, so the credit is given here:
+// AI with PossessedAI: a CreatureScript AI (its PassengerBoarded hook and update events) never runs while the player rides, so
+// the quest credit was never given. The vehicle script hooks are called regardless of the AI, so the credit is given here:
 // the player has to ride the horse to Lorna and get off next to her.
+// A script name can be used by only ONE script object (ScriptMgr::SetScriptNameInContext asserts otherwise and the worldserver
+// dies while loading the scripts), so this VehicleScript takes the ScriptName of the creature_template instead of a CreatureScript.
 class vehicle_mountain_horse_36540 : public VehicleScript
 {
 public:
@@ -3449,7 +3360,6 @@ void AddSC_zone_gilneas_duskhaven()
     new npc_chance_36459();
     new npc_forsaken_castaway_36488();
     new npc_mountain_horse_36555();
-    new npc_mountain_horse_36540();
     new vehicle_mountain_horse_36540();
     new spell_round_up_horse_68903();
     new npc_gwen_armstead_36452();
