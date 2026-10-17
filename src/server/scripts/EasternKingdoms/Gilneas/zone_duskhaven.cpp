@@ -21,6 +21,7 @@
 #include "CreatureTextMgr.h"
 #include "GameObject.h"
 #include "GameObjectAI.h"
+#include "Map.h"
 #include "MoveSplineInit.h"
 #include "MotionMaster.h"
 #include "ObjectAccessor.h"
@@ -1526,6 +1527,61 @@ public:
     }
 };
 
+// Swift Mountain Horse (36741), quest 14465 "To Greymane Manor".
+// The seat of the horse has VEHICLE_SEAT_FLAG_CAN_CONTROL: the rider steers the horse himself and is its charmer, so
+// Unit::UpdateCharmAI replaces the AI of the horse with PossessedAI for the whole ride (the scripted AI, its waypoint path and its
+// PassengerBoarded hooks never run), and the seat has no VEHICLE_SEAT_FLAG_CAN_ENTER_OR_EXIT either: the rider can not get off
+// the horse by himself. Everything is done from outside because of that: the gates open for a player who rides the horse (the
+// summon has no owner to look for), and the horse lets the rider go as soon as it is through the second gate.
+static constexpr float SWIFT_HORSE_GATE_DISTANCE    = 30.0f;    // a horse steered by a player runs ~13 yards per second
+static constexpr float MANOR_GATE_X                 = -1681.8f; // gate 196401
+static constexpr float MANOR_GATE_Y                 = 2507.6f;
+static constexpr float MANOR_ROAD_DIR_X             = 0.8151f;  // from the gate to the end of the road behind it (-1668.0, 2517.4)
+static constexpr float MANOR_ROAD_DIR_Y             = 0.5788f;
+static constexpr float MANOR_ROAD_END_X             = -1668.0f;
+static constexpr float MANOR_ROAD_END_Y             = 2517.4f;
+
+// 14465 has no objectives: on a database without the "event" special flag it is complete the moment it is accepted, and the
+// ride has to work for the players who already hold it in that state too
+static bool IsOnRideToGreymaneManor(Player* player)
+{
+    QuestStatus status = player->GetQuestStatus(QUEST_TO_GREYMANE_MANOR);
+    return status == QUEST_STATUS_INCOMPLETE || status == QUEST_STATUS_COMPLETE;
+}
+
+// the player who sits on the horse
+static Player* GetSwiftHorsePassenger(Unit* horse)
+{
+    if (Vehicle* vehicle = horse->GetVehicleKit())
+        for (int8 seat = 0; seat < MAX_VEHICLE_SEATS; ++seat)
+            if (Unit* passenger = vehicle->GetPassenger(seat))
+                if (Player* player = passenger->ToPlayer())
+                    return player;
+
+    return nullptr;
+}
+
+// true if a player rides the horse on the way to the manor and the horse is closer than 'distance' yards to the object
+static bool IsSwiftHorseRideNear(WorldObject* object, float distance)
+{
+    Map::PlayerList const& players = object->GetMap()->GetPlayers();
+    for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
+        if (Player* player = itr->GetSource())
+            if (Unit* mount = player->GetVehicleBase())
+                if (mount->GetEntry() == NPC_SWIFT_MOUNTAIN_HORSE && mount->GetDistance(object) < distance && IsOnRideToGreymaneManor(player))
+                    return true;
+
+    return false;
+}
+
+// the road ends right behind gate 196401: true once a position is through that gate (the line through the gate is
+// perpendicular to the road)
+static bool IsThroughManorGate(Position const& pos)
+{
+    float along = (pos.GetPositionX() - MANOR_GATE_X) * MANOR_ROAD_DIR_X + (pos.GetPositionY() - MANOR_GATE_Y) * MANOR_ROAD_DIR_Y;
+    return along > 4.0f && pos.GetExactDist2d(MANOR_ROAD_END_X, MANOR_ROAD_END_Y) < 60.0f;
+}
+
 // 36452
 class npc_gwen_armstead_36452 : public CreatureScript
 {
@@ -1560,12 +1616,11 @@ public:
         go_gate_196399AI(GameObject* go) : GameObjectAI(go) { }
 
         EventMap m_events;
-        std::list<ObjectGuid> cList;
         bool m_isUsed;
 
         void Reset() override
         {
-            m_events.RescheduleEvent(EVENT_CHECK_PLAYER_NEAR, 1s);
+            m_events.RescheduleEvent(EVENT_CHECK_PLAYER_NEAR, 500ms);
             m_isUsed = false;
         }
 
@@ -1579,38 +1634,24 @@ public:
                 {
                     case EVENT_CHECK_PLAYER_NEAR:
                     {
-                        cList.clear();
-                        std::list<Creature*> c1;
-                        go->GetCreatureListWithEntryInGrid(c1, NPC_SWIFT_MOUNTAIN_HORSE, 20.0f);
+                        if (!m_isUsed && IsSwiftHorseRideNear(go, SWIFT_HORSE_GATE_DISTANCE))
+                        {
+                            go->UseDoorOrButton(8000);
+                            m_isUsed = true;
+                            m_events.ScheduleEvent(EVENT_COOLDOWN_00, 8s);
+                        }
 
-                        for (auto horse : c1)
-                            if (Unit* p1 = horse->GetOwner())
-                                if (Player* player = p1->ToPlayer())
-                                    if (player->GetQuestStatus(QUEST_TO_GREYMANE_MANOR) == QUEST_STATUS_INCOMPLETE)
-                                        cList.push_back(horse->GetGUID());
-
-                        m_events.RescheduleEvent(EVENT_CHECK_PLAYER_NEAR, 1s);
+                        m_events.RescheduleEvent(EVENT_CHECK_PLAYER_NEAR, 500ms);
                         break;
                     }
                     case EVENT_COOLDOWN_00:
                     {
                         m_isUsed = false;
-                        cList.clear();
                         go->ResetDoorOrButton();
                         break;
                     }
                 }
             }
-
-            if (!m_isUsed)
-                for (auto guid : cList)
-                    if (Creature* horse = ObjectAccessor::GetCreature(*go, guid))
-                        if (horse->GetDistance(go) < 10.0f)
-                        {
-                            go->UseDoorOrButton(5000);
-                            m_isUsed = true;
-                            m_events.ScheduleEvent(EVENT_COOLDOWN_00, 5s);
-                        }
         }
     };
 
@@ -1657,10 +1698,18 @@ public:
 
                         for (auto mount : c1)
                             if (Player* player = GetPlayer(mount))
-                                if (player->GetQuestStatus(QUEST_TO_GREYMANE_MANOR) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(QUEST_EXODUS) == QUEST_STATUS_COMPLETE)
+                                if (player->GetQuestStatus(QUEST_EXODUS) == QUEST_STATUS_COMPLETE)
                                     cList.push_back(mount->GetGUID());
 
-                        m_events.RescheduleEvent(EVENT_CHECK_PLAYER_NEAR, 1s);
+                        // the Swift Mountain Horse of quest 14465 (see IsSwiftHorseRideNear)
+                        if (!m_isUsed && IsSwiftHorseRideNear(go, SWIFT_HORSE_GATE_DISTANCE))
+                        {
+                            go->UseDoorOrButton(8000);
+                            m_isUsed = true;
+                            m_events.ScheduleEvent(EVENT_COOLDOWN_00, 8s);
+                        }
+
+                        m_events.RescheduleEvent(EVENT_CHECK_PLAYER_NEAR, 500ms);
                         break;
                     }
                     case EVENT_COOLDOWN_00:
@@ -1686,7 +1735,6 @@ public:
         std::list<Creature*> FindHorseNear()
         {
             std::list<Creature*> cList;
-            GetCreatureListWithEntryInGrid(cList, go, NPC_SWIFT_MOUNTAIN_HORSE, 20.0f);
             GetCreatureListWithEntryInGrid(cList, go, NPC_HARNESS_43336, 20.0f);
             return cList;
         }
@@ -1709,67 +1757,66 @@ public:
     }
 };
 
-// 36741
-class npc_swift_mountain_horse_36741 : public CreatureScript
+// 36741 (Swift Mountain Horse, quest 14465): see the comment above SWIFT_HORSE_GATE_DISTANCE for why the ride is scripted from
+// outside of the horse's AI. A script name can be used by only ONE script object (ScriptMgr::SetScriptNameInContext asserts
+// otherwise), so this VehicleScript takes the ScriptName of the creature_template instead of a CreatureScript.
+
+// lets the rider go as soon as the horse is through the gate in front of the manor (the seat can not be left by the player)
+class SwiftHorseDropOffEvent : public BasicEvent
 {
 public:
-    npc_swift_mountain_horse_36741() : CreatureScript("npc_swift_mountain_horse_36741") { }
+    explicit SwiftHorseDropOffEvent(Creature* horse) : _horse(horse) { }
 
-    enum eNpc
+    bool Execute(uint64 time, uint32 /*diff*/) override
     {
-        WAYPOINT_ID                             = 3674101
-    };
+        Vehicle* vehicle = _horse->GetVehicleKit();
+        if (!vehicle || !GetSwiftHorsePassenger(_horse))
+            return true;                                    // nobody rides the horse any more
 
-    struct npc_swift_mountain_horse_36741AI : public ScriptedAI
-    {
-        npc_swift_mountain_horse_36741AI(Creature* creature) : ScriptedAI(creature) { }
-
-        EventMap    m_events;
-        ObjectGuid  m_playerGUID;
-
-        void Reset() override
+        if (IsThroughManorGate(_horse->GetPosition()))
         {
-            m_events.Reset();
-            m_playerGUID = ObjectGuid::Empty;
+            vehicle->RemoveAllPassengers();                 // vehicle_swift_mountain_horse_36741::OnRemovePassenger does the rest
+            return true;
         }
 
-        void MovementInform(uint32 type, uint32 id) override
-        {
-            if (type == WAYPOINT_MOTION_TYPE)
-                if (id == 11)
-                    me->GetVehicleKit()->RemoveAllPassengers();
-        }
+        _horse->m_Events.AddEvent(this, time + 500, false);
+        return false;
+    }
 
-        void PassengerBoarded(Unit* passenger, int8 /*seatId*/, bool apply) override
-        {
-            if (apply)
-            {
-                if (Player* player = passenger->ToPlayer())
-                {
-                    m_playerGUID = player->GetGUID();
-                    player->AddAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_08, player);
-                    player->AddAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_09, player);
-                    me->CastSpell(player, SPELL_FORCECAST_UPDATE_ZONE_AURAS, true);
-                    me->GetMotionMaster()->MovePath(WAYPOINT_ID, false);
-                }
-            }
-            else
-            {
-                if (Player* player = passenger->ToPlayer())
-                {
-                    player->RemoveAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_08);
-                    player->AddAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_09, player);
-                    player->AreaExploredOrEventHappens(QUEST_TO_GREYMANE_MANOR);
-                }
+private:
+    Creature* _horse;
+};
 
-                me->DespawnOrUnsummon(1s);
-            }
-        }
-    };
+class vehicle_swift_mountain_horse_36741 : public VehicleScript
+{
+public:
+    vehicle_swift_mountain_horse_36741() : VehicleScript("npc_swift_mountain_horse_36741") { }
 
-    CreatureAI* GetAI(Creature* creature) const override
+    void OnAddPassenger(Vehicle* veh, Unit* passenger, int8 /*seatId*/) override
     {
-        return new npc_swift_mountain_horse_36741AI(creature);
+        Creature* horse = veh->GetBase()->ToCreature();
+        if (!horse || passenger->GetTypeId() != TYPEID_PLAYER)
+            return;
+
+        horse->m_Events.AddEvent(new SwiftHorseDropOffEvent(horse), horse->m_Events.CalculateTime(500));
+    }
+
+    void OnRemovePassenger(Vehicle* veh, Unit* passenger) override
+    {
+        Player* player = passenger->ToPlayer();
+        Creature* horse = veh->GetBase()->ToCreature();
+        if (!player || !horse)
+            return;
+
+        // what the scripted AI did when the passenger left: the quest is done once the manor is reached (not when the ride is
+        // interrupted somewhere on the road, e.g. by a logout), and the horse goes away
+        if (IsThroughManorGate(horse->GetPosition()))
+        {
+            player->AddAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_09, player);
+            player->AreaExploredOrEventHappens(QUEST_TO_GREYMANE_MANOR);
+        }
+
+        horse->DespawnOrUnsummon(1s);
     }
 };
 
@@ -3365,7 +3412,7 @@ void AddSC_zone_gilneas_duskhaven()
     new npc_gwen_armstead_36452();
     new go_gate_196399();
     new go_gate_196401();
-    new npc_swift_mountain_horse_36741();
+    new vehicle_swift_mountain_horse_36741();
     new npc_queen_mia_greymane_36606();
     new npc_king_genn_greymane_36743();
     new npc_stagecoach_carriage_44928();
