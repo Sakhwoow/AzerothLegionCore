@@ -68,6 +68,7 @@ enum eZoneGilneasCity2
     NPC_KING_GENN_GREYMANE              = 38470,
     NPC_PRINCE_LIAM_GREYMANE            = 38474,
     NPC_KRENNAN_ARANAS                  = 38553,
+    NPC_BATTLE_FOR_GILNEAS_CITY_CREDIT  = 38854,
     NPC_WORGEN_WARRIOR                  = 43651,
     NPC_LEADER_GUID                     = 99994,
 
@@ -4217,6 +4218,20 @@ class npc_lorna_crowley_38611 : public CreatureScript
 {
 public:
     npc_lorna_crowley_38611() : CreatureScript("npc_lorna_crowley_38611") { }
+
+    // The battle for Gilneas City (24904) is a scripted event: Sister Almyra, Prince Liam 38218, Myriam and the militia groups have to stand
+    // together at the Livery Outpost (the militia is summoned there, SpawnPosGroup1-3), Krennan Aranas starts it with his gossip and Sylvanas
+    // gives the credit (38854) when the last scene is over. The database has the actors where the retail game saw them (Prince Liam, Lorna 38426,
+    // Darius and Genn at the gates of the city, Krennan in another phase) and has no waypoint_data for the last scene (3847401, 3846901), so
+    // the actors never find each other and the battle can not be started. Until the battle is rebuilt, the objective is given when the player
+    // reports to Lorna in the city.
+    bool OnGossipHello(Player* player, Creature* /*creature*/) override
+    {
+        if (player->GetQuestStatus(QUEST_THE_BATTLE_FOR_GILNEAS_CITY) == QUEST_STATUS_INCOMPLETE)
+            player->KilledMonsterCredit(NPC_BATTLE_FOR_GILNEAS_CITY_CREDIT);
+
+        return false;                                       // the default menu (with the quest ready to be rewarded)
+    }
 
     bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest) override
     {
