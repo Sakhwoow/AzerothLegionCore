@@ -1842,7 +1842,7 @@ public:
             me->SetReactState(REACT_PASSIVE);
             if (my_followerList.empty())
                 SummonMyMember();
-            me->SetSpeed(MOVE_RUN, 1.0f);
+            me->SetSpeedRate(MOVE_RUN, 1.0f);               // Unit::SetSpeed takes yards per second here (1.0f was one yard per second)
             m_events.RescheduleEvent(EVENT_CHECK_PLAYER_FOR_PHASE, 2500);
             m_events.RescheduleEvent(EVENT_INITIALISE, 1000);
             m_events.RescheduleEvent(EVENT_RANDOM_TEXT, 30000);
@@ -1901,7 +1901,7 @@ public:
                 }
                 case ACTION_LIAM_TALK_10:
                 {
-                    Talk(10);
+                    Talk(12);
                     break;
                 }
                 case ACTION_MOVE_TO_WAVE_POSION_1:
@@ -1925,7 +1925,7 @@ public:
                 }
                 case ACTION_MOVE_TO_WAVE_POSION_3:
                 {
-                    Talk(8);
+                    Talk(10);
                     m_wave = 3;
                     m_waveSize = 4;
                     m_point = 0;
@@ -2081,7 +2081,7 @@ public:
                 }
                 case EVENT_LIAM_TALK_9:
                 {
-                    Talk(9);
+                    Talk(11);
                     break;
                 }
                 case EVENT_CHECK_FOR_TIMER:
@@ -3209,7 +3209,7 @@ public:
             {
                 if (m_point == 2 && !m_doneA)
                 {
-                    Talk(0);
+                    Talk(4);
                     m_doneA = true;
                 }
                 else if (m_point == 7 && !m_doneB)
@@ -3294,6 +3294,7 @@ public:
 
         void Reset() override
         {
+            me->setActive(true);                            // the leader stands far away from the army and has to register at Sister Almyra
             me->SetReactState(REACT_PASSIVE);
             if (my_followerList.empty())
                 SummonMyMember();
@@ -3514,7 +3515,7 @@ public:
                     }
                     case EVENT_DARIUS_TALK_2:
                     {
-                        Talk(2);
+                        Talk(4);
                         break;
                     }
                 }
@@ -3685,6 +3686,7 @@ public:
 
         void Reset() override
         {
+            me->setActive(true);                            // the leader stands far away from the army and has to register at Sister Almyra
             me->SetReactState(REACT_PASSIVE);
             if (my_followerList.empty())
                 SummonMyMember();
@@ -3747,7 +3749,7 @@ public:
                 }
                 case ACTION_KING_TALK_2:
                 {
-                    Talk(2);
+                    Talk(1);                                        // SYLVANAS!!
                     break;
                 }
                 case ACTION_SYLVANAS_HAS_ENOUGH:
@@ -3883,7 +3885,7 @@ public:
                 case EVENT_LIAM_DEATH_TALK1:
                 {
                     if (Creature* liam = ObjectAccessor::GetCreature(*me, m_liam2GUID))
-                        liam->AI()->Talk(2);
+                        liam->AI()->Talk(1);
 
                     m_events.ScheduleEvent(EVENT_LIAM_DEATH_TALK2, 5000);
                     break;
@@ -3891,7 +3893,7 @@ public:
                 case EVENT_LIAM_DEATH_TALK2:
                 {
                     if (Creature* liam = ObjectAccessor::GetCreature(*me, m_liam2GUID))
-                        liam->AI()->Talk(3);
+                        liam->AI()->Talk(2);
                     break;
                 }
                 }
@@ -4014,6 +4016,7 @@ public:
 
         void Reset() override
         {
+            me->setActive(true);                            // the leader stands far away from the army and has to register at Sister Almyra
             me->SetReactState(REACT_PASSIVE);
             if (my_followerList.empty())
                 SummonMyMember();
@@ -4060,7 +4063,7 @@ public:
                 {
                     if (Creature* liam = ObjectAccessor::GetCreature(*me, m_liamGUID))
                         me->CastSpell(liam, SPELL_AIMED_SHOOT);
-                    Talk(3); // Let's see how brave Gilneas gets on without its stubborn leader!
+                    Talk(1); // Let's see how brave Gilneas gets on without its stubborn leader!
                     break;
                 }
                 case ACTION_SHOOT_AT_KING:
@@ -4151,7 +4154,7 @@ public:
                 }
                 case EVENT_LIAM_IS_DEATH:
                 {
-                    Talk(1);
+                    Talk(2);                                        // Such a waste. That arrow's poison was not meant to be wasted on your whelp
                     std::list<Player*> playerList = me->SelectNearestPlayers(50.0f);
                     for (std::list<Player*>::const_iterator itr = playerList.begin(); itr != playerList.end(); ++itr)
                         if ((*itr)->GetQuestStatus(QUEST_THE_BATTLE_FOR_GILNEAS_CITY) == QUEST_STATUS_INCOMPLETE)
@@ -4311,7 +4314,7 @@ public:
                     if (Creature* king = ObjectAccessor::GetCreature(*me, m_kingGUID))
                     {
                         king->GetMotionMaster()->MovePoint(1002, -1680.864f, 1619.74f, 20.48808f);
-                        king->AI()->Talk(1);
+                        king->AI()->Talk(2);                        // LIAM!! NO!!!
                     }
                 }
         }
