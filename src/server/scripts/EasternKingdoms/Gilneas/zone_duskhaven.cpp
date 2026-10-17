@@ -3200,95 +3200,63 @@ public:
     }
 };
 
-// 38765
-class npc_stout_mountain_horse_38765 : public CreatureScript
+// 38765 (Stout Mountain Horse, quest 24677 "Flank the Forsaken")
+// Lord Hewell summons the horse (spell 72772, summon category VEHICLE: the player boards it at once). It has the same seat as the Swift
+// Mountain Horse (VEHICLE_SEAT_FLAG_CAN_CONTROL, no VEHICLE_SEAT_FLAG_CAN_ENTER_OR_EXIT): the rider is its charmer, the AI is replaced by
+// PossessedAI, the scripted path (the SmartAI waypoints 38765, 39 points from the keep of Tempest's Reach to the Livery Outpost; there is no
+// waypoint_data 3876500) never runs and the player can not get off the horse. So the ride is replaced by a short hop: a few seconds after
+// boarding the horse puts the rider down at the end of the path, next to Lorna Crowley, and goes away. The VehicleScript takes the ScriptName of
+// the creature_template (only one script object per name, see vehicle_mountain_horse_36540).
+static constexpr float LIVERY_OUTPOST_X     = -1369.3f; // the last point (39) of the path, 17 yards south of Lorna Crowley (37783)
+static constexpr float LIVERY_OUTPOST_Y     = 1195.5f;
+static constexpr float LIVERY_OUTPOST_Z     = 35.5f;
+static constexpr float LIVERY_OUTPOST_O     = 1.56f;    // towards Lorna
+
+class StoutHorseRideEvent : public BasicEvent
 {
 public:
-    npc_stout_mountain_horse_38765() : CreatureScript("npc_stout_mountain_horse_38765") { }
+    explicit StoutHorseRideEvent(Creature* horse) : _horse(horse) { }
 
-    enum eNpc
+    bool Execute(uint64 /*time*/, uint32 /*diff*/) override
     {
-        PATH_ID                                 = 3876500
-    };
+        Player* player = GetSwiftHorsePassenger(_horse);
+        if (!player)
+            return true;                                    // nobody rides the horse any more
 
-    struct npc_stout_mountain_horse_38765AI : public ScriptedAI
+        _horse->GetVehicleKit()->RemoveAllPassengers();     // vehicle_stout_mountain_horse_38765::OnRemovePassenger sends the horse away
+
+        // what the scripted ride did at its end
+        player->RemoveAurasDueToSpell(SPELL_FORCE_REACTION_1);
+        player->RemoveAurasDueToSpell(SPELL_PHASE_QUEST_ZONE_SPECIFIC_09);
+        player->TeleportTo(654, LIVERY_OUTPOST_X, LIVERY_OUTPOST_Y, LIVERY_OUTPOST_Z, LIVERY_OUTPOST_O);
+        return true;
+    }
+
+private:
+    Creature* _horse;
+};
+
+class vehicle_stout_mountain_horse_38765 : public VehicleScript
+{
+public:
+    vehicle_stout_mountain_horse_38765() : VehicleScript("npc_stout_mountain_horse_38765") { }
+
+    void OnAddPassenger(Vehicle* veh, Unit* passenger, int8 /*seatId*/) override
     {
-        npc_stout_mountain_horse_38765AI(Creature* creature) : ScriptedAI(creature) { }
+        Creature* horse = veh->GetBase()->ToCreature();
+        if (!horse || passenger->GetTypeId() != TYPEID_PLAYER)
+            return;
 
-        EventMap m_events;
-        ObjectGuid m_playerGUID;
+        horse->m_Events.AddEvent(new StoutHorseRideEvent(horse), horse->m_Events.CalculateTime(3000));
+    }
 
-        void Reset() override
-        {
-            m_events.Reset();
-            m_playerGUID = ObjectGuid::Empty;
-        }
-
-        void IsSummonedBy(Unit* summoner) override
-        {
-            if (summoner->IsPlayer())
-            {
-                m_playerGUID = summoner->GetGUID();
-                m_events.ScheduleEvent(EVENT_START_WAYPOINTS, 1s + 500ms);
-            }
-        }
-
-        void MovementInform(uint32 type, uint32 id) override
-        {
-            if (type == WAYPOINT_MOTION_TYPE)
-            {
-                switch (id)
-                {
-                    case 41:
-                    {
-                        m_events.ScheduleEvent(EVENT_STOP_WAYPOINTS, 1s);
-                        break;
-                    }
-                }
-            }
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            m_events.Update(diff);
-
-            while (uint32 eventId = m_events.ExecuteEvent())
-            {
-                switch (eventId)
-                {
-                    case EVENT_START_WAYPOINTS:
-                    {
-                        me->GetMotionMaster()->MovePath(PATH_ID, false);
-                        break;
-                    }
-                    case EVENT_STOP_WAYPOINTS:
-                    {
-                        me->CastSpell(me, SPELL_DANS_EJECT_ALL_PASSENGERS);
-                        me->DespawnOrUnsummon(3s);
-
-                        if (Player* player = ObjectAccessor::GetPlayer(*me, m_playerGUID))
-                        {
-                            if (player->HasAura(SPELL_FORCE_REACTION_1))
-                                player->RemoveAura(SPELL_FORCE_REACTION_1);
-
-                            if (player->HasAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_09))
-                                player->RemoveAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_09);
-                        }
-                        break;
-                    }
-                }
-            }
-
-            if (!UpdateVictim())
-                return;
-            else
-                DoMeleeAttackIfReady();
-        }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
+    void OnRemovePassenger(Vehicle* veh, Unit* passenger) override
     {
-        return new npc_stout_mountain_horse_38765AI(creature);
+        if (passenger->GetTypeId() != TYPEID_PLAYER)
+            return;
+
+        if (Creature* horse = veh->GetBase()->ToCreature())
+            horse->DespawnOrUnsummon(1s);
     }
 };
 
@@ -3476,7 +3444,7 @@ void AddSC_zone_gilneas_duskhaven()
     new npc_tobias_mistmantle_38051();
     new npc_king_genn_greymane_37876();
     new npc_lord_hewell_38764();
-    new npc_stout_mountain_horse_38765();
+    new vehicle_stout_mountain_horse_38765();
     new npc_lorna_crowley_37783();
     new npc_enslaved_villager_37694();
     new go_ball_and_chain_201775();
