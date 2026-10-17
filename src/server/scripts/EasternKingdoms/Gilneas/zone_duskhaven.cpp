@@ -186,7 +186,7 @@ public:
         if (quest->GetQuestId() == QUEST_LAST_CHANCE_AT_HUMANITY)
         {
             player->CastSpell(player, SPELL_PHASE_QUEST_ZONE_SPECIFIC_06, true);
-            player->SetUInt32Value(UNIT_FIELD_FLAGS_2, 2048);
+            player->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
             player->RemoveAura(42716);
             player->RemoveAura(50220);
             player->RemoveAura(58284);
@@ -376,7 +376,7 @@ public:
             // Phase 181 (the village: Gwen, Krennan, Godfrey...) is kept next to 182 (the attack) until
             // As the Land Shatters (14396): Gwen is the turn-in NPC of Holding Steady (14366), and the
             // spell_area rows of 68481 end exactly at 14396, where Godfrey's script swaps both for 183.
-            player->CastSpell(player, SPELL_PHASE_QUEST_ZONE_SPECIFIC_07);
+            player->CastSpell(player, SPELL_PHASE_QUEST_ZONE_SPECIFIC_07, true);
             return true;
         }
         return false;
@@ -1587,7 +1587,7 @@ public:
             player->RemoveAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_10);
             player->RemoveAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_11);
             player->RemoveAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_12);
-            player->CastSpell(player, SPELL_FORCECAST_SUMMON_SWIFT_MOUNTAIN_HORSE);
+            player->CastSpell(player, SPELL_FORCECAST_SUMMON_SWIFT_MOUNTAIN_HORSE, true);
         }
         return true;
     }
@@ -1842,7 +1842,7 @@ public:
     bool OnQuestReward(Player* player, Creature* /*creature*/, Quest const* quest, uint32 /*opt*/) override
     {
         if (quest->GetQuestId() == QUEST_TO_GREYMANE_MANOR)
-            player->CastSpell(player, SPELL_UPDATE_BIND_TO_GREYMANE_MANOR);
+            player->CastSpell(player, SPELL_UPDATE_BIND_TO_GREYMANE_MANOR, true);
 
         return false;
     }
@@ -1974,7 +1974,7 @@ public:
     {
         if (player->GetQuestStatus(QUEST_EXODUS) == QUEST_STATUS_COMPLETE)
         {
-            player->CastSpell(player, SPELL_PHASE_QUEST_ZONE_SPECIFIC_19);
+            player->CastSpell(player, SPELL_PHASE_QUEST_ZONE_SPECIFIC_19, true);
             player->SummonCreature(NPC_HARNESS_43336, creature->GetPosition(), TEMPSUMMON_MANUAL_DESPAWN);
         }
 
