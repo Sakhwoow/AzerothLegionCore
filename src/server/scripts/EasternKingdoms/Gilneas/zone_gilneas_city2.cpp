@@ -22,6 +22,7 @@
 #include "CreatureGroups.h"
 #include "GameObject.h"
 #include "GameObjectAI.h"
+#include "Log.h"
 #include "MoveSplineInit.h"
 #include "MotionMaster.h"
 #include "ObjectAccessor.h"
@@ -801,8 +802,8 @@ public:
             case GOSSIP_ACTION_INFO_DEF + 1:
             {
                 CloseGossipMenuFor(player);
-                creature->AI()->Talk(0, player);
-                CAST_AI(npc_krennan_aranas_38553::npc_krennan_aranas_38553AI, creature->AI())->StartBattle();
+                if (CAST_AI(npc_krennan_aranas_38553::npc_krennan_aranas_38553AI, creature->AI())->StartBattle())
+                    creature->AI()->Talk(0, player);
                 break;
             }
             case GOSSIP_ACTION_INFO_DEF + 2:
@@ -821,10 +822,14 @@ public:
 
         bool ok = false;
         if (player->GetQuestStatus(QUEST_THE_BATTLE_FOR_GILNEAS_CITY) == QUEST_STATUS_INCOMPLETE)
-            if (!creature->AI()->GetData(DATA_IS_BATTLE_STARTED))
-                if (creature->FindNearestCreature(NPC_PRINCE_LIAM_GREYMANE_BATTLE, 50.0f))
-                    if (creature->FindNearestCreature(NPC_SISTER_ALMYRA, 50.0f))
-                        ok = true;
+        {
+            bool const started = creature->AI()->GetData(DATA_IS_BATTLE_STARTED) != 0;
+            bool const liam = creature->FindNearestCreature(NPC_PRINCE_LIAM_GREYMANE_BATTLE, 100.0f) != nullptr;
+            bool const almyra = creature->FindNearestCreature(NPC_SISTER_ALMYRA, 100.0f) != nullptr;
+            ok = !started && liam && almyra;
+            TC_LOG_ERROR("scripts", "GilneasBattle: gossip of Krennan %s: started=%d, Prince Liam found=%d, Sister Almyra found=%d",
+                creature->GetGUID().ToString().c_str(), int(started), int(liam), int(almyra));
+        }
         if (ok)
             AddGossipItemFor(player, 11061, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
         else
@@ -948,12 +953,23 @@ public:
                 DoMeleeAttackIfReady();
         }
 
-        void StartBattle()
+        bool StartBattle()
         {
-            if (Creature* almyra = ObjectAccessor::GetCreature(*me, m_almyraGUID))
-                if (almyra->IsAlive())
-                    if (me->GetDistance2d(almyra) < 50.0f)
-                        almyra->AI()->DoAction(ACTION_START_EVENT);
+            if (!m_almyraGUID)
+                if (Creature* found = me->FindNearestCreature(NPC_SISTER_ALMYRA, 100.0f))
+                    m_almyraGUID = found->GetGUID();
+
+            Creature* almyra = ObjectAccessor::GetCreature(*me, m_almyraGUID);
+            if (!almyra || !almyra->IsAlive() || me->GetDistance2d(almyra) >= 100.0f)
+            {
+                TC_LOG_ERROR("scripts", "GilneasBattle: Krennan %s can not start the battle: Sister Almyra is not found", me->GetGUID().ToString().c_str());
+                return false;
+            }
+
+            TC_LOG_ERROR("scripts", "GilneasBattle: Krennan %s starts the battle (Sister Almyra %s)", me->GetGUID().ToString().c_str(), almyra->GetGUID().ToString().c_str());
+            DoAction(ACTION_START_EVENT);                   // the battle must not be offered a second time even if Almyra does not know Krennan
+            almyra->AI()->DoAction(ACTION_START_EVENT);
+            return true;
         }
     };
 
@@ -1063,6 +1079,13 @@ public:
             m_isInitialised = false;
             m_shootCoolDown = 4000;
             m_wave = 0;
+            m_waveSize = 0;
+            m_point = 0;
+            m_nearestTarget = nullptr;
+            m_nearestDistance = 0.0f;
+            m_checkDistance = 15.0f;
+            m_doneA = false;
+            m_doneB = false;
             m_arrivedMask = 0;
             m_ai_counter = 0;
         }
@@ -1116,12 +1139,14 @@ public:
             {
                 case ACTION_START_EVENT:
                 {
+                    TC_LOG_ERROR("scripts", "GilneasBattle: Sister Almyra %s gets the start", me->GetGUID().ToString().c_str());
                     m_events.ScheduleEvent(EVENT_START_LIAMS_FIRST_ANIM, 15000);
                     SendActionValueToAllLeader(ACTION_START_EVENT);
                     break;
                 }
                 case ACTION_MOTIVATION_DONE:
                 {
+                    TC_LOG_ERROR("scripts", "GilneasBattle: the speech of Prince Liam is over, the first wave starts");
                     SendActionValueToAllLeader(ACTION_MOVE_TO_WAVE_POSION_1);
                     m_events.RescheduleEvent(EVENT_MOVE_WAVE, 250);
                     break;
@@ -1271,13 +1296,14 @@ public:
                     if (!m_isInitialised)
                     {
                         if (!m_krennanGUID)
-                            if (Creature* krennan = me->FindNearestCreature(NPC_KRENNAN_ARANAS, 25.0f))
+                            if (Creature* krennan = me->FindNearestCreature(NPC_KRENNAN_ARANAS, 50.0f))
                                 m_krennanGUID = krennan->GetGUID();
 
                         if (Creature* krennan = ObjectAccessor::GetCreature(*me, m_krennanGUID))
                         {
                             krennan->AI()->SetGUID(me->GetGUID(), me->GetEntry());
                             m_isInitialised = true;
+                            TC_LOG_ERROR("scripts", "GilneasBattle: Sister Almyra %s knows Krennan %s", me->GetGUID().ToString().c_str(), krennan->GetGUID().ToString().c_str());
                             break;
                         }
 
@@ -1293,7 +1319,13 @@ public:
                 }
                 case EVENT_START_LIAMS_FIRST_ANIM:
                 {
-                    if (Creature* liam = ObjectAccessor::GetCreature(*me, m_prince1GUID))
+                    if (!m_prince1GUID)
+                        if (Creature* found = me->FindNearestCreature(NPC_PRINCE_LIAM_GREYMANE_BATTLE, 100.0f))
+                            m_prince1GUID = found->GetGUID();
+
+                    Creature* liam = ObjectAccessor::GetCreature(*me, m_prince1GUID);
+                    TC_LOG_ERROR("scripts", "GilneasBattle: the first scene of Prince Liam: Liam found=%d", int(liam != nullptr));
+                    if (liam)
                         liam->AI()->DoAction(ACTION_START_MOTIVATION);
                     break;
                 }
@@ -1751,6 +1783,14 @@ public:
             m_isInitialised = false;
             m_shootCoolDown = 4000;
             m_ai_counter = 0;
+            m_wave = 0;
+            m_waveSize = 0;
+            m_point = 0;
+            m_nearestTarget = nullptr;
+            m_nearestDistance = 0.0f;
+            m_checkDistance = 15.0f;
+            m_doneA = false;
+            m_doneB = false;
         }
 
         void Reset() override
@@ -1940,43 +1980,43 @@ public:
                 }
                 case EVENT_MOTIVATION_0:
                 {
-                    Talk(0);
+                    Talk(20);
                     m_events.ScheduleEvent(EVENT_MOTIVATION_1, 10000);
                     break;
                 }
                 case EVENT_MOTIVATION_1:
                 {
-                    Talk(1);
+                    Talk(21);
                     m_events.ScheduleEvent(EVENT_MOTIVATION_2, 10000);
                     break;
                 }
                 case EVENT_MOTIVATION_2:
                 {
-                    Talk(2);
+                    Talk(22);
                     m_events.ScheduleEvent(EVENT_MOTIVATION_3, 11000);
                     break;
                 }
                 case EVENT_MOTIVATION_3:
                 {
-                    Talk(3);
+                    Talk(23);
                     m_events.ScheduleEvent(EVENT_MOTIVATION_4, 9000);
                     break;
                 }
                 case EVENT_MOTIVATION_4:
                 {
-                    Talk(4);
+                    Talk(24);
                     m_events.ScheduleEvent(EVENT_MOTIVATION_5, 11000);
                     break;
                 }
                 case EVENT_MOTIVATION_5:
                 {
-                    Talk(5);
+                    Talk(25);
                     m_events.ScheduleEvent(EVENT_MOTIVATION_6, 5000);
                     break;
                 }
                 case EVENT_MOTIVATION_6:
                 {
-                    Talk(6);
+                    Talk(26);
                     m_events.ScheduleEvent(EVENT_MOTIVATION_DONE, 500);
                     break;
                 }
@@ -2252,6 +2292,14 @@ public:
             m_isInitialised = false;
             m_shootCoolDown = 4000;
             m_ai_counter = 0;
+            m_wave = 0;
+            m_waveSize = 0;
+            m_point = 0;
+            m_nearestTarget = nullptr;
+            m_nearestDistance = 0.0f;
+            m_checkDistance = 15.0f;
+            m_doneA = false;
+            m_doneB = false;
         }
 
         void Reset() override
@@ -2651,6 +2699,14 @@ public:
             m_isInitialised = false;
             m_shootCoolDown = 4000;
             m_ai_counter = 0;
+            m_wave = 0;
+            m_waveSize = 0;
+            m_point = 0;
+            m_nearestTarget = nullptr;
+            m_nearestDistance = 0.0f;
+            m_checkDistance = 15.0f;
+            m_doneA = false;
+            m_doneB = false;
         }
 
         void Reset() override
@@ -3135,6 +3191,14 @@ public:
             m_ridingWorgen = 0;
             m_shootCoolDown = 4000;
             m_ai_counter = 0;
+            m_wave = 0;
+            m_waveSize = 0;
+            m_point = 0;
+            m_nearestTarget = nullptr;
+            m_nearestDistance = 0.0f;
+            m_checkDistance = 15.0f;
+            m_doneA = false;
+            m_doneB = false;
         }
 
         void Reset() override
@@ -3501,6 +3565,14 @@ public:
             m_isInitialised = false;
             m_shootCoolDown = 4000;
             m_ai_counter = 0;
+            m_wave = 0;
+            m_waveSize = 0;
+            m_point = 0;
+            m_nearestTarget = nullptr;
+            m_nearestDistance = 0.0f;
+            m_checkDistance = 15.0f;
+            m_doneA = false;
+            m_doneB = false;
         }
 
         void Reset() override
