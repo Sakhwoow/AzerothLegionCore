@@ -1540,6 +1540,7 @@ public:
 
         void FindTargets()
         {
+            m_targetList.clear();
             me->GetAttackableUnitListInRange(m_targetList, 21.0f);
             if (m_targetList.empty())
             {
@@ -2152,6 +2153,7 @@ public:
 
         void FindTargets()
         {
+            m_targetList.clear();
             me->GetAttackableUnitListInRange(m_targetList, 25.0f);
             if (m_targetList.empty())
             {
@@ -2582,6 +2584,7 @@ public:
 
         void FindTargets()
         {
+            m_targetList.clear();
             me->GetAttackableUnitListInRange(m_targetList, 25.0f);
             if (m_targetList.empty())
             {
@@ -3058,6 +3061,7 @@ public:
 
         void FindTargets()
         {
+            m_targetList.clear();
             me->GetAttackableUnitListInRange(m_targetList, 25.0f);
             if (m_targetList.empty())
             {
@@ -3451,6 +3455,7 @@ public:
 
         void FindTargets()
         {
+            m_targetList.clear();
             me->GetAttackableUnitListInRange(m_targetList, 25.0f);
             if (m_targetList.empty())
             {
@@ -3811,6 +3816,7 @@ public:
 
         void FindTargets()
         {
+            m_targetList.clear();
             me->GetAttackableUnitListInRange(m_targetList, 25.0f);
             if (m_targetList.empty())
             {
