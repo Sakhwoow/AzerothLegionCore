@@ -26876,30 +26876,9 @@ void Player::UpdateAreaDependentAuras()
     {
         SpellAreaForAreaMapBounds saBounds = sSpellMgr->GetSpellAreaForAreaMapBounds(area->GetId());
         for (SpellAreaForAreaMap::const_iterator itr = saBounds.first; itr != saBounds.second; ++itr)
-        {
-            // TEMP DIAGNOSTICS (remove after the investigation): some phase spells are never auto-cast
-            bool const diag = itr->second->spellId == 68481 || itr->second->spellId == 67789 || itr->second->spellId == 70696 || itr->second->spellId == 74094;
-            bool const fits = itr->second->IsFitToRequirements(this, GetZoneId(), GetAreaId());
-            if (diag)
-                TC_LOG_ERROR("misc", "DIAG AreaAuras %s: treeArea=%u zone=%u area=%u spell=%u flags=%u fits=%d hasAura=%d",
-                    GetName().c_str(), area->GetId(), GetZoneId(), GetAreaId(), itr->second->spellId, uint32(itr->second->flags), int(fits), int(HasAura(itr->second->spellId)));
-
-            if (itr->second->flags & SPELL_AREA_FLAG_AUTOCAST && fits)
+            if (itr->second->flags & SPELL_AREA_FLAG_AUTOCAST && itr->second->IsFitToRequirements(this, GetZoneId(), GetAreaId()))
                 if (!HasAura(itr->second->spellId))
-                {
-                    if (diag)
-                    {
-                        SpellCastTargets diagTargets;
-                        diagTargets.SetUnitTarget(this);
-                        Spell* diagSpell = new Spell(this, sSpellMgr->GetSpellInfo(itr->second->spellId), TRIGGERED_FULL_MASK);
-                        SpellCastResult diagResult = diagSpell->prepare(&diagTargets);
-                        TC_LOG_ERROR("misc", "DIAG AreaAuras %s: prepare(%u) result=%u hasAuraAfter=%d",
-                            GetName().c_str(), itr->second->spellId, uint32(diagResult), int(HasAura(itr->second->spellId)));
-                    }
-                    else
-                        CastSpell(this, itr->second->spellId, true);
-                }
-        }
+                    CastSpell(this, itr->second->spellId, true);
 
         // remove auras from spells with area limitations
         for (AuraMap::iterator iter = m_ownedAuras.begin(); iter != m_ownedAuras.end();)
@@ -26907,11 +26886,7 @@ void Player::UpdateAreaDependentAuras()
             // use m_zoneUpdateId for speed: UpdateArea called from UpdateZone or instead UpdateZone in both cases m_zoneUpdateId up-to-date
             SpellCastResult scr = iter->second->GetSpellInfo()->CheckLocation(GetMapId(), GetZoneId(), GetAreaId(), this);
             if (scr != SPELL_CAST_OK && !PlayerBotSetting::IsBotFlyMountAura(iter->first))
-            {
-                if (iter->first == 68481 || iter->first == 67789 || iter->first == 70696 || iter->first == 74094)
-                    TC_LOG_ERROR("misc", "DIAG AreaAuras %s: removing aura %u (CheckLocation result=%u)", GetName().c_str(), iter->first, uint32(scr));
                 RemoveOwnedAura(iter);
-            }
             else
                 ++iter;
         }
