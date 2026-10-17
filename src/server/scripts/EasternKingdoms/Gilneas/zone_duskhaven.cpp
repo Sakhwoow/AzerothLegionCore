@@ -1541,8 +1541,8 @@ static constexpr float MANOR_ROAD_DIR_Y             = 0.5788f;
 static constexpr float MANOR_ROAD_END_X             = -1668.0f;
 static constexpr float MANOR_ROAD_END_Y             = 2517.4f;
 
-// 14465 has no objectives: on a database without the "event" special flag it is complete the moment it is accepted, and the
-// ride has to work for the players who already hold it in that state too
+// 14465 is a "speak to Queen Mia" quest without objectives and without the "event" special flag: it is complete the moment it
+// is accepted (Player::AddQuestAndCheckCompletion), so the ride has to work in both states
 static bool IsOnRideToGreymaneManor(Player* player)
 {
     QuestStatus status = player->GetQuestStatus(QUEST_TO_GREYMANE_MANOR);
@@ -1869,13 +1869,23 @@ public:
             }
             case QUEST_ALAS_GILNEAS:
             {
-                player->RemoveAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_08);
+                // Phase 183 stays: King Genn (the giver of the next quest, Exodus) exists only in that phase, and the window of the
+                // phase (spell_area 68483) lasts until Exodus is rewarded. The phase after the cataclysm (186) is added next to it.
                 player->AddAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_11, player);
                 creature->AI()->SetGUID(player->GetGUID(), PLAYER_GUID);
                 creature->AI()->DoAction(EVENT_START_VIDEO);
                 break;
             }
         }
+
+        return false;
+    }
+
+    bool OnQuestAccept(Player* player, Creature* /*creature*/, Quest const* quest) override
+    {
+        // The stagecoach of Exodus stands in phase 184 (window: spell_area 69077, which is applied only on the next area update).
+        if (quest->GetQuestId() == QUEST_EXODUS)
+            player->AddAura(SPELL_PHASE_QUEST_ZONE_SPECIFIC_09, player);
 
         return false;
     }
@@ -1966,22 +1976,38 @@ public:
 // after cataclysm earthquake : phase 186 (131072), WorldMap 679 and TerrainSwap 656
 // the ride has additional phase 194
 
-// 44928
+// 44928 (the stagecoach below Greymane Manor, quest 24438 "Exodus")
+// In the database the ride is a SmartAI script: the click summons a harness that runs the waypoints 44928 and puts the player down
+// next to Prince Liam at the end. The SmartAI of these creatures is switched off (empty AIName), the C++ ride of the harness
+// (npc_harness_43336, waypoints 4492801 do not exist) was never started: the carriage has no gossip flag, it is clicked as a
+// vehicle, so the old OnGossipHello here was never called. Until the ride is rebuilt, the click takes the player straight to the
+// place where the ride ends. A phase 194 (the ambush on the way) is not needed there.
 class npc_stagecoach_carriage_44928 : public CreatureScript
 {
 public:
     npc_stagecoach_carriage_44928() : CreatureScript("npc_stagecoach_carriage_44928") { }
 
-    /* the spell SPELL_SUMMON_CARRIAGE has failure. player mount not as passenger on carriage, but as horse in harness */
-    bool OnGossipHello(Player* player, Creature* creature) override
+    struct npc_stagecoach_carriage_44928AI : public ScriptedAI
     {
-        if (player->GetQuestStatus(QUEST_EXODUS) == QUEST_STATUS_COMPLETE)
-        {
-            player->CastSpell(player, SPELL_PHASE_QUEST_ZONE_SPECIFIC_19, true);
-            player->SummonCreature(NPC_HARNESS_43336, creature->GetPosition(), TEMPSUMMON_MANUAL_DESPAWN);
-        }
+        npc_stagecoach_carriage_44928AI(Creature* creature) : ScriptedAI(creature) { }
 
-        return true;
+        // called after the spells of npc_spellclick_spells (84034, the phase update) have been cast on the click
+        void OnSpellClick(Unit* clicker, bool& result) override
+        {
+            Player* player = clicker->ToPlayer();
+            if (!player || player->GetQuestStatus(QUEST_EXODUS) != QUEST_STATUS_COMPLETE)
+                return;
+
+            result = true;
+
+            // the SmartAI of the harness (waypoint 29 of the path 44928) teleports the player here as well
+            player->TeleportTo(654, -2221.0f, 1800.0f, 12.0f, 1.6f);
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_stagecoach_carriage_44928AI(creature);
     }
 };
 
