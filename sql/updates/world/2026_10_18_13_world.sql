@@ -38,3 +38,7 @@ UPDATE `creature_template` SET `ScriptName` = '', `AIName` = 'SmartAI' WHERE `en
 -- Газобот: после поездки по пути кредит не засчитывался: цель "владелец или призвавший" (23) пуста, потому что газобота призывает спелл кровати, а не игрок. Кредит ближайшему игроку в 200 ярдах (цель 21).
 -- Откат: UPDATE smart_scripts SET target_type = 23, target_param1 = 0 WHERE entryorguid = 3759800 AND source_type = 9 AND id = 0;
 UPDATE `smart_scripts` SET `target_type` = 21, `target_param1` = 200 WHERE `entryorguid` = 3759800 AND `source_type` = 9 AND `id` = 0;
+
+-- Кезан 14125: кровать 201734 засчитывает четвёртую цель сама (скрипт gob_kezan_flammable_bed в zone_maelstrom_kezan.cpp), газобот остаётся показом.
+-- Откат: UPDATE gameobject_template SET ScriptName = '' WHERE entry = 201734;
+UPDATE `gameobject_template` SET `ScriptName` = 'gob_kezan_flammable_bed' WHERE `entry` = 201734 AND `ScriptName` = '';

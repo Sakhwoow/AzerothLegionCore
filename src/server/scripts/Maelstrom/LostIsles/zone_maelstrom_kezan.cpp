@@ -810,6 +810,9 @@ public:
 
 enum
 {
+    QUEST_INSURANCE_PLAN        = 14125,
+    NPC_GASBOT                  = 37598,
+
     SPELL_GASBOT_SUMMON         = 70252,
     SPELL_GASBOT_SUMMON_VISUAL  = 70254,
     SPELL_GASBOT_GAS_STREAM     = 70256,
@@ -831,6 +834,23 @@ class spell_summon_gasbot : public SpellScript
     void Register() override
     {
         OnEffectHitTarget += SpellEffectFn(spell_summon_gasbot::HandleHit, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
+    }
+};
+
+// 201734 "Flammable Bed" of "Insurance Plan" (14125). The Gasbot of the retail scene (summoned by a chain of invisible SmartAI triggers that this
+// database does not have) is not reliable here: the quest credit of the fourth objective "KTC Headquarters Set Ablaze with Gasbot!" (37598) is
+// given when the bed is used, the Gasbot itself is only the show (spell link 70245 -> 70253).
+class gob_kezan_flammable_bed : public GameObjectScript
+{
+public:
+    gob_kezan_flammable_bed() : GameObjectScript("gob_kezan_flammable_bed") { }
+
+    bool OnGossipHello(Player* player, GameObject* /*go*/) override
+    {
+        if (player->GetQuestStatus(QUEST_INSURANCE_PLAN) == QUEST_STATUS_INCOMPLETE)
+            player->KilledMonsterCredit(NPC_GASBOT);
+
+        return false;                                       // the normal use of the object goes on (credit of the bed, spell 70245)
     }
 };
 
@@ -1214,6 +1234,7 @@ void AddSC_kezan()
     RegisterAuraScript(aura_hobart_ingenious_cap_of_mook_foolery);
     RegisterSpellScript(spell_summon_gasbot);
     RegisterCreatureAI(npc_kezan_gasbot);
+    new gob_kezan_flammable_bed();
     RegisterCreatureAI(npc_end_hot_rod);
     new gob_canon_gobelin();
     RegisterSpellScript(spell_life_saving_complete);
