@@ -19,6 +19,7 @@
  */
 
 #include "Chat.h"
+#include "Log.h"
 #include "Creature.h"
 #include "Map.h"
 #include "Unit.h"
@@ -966,7 +967,7 @@ private:
 class HippogryphRideEvent : public BasicEvent
 {
 public:
-    HippogryphRideEvent(Creature* hippogryph, ObjectGuid playerGuid) : _hippogryph(hippogryph), _playerGuid(playerGuid), _started(false), _elapsed(0), _sinceHint(ENDGAME_RIDE_HINT_MS) { }
+    HippogryphRideEvent(Creature* hippogryph, ObjectGuid playerGuid) : _hippogryph(hippogryph), _playerGuid(playerGuid), _started(false), _waited(0), _elapsed(0), _sinceHint(ENDGAME_RIDE_HINT_MS) { }
 
     bool Execute(uint64 time, uint32 /*diff*/) override
     {
@@ -981,6 +982,19 @@ public:
             return true;
         }
 
+        if (!_started && !_hippogryph->GetPlayerBeingMoved())
+        {
+            // the rider does not steer the hippogryph yet (the charm is set up after the hook of the seat): the flight packets would not reach his client
+            if (++_waited > 20)
+            {
+                TC_LOG_ERROR("scripts", "Endgame: the hippogryph %s is not steered by the rider %s, the flight can not be switched on", _hippogryph->GetGUID().ToString().c_str(), player->GetGUID().ToString().c_str());
+                Finish(player, vehicle, false, false);
+                return true;
+            }
+            _hippogryph->m_Events.AddEvent(this, time + ENDGAME_RIDE_TICK_MS, false);
+            return false;
+        }
+
         if (!_started)
         {
             // a player-controlled creature gets no movement flags from Creature::UpdateMovementFlags: the flight has to be switched on here
@@ -993,6 +1007,7 @@ public:
             _hippogryph->SetDisableGravity(true);
             _hippogryph->SetSpeed(MOVE_FLIGHT, ENDGAME_FLIGHT_SPEED);
             _hippogryph->SetSpeed(MOVE_RUN, ENDGAME_FLIGHT_SPEED);
+            TC_LOG_ERROR("scripts", "Endgame: the hippogryph %s flies: canfly=%d levitating=%d flying=%d", _hippogryph->GetGUID().ToString().c_str(), int(_hippogryph->HasUnitMovementFlag(MOVEMENTFLAG_CAN_FLY)), int(_hippogryph->IsLevitating()), int(_hippogryph->IsFlying()));
             _hippogryph->AI()->Talk(HIPPOGRYPH_TEXT_START, player);
         }
 
@@ -1065,6 +1080,7 @@ private:
     ObjectGuid _playerGuid;
     ObjectGuid _shipGuid;
     bool _started;
+    uint32 _waited;
     uint32 _elapsed;
     uint32 _sinceHint;
 };
