@@ -463,7 +463,9 @@ enum LostIslesWeed
 {
     QUEST_WEED_WHAKER       = 14236,
     SPELL_WEED_WHACKER_AURA = 68212,
-    SPELL_WEED_WHACKER_CUT  = 68213
+    SPELL_WEED_WHACKER_CUT  = 68213,
+
+    NPC_WEED_WHACKER_CREDIT = 35897                         // the objective of 14236 (Poison Spitter and Strangle Vine have it as KillCredit1)
 };
 
 struct npc_lost_isles_weed : public ScriptedAI
@@ -475,11 +477,17 @@ struct npc_lost_isles_weed : public ScriptedAI
 
     // "Spell Hit Weedwhacker - Die" of the SmartAI of these plants (35896, 35897, 35995) never runs: a ScriptName replaces the SmartAI of the creature,
     // so the plants were only hurt by the 200 damage of the Weed Whacker and knocked back alive. The plant dies at the hit of the Weed Whacker and the
-    // player who cast it gets the kill (credit of "Weed Whacker" 14236).
+    // player who cast it gets the credit of "Weed Whacker" 14236 (Unit::Kill gives no credit here: the plant took less than half of its health from players).
     void SpellHit(Unit* caster, SpellInfo const* spell) override
     {
-        if (spell->Id == SPELL_WEED_WHACKER_CUT && caster && caster->GetTypeId() == TYPEID_PLAYER && me->IsAlive())
-            caster->Kill(me);
+        if (spell->Id != SPELL_WEED_WHACKER_CUT || !me->IsAlive())
+            return;
+
+        if (Player* player = caster ? caster->ToPlayer() : nullptr)
+        {
+            player->KilledMonsterCredit(NPC_WEED_WHACKER_CREDIT);
+            me->KillSelf();
+        }
     }
 };
 
