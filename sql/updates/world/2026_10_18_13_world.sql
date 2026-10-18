@@ -1,8 +1,10 @@
--- Кезан, квест 14122 "Ограбление банка" (The Great Bank Heist): выполнен, а сдать некому: сдаётся Сассе Гаечный Ключ 34668, у которой три спавна в фазах 169, 380 и 382.
--- Игрок на этом этапе видит мир в фазе 172 (аура 59087 с квеста 14116) и 383 (phase_area), а 380 и 382 нигде не выдаются (в phase_area их нет, спелла нет), поэтому
--- Сассу в фазе 169 (штаб ТКК, -8424, 1366) он не видит. Как в Гилнеасе (зона 4714): к фазе 172 добавляем нормальную фазу 169 спеллом 172329 "Set Self to Normal Phase",
--- с тем же окном, что у 59087 в зоне 4737 (квест 14116 в статусах 74, конец 11).
--- Откат: DELETE FROM spell_area WHERE spell = 172329 AND area = 4737 AND quest_start = 14116;
-DELETE FROM `spell_area` WHERE `spell` = 172329 AND `area` = 4737 AND `quest_start` = 14116;
-INSERT INTO `spell_area` (`spell`, `area`, `quest_start`, `quest_end`, `aura_spell`, `teamId`, `racemask`, `gender`, `flags`, `quest_start_status`, `quest_end_status`)
-SELECT 172329, `area`, `quest_start`, `quest_end`, `aura_spell`, `teamId`, `racemask`, `gender`, `flags`, `quest_start_status`, `quest_end_status` FROM `spell_area` WHERE `spell` = 59087 AND `area` = 4737 AND `quest_start` = 14116;
+-- Кезан, квест 14122 "Ограбление банка" (The Great Bank Heist): выполнен, а сдать некому. Сдаётся Сассе Гаечный Ключ 34668 (точка сдачи на карте квеста: -8417, 1325, это спавн Сассы в фазе 382,
+-- -8425, 1322, 103; Сасса в фазе 380 и 169 стоит в штабе в -8424, 1366). Фаз 380-382 в phase_area не было вообще (там вечеринка у штаба ТКК), поэтому игрок видел мир в 169/172/383 без Сассы.
+-- Добавляем фазу 382 в зону 4737 с условием "квест 14122 принят, выполнен или сдан" (статусы 2+8+64 = 74), как у соседних фаз 169/383/384 (условия SourceType 26).
+-- Откат: DELETE FROM phase_area WHERE AreaId = 4737 AND PhaseId = 382; DELETE FROM conditions WHERE SourceTypeOrReferenceId = 26 AND SourceGroup = 382 AND SourceEntry = 4737;
+DELETE FROM `phase_area` WHERE `AreaId` = 4737 AND `PhaseId` = 382;
+INSERT INTO `phase_area` (`AreaId`, `PhaseId`, `Comment`) VALUES (4737, 382, 'Кезан: Сасса и вечеринка у штаба, видна при квесте 14122 (Ограбление банка)');
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 26 AND `SourceGroup` = 382 AND `SourceEntry` = 4737;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`)
+SELECT `SourceTypeOrReferenceId`, 382, `SourceEntry`, `SourceId`, 0, `ConditionTypeOrReference`, `ConditionTarget`, 14122, 74, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, 'Кезан фаза 382: квест 14122 принят, выполнен или сдан'
+FROM `conditions` WHERE `SourceTypeOrReferenceId` = 26 AND `SourceGroup` = 169 AND `SourceEntry` = 4737 AND `ConditionTypeOrReference` = 47 LIMIT 1;
