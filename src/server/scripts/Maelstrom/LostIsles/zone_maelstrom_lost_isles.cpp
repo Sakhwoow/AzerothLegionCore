@@ -462,7 +462,8 @@ class spell_ctu_bind_sight : public SpellScript
 enum LostIslesWeed
 {
     QUEST_WEED_WHAKER       = 14236,
-    SPELL_WEED_WHACKER_AURA = 68212
+    SPELL_WEED_WHACKER_AURA = 68212,
+    SPELL_WEED_WHACKER_CUT  = 68213
 };
 
 struct npc_lost_isles_weed : public ScriptedAI
@@ -471,6 +472,15 @@ struct npc_lost_isles_weed : public ScriptedAI
 
     void AttackStart(Unit* /*who*/) override {}
     void EnterCombat(Unit* /*who*/) override {}
+
+    // "Spell Hit Weedwhacker - Die" of the SmartAI of these plants (35896, 35897, 35995) never runs: a ScriptName replaces the SmartAI of the creature,
+    // so the plants were only hurt by the 200 damage of the Weed Whacker and knocked back alive. The plant dies at the hit of the Weed Whacker and the
+    // player who cast it gets the kill (credit of "Weed Whacker" 14236).
+    void SpellHit(Unit* caster, SpellInfo const* spell) override
+    {
+        if (spell->Id == SPELL_WEED_WHACKER_CUT && caster && caster->GetTypeId() == TYPEID_PLAYER && me->IsAlive())
+            caster->Kill(me);
+    }
 };
 
 class spell_weed_whacker : public SpellScript
