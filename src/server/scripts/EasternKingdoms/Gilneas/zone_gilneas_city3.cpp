@@ -982,7 +982,7 @@ public:
             return true;
         }
 
-        if (!_started && !_hippogryph->GetPlayerBeingMoved())
+        if (!_started && !_hippogryph->GetPlayerMovingMe())
         {
             // the rider does not steer the hippogryph yet (the charm is set up after the hook of the seat): the flight packets would not reach his client
             if (++_waited > 20)
