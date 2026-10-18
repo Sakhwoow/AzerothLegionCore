@@ -22,3 +22,10 @@ DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 26 AND `SourceGroup` 
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`)
 SELECT `SourceTypeOrReferenceId`, 169, `SourceEntry`, `SourceId`, 1, `ConditionTypeOrReference`, `ConditionTarget`, 14125, 8, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, 'Кезан фаза 169: квест 14125 принят и не выполнен'
 FROM `conditions` WHERE `SourceTypeOrReferenceId` = 26 AND `SourceGroup` = 169 AND `SourceEntry` = 4737 AND `ConditionTypeOrReference` = 47 AND `ElseGroup` = 0 LIMIT 1;
+
+-- Квест 14125, четвёртая цель "Штаб-квартира ТКК подожжена с помощью газобота": газобот (37598, скрипт npc_kezan_gasbot) призывается спеллом 70253 (скрипт spell_summon_gasbot), но никто его не кастует:
+-- в ретейле это делала цепочка SmartAI ("Master"-ауры 70223, 70239, 70247 на игроке и невидимые триггеры), в базе её нет (AIName пустой), поэтому после трёх объектов ничего не происходило.
+-- Упрощение: когда игрок получает ауру последнего объекта (кровать, 70247, "Smoldering Bed"), на него кастуется 70253, газобот призывается игроком, едет в штаб, поджигает его и засчитывает кредит.
+-- Откат: DELETE FROM spell_linked_spell WHERE spell_trigger = 70247 AND spell_effect = 70253;
+DELETE FROM `spell_linked_spell` WHERE `spell_trigger` = 70247 AND `spell_effect` = 70253;
+INSERT INTO `spell_linked_spell` (`spell_trigger`, `spell_effect`, `type`, `comment`) VALUES (70247, 70253, 2, 'Кезан 14125: аура кровати вызывает газобота');
