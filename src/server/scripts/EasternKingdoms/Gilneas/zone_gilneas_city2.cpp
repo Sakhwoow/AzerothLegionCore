@@ -4155,12 +4155,13 @@ public:
                 case EVENT_LIAM_IS_DEATH:
                 {
                     Talk(2);                                        // Such a waste. That arrow's poison was not meant to be wasted on your whelp
-                    std::list<Player*> playerList = me->SelectNearestPlayers(50.0f);
+                    std::list<Player*> playerList = me->SelectNearestPlayers(100.0f);
+                    TC_LOG_ERROR("scripts", "GilneasBattle: the last scene is over, %u players near Sylvanas", uint32(playerList.size()));
                     for (std::list<Player*>::const_iterator itr = playerList.begin(); itr != playerList.end(); ++itr)
                         if ((*itr)->GetQuestStatus(QUEST_THE_BATTLE_FOR_GILNEAS_CITY) == QUEST_STATUS_INCOMPLETE)
                         {
                             me->CastSpell((*itr), SPELL_BFGC_COMPLETE);
-                            (*itr)->KilledMonsterCredit(38854);
+                            (*itr)->KilledMonsterCredit(NPC_BATTLE_FOR_GILNEAS_CITY_CREDIT);
                         }
 
                     BuildFollowerGroup();
