@@ -30,3 +30,9 @@ FROM `conditions` WHERE `SourceTypeOrReferenceId` = 26 AND `SourceGroup` = 169 A
 -- Откат: DELETE FROM spell_linked_spell WHERE spell_trigger = 70245 AND spell_effect = 70253;
 DELETE FROM `spell_linked_spell` WHERE `spell_effect` = 70253;
 INSERT INTO `spell_linked_spell` (`spell_trigger`, `spell_effect`, `type`, `comment`) VALUES (70245, 70253, 0, 'Кезан 14125: использование кровати вызывает газобота');
+
+-- Газобот 37598 призывался, но стоял на месте: его C++ скрипт (npc_kezan_gasbot) гонит его к точке штаба напрямую через MovePoint и в здании (нет навигационной сетки) не двигается,
+-- а клик по нему невозможен (нет флага спеллклика, и в ретейле он едет сам). В базе есть готовый ретейл-сценарий: SmartAI, путь 37598 в таблице waypoints из трёх точек в штабе,
+-- по приходу список 3759800 (кредит владельцу, реплика Оценщика, исчезновение). Включаем его: ScriptName пустой (скрипт имеет приоритет над SmartAI), AIName SmartAI.
+-- Откат: UPDATE creature_template SET ScriptName = 'npc_kezan_gasbot', AIName = '' WHERE entry = 37598;
+UPDATE `creature_template` SET `ScriptName` = '', `AIName` = 'SmartAI' WHERE `entry` = 37598 AND `ScriptName` = 'npc_kezan_gasbot';
