@@ -794,22 +794,15 @@ public:
                 case EVENT_TALK_PART_03:
                 case EVENT_TALK_PART_04:
                 {
-                    Talk(1);
-                    SetHippoSpellClick(false);
+                    Talk(1);                                // the hippogryphs stay clickable for the player with the quest (the ship events do not turn them off)
                     break;
                 }
                 case EVENT_TALK_PART_00:
                 {
-                    if (CheckPlayerForQuest() && CheckIsGunshipReady())
-                    {
+                    // the readiness of the ship is not checked: in this database the ship is never ready when the player asks and the hippogryphs stayed unclickable
+                    if (CheckPlayerForQuest())
                         SetHippoSpellClick(true);
-                        Talk(0);
-                    }
-                    else
-                    {
-                        SetHippoSpellClick(false);
-                        Talk(1);
-                    }
+                    Talk(1);                                // "Hop on a hippogryph" (the lines 0 and 1 of this database are swapped against the script)
                     break;
                 }
                 }
