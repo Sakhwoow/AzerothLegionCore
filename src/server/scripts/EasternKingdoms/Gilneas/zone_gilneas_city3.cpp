@@ -18,6 +18,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "Chat.h"
 #include "Creature.h"
 #include "Map.h"
 #include "Unit.h"
@@ -64,6 +65,9 @@ enum eBattleForGilneas
 
     GO_WORGEN_GUNSHIP                   = 203428,
     GO_ROPE                             = 204428,
+
+    NPC_HIPPOGRYPH_VEHICLE              = 43751,    // the summoned hippogryph of "Endgame" (VehicleId 641, summoned by 81877)
+    NPC_ENDGAME_FINALE_CREDIT           = 43729,    // kill credit of "Endgame"
 
     SPELL_GILNEAS_MILITIA_SHOOT         = 6660,
     SPELL_CLEAVE                        = 15496,
@@ -616,17 +620,28 @@ public:
 // "Slowing the Inevitable" (24920): the player flies the captured bat himself (the seat can be controlled, so the script of the bat is not
 // running while he does), the flight paths 3854001-3854003 are not in the database: the way back is the landing at the place where the bat was taken
 // (the bat 38615 waits there). The landing is made outside of the spell: the exit of the rider interrupts the spells of the bat.
+// the player on the vehicle, whatever seat he sits on
+static Player* GetVehiclePlayerPassenger(Vehicle* vehicle)
+{
+    if (vehicle)
+        for (int8 seat = 0; seat < MAX_VEHICLE_SEATS; ++seat)
+            if (Unit* passenger = vehicle->GetPassenger(seat))
+                if (Player* player = passenger->ToPlayer())
+                    return player;
+
+    return nullptr;
+}
+
+// The same landing is used by the hippogryph of "Endgame" (26706): its "Fly Back" lands at the questgiver of the harbour.
 class BatLandingEvent : public BasicEvent
 {
 public:
-    explicit BatLandingEvent(Creature* bat) : _bat(bat) { }
+    BatLandingEvent(Creature* bat, WorldLocation const& destination) : _bat(bat), _destination(destination) { }
 
     bool Execute(uint64 /*time*/, uint32 /*diff*/) override
     {
-        if (Vehicle* vehicle = _bat->GetVehicleKit())
-            if (Unit* rider = vehicle->GetPassenger(0))
-                if (Player* player = rider->ToPlayer())
-                    player->TeleportTo(654, -1668.2f, 1664.3f, 20.6f, 4.56f);
+        if (Player* player = GetVehiclePlayerPassenger(_bat->GetVehicleKit()))
+            player->TeleportTo(_destination);
 
         _bat->DespawnOrUnsummon(500);
         return true;
@@ -634,6 +649,7 @@ public:
 
 private:
     Creature* _bat;
+    WorldLocation _destination;
 };
 
 // 72849
@@ -650,7 +666,13 @@ public:
         {
             if (Unit* caster = GetCaster())
                 if (Creature* bat = caster->ToCreature())
-                    bat->m_Events.AddEvent(new BatLandingEvent(bat), bat->m_Events.CalculateTime(250));
+                {
+                    // the bat of 24920 lands where it was taken, the hippogryph of 26706 at the questgiver of the harbour
+                    WorldLocation destination = (bat->GetEntry() == NPC_HIPPOGRYPH_VEHICLE)
+                        ? WorldLocation(654, -1317.54f, 2121.90f, 5.6296f, 0.218f)
+                        : WorldLocation(654, -1668.2f, 1664.3f, 20.6f, 4.56f);
+                    bat->m_Events.AddEvent(new BatLandingEvent(bat, destination), bat->m_Events.CalculateTime(250));
+                }
         }
 
         void Register() override
@@ -895,138 +917,176 @@ public:
     }
 };
 
-// 43751
-class npc_hippogryph_43751 : public CreatureScript
+// 43751 (Hippogryph, "Endgame" 26706)
+// The original scene (the flight along the path 4375101, the jump onto the ship, the ropes, the wyvern flight home along 4371301) needs
+// the paths 4375101, 4371301, 4356601-4356607, 4356701 which are not in waypoint_data and not in any sniff. Everything is replaced by a
+// flight the player steers himself, like the bat of "Slowing the Inevitable" (24920): the seat 7546 of the vehicle 641 has
+// VEHICLE_SEAT_FLAG_CAN_CONTROL, so while the player rides, the hippogryph has no CreatureScript AI worth the name (UpdateCharmAI/VehicleAI)
+// and only the VehicleScript hooks are called. The ride is driven from a BasicEvent in the m_Events of the hippogryph.
+// A script name can be used by only ONE script object, so this VehicleScript takes the ScriptName of the creature_template.
+//
+// The ride: the rider flies to the Horde gunship (GO 203428, a transport patrolling along the taxi path 2338) and the quest credit is
+// given when the hippogryph is closer than ENDGAME_SHIP_REACH yards to it ("the ship is hit"), then the rider is taken home. The
+// "Fly Back" button (spell1 = 72849, spell_fly_back_72849) and the time limit end the ride without credit.
+static constexpr uint32 ENDGAME_RIDE_TICK_MS        = 500;
+static constexpr uint32 ENDGAME_RIDE_HINT_MS        = 8000;
+static constexpr uint32 ENDGAME_RIDE_TIME_MS        = 300000;   // the ship always comes round within this time
+static constexpr float  ENDGAME_SHIP_REACH          = 60.0f;    // yards from the middle of the ship
+static constexpr float  ENDGAME_FLIGHT_SPEED        = 28.0f;    // yards per second (Unit::SetSpeed takes yards, not a rate)
+
+enum eHippogryphRide
+{
+    HIPPOGRYPH_TEXT_START       = 0,
+    HIPPOGRYPH_TEXT_TIMEOUT     = 1,
+    HIPPOGRYPH_TEXT_HIT         = 2,
+};
+
+static WorldLocation const ENDGAME_LANDING(654, -1317.54f, 2121.90f, 5.6296f, 0.218f); // in front of Lorna Crowley
+
+// the Horde gunship is a transport: it is not in the grids, so it is looked up in the object store of the map (like Tobias does)
+class EndgameShipSearchWorker
 {
 public:
-    npc_hippogryph_43751() : CreatureScript("npc_hippogryph_43751") { }
+    explicit EndgameShipSearchWorker(ObjectGuid* shipGuid) : _shipGuid(shipGuid) { }
 
-    enum eNpc
+    void Visit(std::unordered_map<ObjectGuid, GameObject*>& gameObjectMap)
     {
-        EVENT_MOVE_LAST_POINT=201,
-        EVENT_EJECT_ALL_PASSENGER,
-        EVENT_JUMP_TO_LORNA,
-    };
+        for (auto const& p : gameObjectMap)
+            if (p.second->IsInWorld() && p.second->GetEntry() == GO_WORGEN_GUNSHIP)
+                *_shipGuid = p.first;
+    }
 
-    struct npc_hippogryph_43751AI : public ScriptedAI
+    template<class T>
+    void Visit(std::unordered_map<ObjectGuid, T*>&) { }
+
+private:
+    ObjectGuid* _shipGuid;
+};
+
+class HippogryphRideEvent : public BasicEvent
+{
+public:
+    HippogryphRideEvent(Creature* hippogryph, ObjectGuid playerGuid) : _hippogryph(hippogryph), _playerGuid(playerGuid), _started(false), _elapsed(0), _sinceHint(ENDGAME_RIDE_HINT_MS) { }
+
+    bool Execute(uint64 time, uint32 /*diff*/) override
     {
-        npc_hippogryph_43751AI(Creature* creature) : ScriptedAI(creature) {}
+        Vehicle* vehicle = _hippogryph->GetVehicleKit();
+        Player* player = GetVehiclePlayerPassenger(vehicle);
+        if (!player || player->GetGUID() != _playerGuid)
+            return true;                                        // the rider has left (Fly Back, logout, ...): OnRemovePassenger did the rest
 
-        EventMap m_events;
-        ObjectGuid m_playerGUID;
-        ObjectGuid m_lornaGUID;
-        float  m_maxSpeed;
-
-        void Reset() override
+        if (player->GetQuestStatus(QUEST_ENDGAME) != QUEST_STATUS_INCOMPLETE)
         {
-            m_events.Reset();
-            m_playerGUID = ObjectGuid::Empty;
-            m_lornaGUID = ObjectGuid::Empty;
-            m_maxSpeed = 4.9f;
-            if (Creature* wy = me->FindNearestCreature(43747, 10.0f))
-                me->SetOrientation(wy->GetOrientation());
+            Finish(player, vehicle, false, false);              // the quest was abandoned or done: nothing to fly for
+            return true;
         }
 
-        void MovementInform(uint32 type, uint32 id) override
+        if (!_started)
         {
-            switch (type)
-            {
-                case WAYPOINT_MOTION_TYPE:
-                {
-                    if (id == 2)
-                        me->SetSpeed(MOVE_RUN, m_maxSpeed);
-                    else if (id == 6)
-                        me->SetSpeed(MOVE_RUN, 2);
-                    else if (id == 7)
-                        m_events.ScheduleEvent(EVENT_MOVE_LAST_POINT, 10);
-                    break;
-                }
-                case POINT_MOTION_TYPE:
-                {
-                    switch (id)
-                    {
-                    case 1002:
-                        m_events.ScheduleEvent(EVENT_JUMP_TO_LORNA, 10);
-                        break;
-                    }
-                }
-            } // end switch
+            // a player-controlled creature gets no movement flags from Creature::UpdateMovementFlags: the flight has to be switched on here
+            _started = true;
+            _hippogryph->SetCanFly(true);
+            _hippogryph->SetDisableGravity(true);
+            _hippogryph->SetSpeed(MOVE_FLIGHT, ENDGAME_FLIGHT_SPEED);
+            _hippogryph->AI()->Talk(HIPPOGRYPH_TEXT_START, player);
         }
 
-        void PassengerBoarded(Unit* who, int8 /*seatId*/, bool apply) override
+        Transport* ship = FindShip();
+        if (ship && _hippogryph->GetExactDist(ship) < ENDGAME_SHIP_REACH)
         {
-            if (apply)
-            {
-                if (Player* player = who->ToPlayer())
-                    if (player->GetQuestStatus(QUEST_ENDGAME) == QUEST_STATUS_INCOMPLETE)
-                    {
-                        m_events.ScheduleEvent(EVENT_MOVEMENT_START, 1000);
-                        m_playerGUID = who->GetGUID();
-                        return;
-                    }
-            }
-
-            me->DespawnOrUnsummon(100);
+            Finish(player, vehicle, true, true);
+            return true;
         }
 
-        void UpdateAI(uint32 diff) override
+        if (_elapsed >= ENDGAME_RIDE_TIME_MS)
         {
-            ScriptedAI::UpdateAI(diff);
-            m_events.Update(diff);
-
-            while (uint32 eventId = m_events.ExecuteEvent())
-            {
-                switch (eventId)
-                {
-                case EVENT_MOVEMENT_START:
-                {
-                    me->SetCanFly(true);
-                    me->SetDisableGravity(true);
-                    me->SetSpeed(MOVE_RUN, 3);
-                    me->GetMotionMaster()->MovePath(4375101, false);
-                    break;
-                }
-                case EVENT_MOVE_LAST_POINT:
-                {
-                    FindLornaGuid();
-                    if (Creature* lorna = ObjectAccessor::GetCreature(*me, m_lornaGUID))
-                    {
-                        Position pos = lorna->GetPosition();
-                        pos.m_positionZ += 15.0f;
-                        me->GetMotionMaster()->MovePoint(1002, pos);
-                    }
-                    break;
-                }
-                case EVENT_JUMP_TO_LORNA:
-                {
-                    if (Player* player = ObjectAccessor::GetPlayer(*me, m_playerGUID))
-                        if (Creature* lorna = ObjectAccessor::GetCreature(*me, m_lornaGUID))
-                        {
-                            lorna->AI()->SetGUID(player->GetGUID(), PLAYER_GUID);
-                            player->ExitVehicle();
-                            lorna->AI()->DoAction(EVENT_TELEPORT_01);
-                        }
-
-                    me->DespawnOrUnsummon(100);
-                    break;
-                }
-                }
-            }
+            Finish(player, vehicle, false, true);
+            return true;
         }
 
-        void FindLornaGuid()
+        _elapsed += ENDGAME_RIDE_TICK_MS;
+        _sinceHint += ENDGAME_RIDE_TICK_MS;
+        if (ship && _sinceHint >= ENDGAME_RIDE_HINT_MS)
         {
-            if (ObjectAccessor::GetCreature(*me, m_lornaGUID))
-                return;
-
-            if (Creature* lorna = me->FindNearestCreature(NPC_LORNA_CRAWLEY_43566, 100.0f))
-                m_lornaGUID = lorna->GetGUID();
+            _sinceHint = 0;
+            SendHint(player, ship);
         }
-    };
 
-    CreatureAI* GetAI(Creature* creature) const override
+        _hippogryph->m_Events.AddEvent(this, time + ENDGAME_RIDE_TICK_MS, false);
+        return false;
+    }
+
+private:
+    Transport* FindShip()
     {
-        return new npc_hippogryph_43751AI(creature);
+        if (Transport* ship = _shipGuid ? _hippogryph->GetMap()->GetTransport(_shipGuid) : nullptr)
+            return ship;
+
+        _shipGuid = ObjectGuid::Empty;
+        EndgameShipSearchWorker worker(&_shipGuid);
+        TypeContainerVisitor<EndgameShipSearchWorker, MapStoredObjectTypesContainer> visitor(worker);
+        visitor.Visit(_hippogryph->GetMap()->GetObjectsStore());
+        return _shipGuid ? _hippogryph->GetMap()->GetTransport(_shipGuid) : nullptr;
+    }
+
+    // there is no marker for the moving ship on the map: tell the player where it is
+    void SendHint(Player* player, Transport* ship)
+    {
+        static char const* const directions[8] = { "на север", "на северо-запад", "на запад", "на юго-запад", "на юг", "на юго-восток", "на восток", "на северо-восток" };
+        // the orientation of WoW is counterclockwise from the north (+X), GetAngle gives the same
+        float angle = _hippogryph->GetAngle(ship);
+        uint32 sector = uint32((angle + float(M_PI) / 8.0f) / (float(M_PI) / 4.0f)) % 8;
+        int32 dz = int32(ship->GetPositionZ() - _hippogryph->GetPositionZ());
+        char const* height = dz > 25 ? ", выше" : (dz < -25 ? ", ниже" : "");
+        ChatHandler(player->GetSession()).PSendSysMessage("Корабль Орды: %s, %u ярдов%s.", directions[sector], uint32(_hippogryph->GetExactDist(ship)), height);
+    }
+
+    // the credit is given first, then the rider leaves the seat and is taken home; the parachute the vehicle casts on a flying exit is not needed
+    void Finish(Player* player, Vehicle* vehicle, bool hit, bool talk)
+    {
+        if (hit)
+            player->KilledMonsterCredit(NPC_ENDGAME_FINALE_CREDIT);
+
+        if (talk && _hippogryph->AI())
+            _hippogryph->AI()->Talk(hit ? HIPPOGRYPH_TEXT_HIT : HIPPOGRYPH_TEXT_TIMEOUT, player);
+
+        vehicle->RemoveAllPassengers();
+        player->RemoveAurasDueToSpell(VEHICLE_SPELL_PARACHUTE);
+        player->TeleportTo(ENDGAME_LANDING);
+        _hippogryph->DespawnOrUnsummon(1000);
+    }
+
+    Creature* _hippogryph;
+    ObjectGuid _playerGuid;
+    ObjectGuid _shipGuid;
+    bool _started;
+    uint32 _elapsed;
+    uint32 _sinceHint;
+};
+
+class vehicle_hippogryph_43751 : public VehicleScript
+{
+public:
+    vehicle_hippogryph_43751() : VehicleScript("npc_hippogryph_43751") { }
+
+    void OnAddPassenger(Vehicle* veh, Unit* passenger, int8 /*seatId*/) override
+    {
+        Creature* hippogryph = veh->GetBase()->ToCreature();
+        if (!hippogryph || passenger->GetTypeId() != TYPEID_PLAYER)
+            return;
+
+        // the first tick comes a little later: the seat is not completely set up yet while this hook runs
+        hippogryph->m_Events.AddEvent(new HippogryphRideEvent(hippogryph, passenger->GetGUID()), hippogryph->m_Events.CalculateTime(300));
+    }
+
+    void OnRemovePassenger(Vehicle* veh, Unit* passenger) override
+    {
+        Creature* hippogryph = veh->GetBase()->ToCreature();
+        if (!hippogryph || passenger->GetTypeId() != TYPEID_PLAYER)
+            return;
+
+        // whoever leaves (Fly Back, the ride is over, logout, death), the hippogryph is of no use any more; the click on 43747 makes a new one
+        hippogryph->DespawnOrUnsummon(1000);
     }
 };
 
@@ -2159,7 +2219,7 @@ void AddSC_zone_gilneas_city3()
     new spell_fly_back_72849();
     new spell_iron_bomb_72247();
     new npc_tobias_mistmantle_43749();
-    new npc_hippogryph_43751();
+    new vehicle_hippogryph_43751();
     new go_worgen_gunship_203428();
     new npc_lorna_crowley_43566();
     new npc_worgen_warrior_43651();
