@@ -613,6 +613,29 @@ public:
     }
 };
 
+// "Slowing the Inevitable" (24920): the player flies the captured bat himself (the seat can be controlled, so the script of the bat is not
+// running while he does), the flight paths 3854001-3854003 are not in the database: the way back is the landing at the place where the bat was taken
+// (the bat 38615 waits there). The landing is made outside of the spell: the exit of the rider interrupts the spells of the bat.
+class BatLandingEvent : public BasicEvent
+{
+public:
+    explicit BatLandingEvent(Creature* bat) : _bat(bat) { }
+
+    bool Execute(uint64 /*time*/, uint32 /*diff*/) override
+    {
+        if (Vehicle* vehicle = _bat->GetVehicleKit())
+            if (Unit* rider = vehicle->GetPassenger(0))
+                if (Player* player = rider->ToPlayer())
+                    player->TeleportTo(654, -1668.2f, 1664.3f, 20.6f, 4.56f);
+
+        _bat->DespawnOrUnsummon(500);
+        return true;
+    }
+
+private:
+    Creature* _bat;
+};
+
 // 72849
 class spell_fly_back_72849 : public SpellScriptLoader
 {
@@ -627,10 +650,7 @@ public:
         {
             if (Unit* caster = GetCaster())
                 if (Creature* bat = caster->ToCreature())
-                {
-                    bat->SetSpeed(MOVE_FLIGHT, 6.0f);
-                    bat->GetMotionMaster()->MovePath(3854003, false);
-                }
+                    bat->m_Events.AddEvent(new BatLandingEvent(bat), bat->m_Events.CalculateTime(250));
         }
 
         void Register() override
