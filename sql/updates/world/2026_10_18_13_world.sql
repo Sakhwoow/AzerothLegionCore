@@ -13,3 +13,12 @@ FROM `conditions` WHERE `SourceTypeOrReferenceId` = 26 AND `SourceGroup` = 169 A
 -- Клиент показывал первую, игрок шёл к банку и никого не находил. Убираем метку сдачи у банка; цели у банка (ObjectiveIndex 0 и 1) остаются.
 -- Откат: INSERT INTO quest_poi SELECT ... из /root/legion_backup_20261018_poi/quest_poi_14122.sql (бэкап сделан перед правкой).
 DELETE FROM `quest_poi` WHERE `QuestID` = 14122 AND `BlobIndex` = 0 AND `Idx1` = 0 AND `ObjectiveIndex` = -1;
+
+-- Кезан, квест 14125 "Страховочный план": объекты цели (Неисправный генератор 201735, Прохудившаяся печка 201733, Легковоспламеняющаяся кровать 201734, штаб ТКК, -8421, 1373, 105)
+-- стоят только в фазе 169, а после сдачи 14116 фаза 169 игроку не выдаётся (условие SourceType 26 для 169 требует 14116 в статусах 11), поэтому объекты были невидимы и недоступны.
+-- Добавляем второе условие (ElseGroup 1) для фазы 169: квест 14125 принят и не выполнен (статус 8).
+-- Откат: DELETE FROM conditions WHERE SourceTypeOrReferenceId = 26 AND SourceGroup = 169 AND SourceEntry = 4737 AND ElseGroup = 1;
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 26 AND `SourceGroup` = 169 AND `SourceEntry` = 4737 AND `ElseGroup` = 1;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`)
+SELECT `SourceTypeOrReferenceId`, 169, `SourceEntry`, `SourceId`, 1, `ConditionTypeOrReference`, `ConditionTarget`, 14125, 8, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, 'Кезан фаза 169: квест 14125 принят и не выполнен'
+FROM `conditions` WHERE `SourceTypeOrReferenceId` = 26 AND `SourceGroup` = 169 AND `SourceEntry` = 4737 AND `ConditionTypeOrReference` = 47 AND `ElseGroup` = 0 LIMIT 1;
