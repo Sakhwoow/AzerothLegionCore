@@ -2820,7 +2820,7 @@ std::list<Player*> WorldObject::SelectNearestPlayers(float range, bool alive)
     std::list<Player*> PlayerList;
     Trinity::AnyPlayerInObjectRangeCheck checker(this, range, alive);
     Trinity::PlayerListSearcher<Trinity::AnyPlayerInObjectRangeCheck> searcher(this, PlayerList, checker);
-    Cell::VisitGridObjects(this, searcher, range);
+    Cell::VisitAllObjects(this, searcher, range);       // a Player is a world object, VisitGridObjects never finds it
     return PlayerList;
 }
 
