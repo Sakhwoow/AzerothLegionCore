@@ -8,3 +8,8 @@ DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 26 AND `SourceGroup` 
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`)
 SELECT `SourceTypeOrReferenceId`, 382, `SourceEntry`, `SourceId`, 0, `ConditionTypeOrReference`, `ConditionTarget`, 14122, 74, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, 'Кезан фаза 382: квест 14122 принят, выполнен или сдан'
 FROM `conditions` WHERE `SourceTypeOrReferenceId` = 26 AND `SourceGroup` = 169 AND `SourceEntry` = 4737 AND `ConditionTypeOrReference` = 47 LIMIT 1;
+
+-- Метка сдачи 14122 стояла у банка (-8348, 1724): в quest_poi у квеста две метки "сдать" (ObjectiveIndex -1): первая у банка (BlobIndex 0) и вторая у штаба ТКК, где стоит Сасса (-8417, 1325, BlobIndex 3).
+-- Клиент показывал первую, игрок шёл к банку и никого не находил. Убираем метку сдачи у банка; цели у банка (ObjectiveIndex 0 и 1) остаются.
+-- Откат: INSERT INTO quest_poi SELECT ... из /root/legion_backup_20261018_poi/quest_poi_14122.sql (бэкап сделан перед правкой).
+DELETE FROM `quest_poi` WHERE `QuestID` = 14122 AND `BlobIndex` = 0 AND `Idx1` = 0 AND `ObjectiveIndex` = -1;
