@@ -985,9 +985,14 @@ public:
         {
             // a player-controlled creature gets no movement flags from Creature::UpdateMovementFlags: the flight has to be switched on here
             _started = true;
+            // the template (InhabitType 3, ground and air) can leave the flags set on the server already, then SetCanFly sends nothing and the client of
+            // the rider never learns that the vehicle can fly: the flags are switched off and on again so that the packets for the rider are always sent
+            _hippogryph->SetCanFly(false);
+            _hippogryph->SetDisableGravity(false);
             _hippogryph->SetCanFly(true);
             _hippogryph->SetDisableGravity(true);
             _hippogryph->SetSpeed(MOVE_FLIGHT, ENDGAME_FLIGHT_SPEED);
+            _hippogryph->SetSpeed(MOVE_RUN, ENDGAME_FLIGHT_SPEED);
             _hippogryph->AI()->Talk(HIPPOGRYPH_TEXT_START, player);
         }
 
